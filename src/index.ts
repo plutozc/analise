@@ -7,6 +7,7 @@ import { syncRFCs } from "./sync/rfcs.js";
 import { classifyPapers, classifyNews } from "./lib/ai-classify.js";
 import { generateConfSummary, generateAllConfSummaries } from "./sync/conf-ai.js";
 import { syncVendorIntelligence } from "./sync/vendor-intelligence.js";
+import { analyzeTechSignals } from "./sync/tech-signals.js";
 
 const task = process.argv[2] ?? "all";
 
@@ -59,23 +60,6 @@ async function main() {
         console.log(`[sync-worker] RFC sync complete:`, JSON.stringify(stats));
         break;
       }
-      case "classify": {
-        const paperResult = await classifyPapers(30);
-        console.log(`[sync-worker] Classified papers: ${paperResult.updated}/${paperResult.processed}`);
-        const newsResult = await classifyNews(30);
-        console.log(`[sync-worker] Classified news: ${newsResult.updated}/${newsResult.processed}`);
-        break;
-      }
-      case "classify-papers": {
-        const r = await classifyPapers(30);
-        console.log(`[sync-worker] Classified papers: ${r.updated}/${r.processed}`);
-        break;
-      }
-      case "classify-news": {
-        const r = await classifyNews(30);
-        console.log(`[sync-worker] Classified news: ${r.updated}/${r.processed}`);
-        break;
-      }
       case "conf-summaries": {
         const count = await generateAllConfSummaries();
         console.log(`[sync-worker] Generated ${count} conference summaries`);
@@ -85,6 +69,11 @@ async function main() {
         const id = process.argv[3];
         if (!id) { console.error("[sync-worker] Usage: conf-summary <conferenceId>"); process.exit(1); }
         await generateConfSummary(id);
+        break;
+      }
+      case "signals": {
+        const count = await analyzeTechSignals();
+        console.log(`[sync-worker] Generated ${count} tech signals`);
         break;
       }
       case "vendor-intel": {
@@ -118,7 +107,7 @@ async function main() {
       default:
         console.error(`[sync-worker] Unknown task: ${task}`);
         console.log(`Usage: npx tsx src/index.ts <task>`);
-        console.log(`Tasks: papers, arxiv, s2, company-papers, feeds, github, rfcs, classify, classify-papers, classify-news, conf-summary, conf-summaries, all`);
+        console.log(`Tasks: papers, arxiv, s2, company-papers, feeds, github, rfcs, conf-summary, conf-summaries, all`);
         process.exit(1);
     }
   } catch (err) {
