@@ -7,7 +7,7 @@ type QualityVerdict = {
   reason: string;
 };
 
-const SYSTEM_PROMPT = `You are a quality filter for networking news. Rate each article on relevance to professional networking/cloud/infrastructure engineering and assign a relevance_score (1-10).
+const SYSTEM_PROMPT = `You are a quality filter for networking news. Rate each article on relevance to professional networking/cloud/infrastructure engineering and assign a relevance_score (1-10). Articles may be in English or Chinese — evaluate them equally regardless of language.
 
 Score guide:
 - 9-10: Direct networking content (protocols, architectures, deployments)
@@ -16,8 +16,9 @@ Score guide:
 - 3-4: Tangentially related, little substance
 - 1-2: Not relevant
 
-Keep if score >= 5 (real technical content, industry analysis, product releases with detail).
-Discard if score < 5 (press releases, fluff, irrelevant topics, vague announcements).
+Keep if score >= 4 (real technical content, industry analysis, product releases with detail, tangential but useful).
+Discard if score < 4 (press releases, fluff, irrelevant topics, stock/finance news, vague announcements).
+IMPORTANT: Chinese-language articles about networking, cloud, data centers, 5G/6G, SDN, etc. should receive the same scores as equivalent English articles.
 
 Return JSON only: {"verdicts": [{"idx": 1, "keep": true, "relevance_score": 8, "reason": "concrete technical details on X"}]}`;
 
@@ -35,7 +36,7 @@ export function filterQuality(items: { title: string; snippet: string }[]): { ke
 
     const prompt = `${SYSTEM_PROMPT}\n\n${input}`;
 
-    const r = spawnSync("claude", ["-p", "--print"], {
+    const r = spawnSync("claude", ["-p"], {
       input: prompt,
       encoding: "utf-8",
       timeout: 60_000,
