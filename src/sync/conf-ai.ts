@@ -1,5 +1,5 @@
-import { spawnSync } from "child_process";
 import { supabase } from "../lib/supabase.js";
+import { callClaude } from "../lib/claude.js";
 
 export async function generateConfSummary(conferenceId: string): Promise<string | null> {
   const { data: conf } = await supabase
@@ -57,19 +57,12 @@ Provide a JSON analysis:
 
 Return valid JSON only. Summary must be in Chinese.`;
 
-  const r = spawnSync("claude", ["-p", "--print"], {
-    input: prompt,
-    encoding: "utf-8",
-    timeout: 60_000,
-    maxBuffer: 10 * 1024 * 1024,
-  });
-
-  if (r.error) {
-    console.error(`[conf-ai] Claude error: ${r.error.message}`);
+  const output = callClaude(prompt, { timeout: 60_000 });
+  if (!output) {
+    console.error(`[conf-ai] Claude returned empty`);
     return null;
   }
 
-  const output = (r.stdout ?? "").trim();
   const jsonMatch = output.match(/\{[\s\S]*"summary_cn"[\s\S]*\}/);
   if (!jsonMatch) {
     console.error(`[conf-ai] No JSON in response`);

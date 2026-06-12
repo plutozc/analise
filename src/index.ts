@@ -8,6 +8,7 @@ import { classifyPapers, classifyNews } from "./lib/ai-classify.js";
 import { generateConfSummary, generateAllConfSummaries } from "./sync/conf-ai.js";
 import { syncVendorIntelligence } from "./sync/vendor-intelligence.js";
 import { analyzeTechSignals } from "./sync/tech-signals.js";
+import { logTokenUsage } from "./lib/claude.js";
 
 const task = process.argv[2] ?? "all";
 
@@ -122,6 +123,7 @@ async function main() {
     process.exit(1);
   }
 
+  logTokenUsage();
   const elapsed = ((Date.now() - start) / 1000).toFixed(1);
   console.log(`[sync-worker] Finished in ${elapsed}s`);
 }

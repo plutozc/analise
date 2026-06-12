@@ -1,5 +1,5 @@
-import { spawnSync } from "child_process";
 import { supabase } from "./supabase.js";
+import { callClaude } from "./claude.js";
 
 const TOPICS = "dc-networking,transport-protocols,programmable-net,sdn-nfv,congestion-ctrl,internet-measure,traffic-analysis,dns-bgp,network-monitoring,network-observability,ddos-defense,protocol-security,privacy-anonymity,side-channels,zero-trust,sase-sse,edge-computing,network-ai,machine-learning,optimization,ai-networking,network-digital-twin,intent-based-networking,satellite-leo,quantum-networking,5g-6g,mobile-wireless,ebpf-xdp,distributed-sys,storage-net,os-network-stack,cloud-infra,hpc,high-speed-networking,parallel-computing,security,automation,observability";
 const COMPANIES = "cisco,google,ericsson,nokia,aws,microsoft,openai,nvidia,meta,intel,ibm,huawei,cloudflare,apple,amd,tencent,alibaba,baidu,bytedance";
@@ -15,10 +15,10 @@ Score:1-10(10=direct net). ML→machine-learning. AIforNet→network-ai. CN summ
 ${block}`;
 }
 
-function callClaude(prompt: string): string {
-  const r = spawnSync("claude", ["-p"], { input: prompt, encoding: "utf-8", timeout: 120_000, maxBuffer: 20 * 1024 * 1024 });
-  if (r.error) { console.error("[ai] Claude error:", r.error.message); return "[]"; }
-  const m = (r.stdout ?? "").match(/\{[\s\S]*"results"[\s\S]*\}/);
+function callClaudeClassify(prompt: string): string {
+  const raw = callClaude(prompt);
+  if (!raw) return "[]";
+  const m = raw.match(/\{[\s\S]*"results"[\s\S]*\}/);
   if (!m) { console.error("[ai] No JSON"); return "[]"; }
   try { return JSON.stringify((JSON.parse(m[0]).results ?? JSON.parse(m[0]).classifications ?? [])); } catch { return "[]"; }
 }
@@ -31,7 +31,7 @@ export async function classifyPapers(batchSize = 50): Promise<{ processed: numbe
     const { data: papers, error } = await supabase.from("papers").select("id,title,abstract,companies").eq("ai_classified", false).neq("title","test paper").limit(batchSize);
     if (error || !papers?.length) { if (!papers?.length) console.log("[ai] No more unclassified papers"); break; }
     console.log(`[ai] Batch ${r+1}: ${papers.length} papers (${papers[0].title.slice(0,40)}...)`);
-    const raw = callClaude(buildClassifyPrompt(papers.map(p => ({ title: p.title, abstract: p.abstract }))));
+    const raw = callClaudeClassify(buildClassifyPrompt(papers.map(p => ({ title: p.title, abstract: p.abstract }))));
     let results: R[]; try { results = JSON.parse(raw); } catch { break; }
     for (const r of results) {
       const p = papers[r.idx - 1]; if (!p) continue;
@@ -60,8 +60,8 @@ async function findSimilarPapers(ids: string[]): Promise<void> {
     if (kw.length < 2) continue;
     const { data: c } = await supabase.from("papers").select("id,title").eq("ai_classified", true).neq("id", id).or(kw.map((k: string) => `title.ilike.%${k}%`).join(",")).limit(15);
     if (!c?.length) continue;
-    const r = spawnSync("claude", ["-p"], { input: `Pick 5 most similar to reference. JSON: {"ids":["id1","id2","id3","id4","id5"]}\nRef: ${p.title.slice(0, 200)}\n${c.map((x,i) => `[${i+1}] ${x.title.slice(0,200)} (${x.id})`).join("\n")}`, encoding: "utf-8", timeout: 30000, maxBuffer: 5*1024*1024 });
-    const m = (r.stdout ?? "").match(/\{[\s\S]*"ids"[\s\S]*\}/);
+    const raw = callClaude(`Pick 5 most similar to reference. JSON: {"ids":["id1","id2","id3","id4","id5"]}\nRef: ${p.title.slice(0, 200)}\n${c.map((x,i) => `[${i+1}] ${x.title.slice(0,200)} (${x.id})`).join("\n")}`, { timeout: 30000 });
+    const m = raw.match(/\{[\s\S]*"ids"[\s\S]*\}/);
     if (m) try { const { ids } = JSON.parse(m[0]); if (ids?.length) await supabase.from("papers").update({ similar_papers: ids }).eq("id", id); } catch {}
   }
 }
@@ -72,7 +72,7 @@ export async function classifyNews(batchSize = 50): Promise<{ processed: number;
     const { data: items, error } = await supabase.from("news_items").select("id,title,snippet,companies").eq("ai_classified", false).limit(batchSize);
     if (error || !items?.length) { if (!items?.length) console.log("[ai] No more unclassified news"); break; }
     console.log(`[ai] News batch ${r+1}: ${items.length} items`);
-    const raw = callClaude(buildClassifyPrompt(items.map(i => ({ title: i.title, abstract: i.snippet }))));
+    const raw = callClaudeClassify(buildClassifyPrompt(items.map(i => ({ title: i.title, abstract: i.snippet }))));
     let results: R[]; try { results = JSON.parse(raw); } catch { break; }
     for (const r of results) {
       const item = items[r.idx - 1]; if (!item) continue;

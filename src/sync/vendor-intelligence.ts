@@ -1,5 +1,5 @@
-import { spawnSync } from "child_process";
 import { supabase } from "../lib/supabase.js";
+import { callClaude } from "../lib/claude.js";
 
 type VendorData = {
   id: string;
@@ -85,12 +85,8 @@ Return JSON only:
   "emerging_signals": ["any notable signals or shifts in their focus"]
 }`;
 
-  const r = spawnSync("claude", ["-p", "--print"], {
-    input: prompt, encoding: "utf-8", timeout: 60_000, maxBuffer: 10 * 1024 * 1024,
-  });
-
-  if (r.error) return JSON.stringify({ error: r.error.message });
-  const output = (r.stdout ?? "").trim();
+  const output = callClaude(prompt, { timeout: 60_000 });
+  if (!output) return JSON.stringify({ error: "Claude returned empty" });
   const jsonMatch = output.match(/\{[\s\S]*"strengths"[\s\S]*\}/);
   return jsonMatch ? jsonMatch[0] : JSON.stringify({ error: "Parse failed" });
 }
