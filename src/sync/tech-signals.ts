@@ -112,7 +112,7 @@ export async function analyzeTechSignals(): Promise<number> {
           title: d.p < 2 ? `🎯 ${company} 进入${kd.label}` : `🔥 ${company} ${kd.label}+${pct}%`,
           description: d.p < 2 ? `${company} 近7天 ${d.r} 篇涉及 ${kd.label}（此前无），值得关注。` : `${company} ${kd.label}方向产出增长${pct}%（${d.p}→${d.r}篇）。`,
           topic_slug: kd.topic, keyword_label: kd.label, company_slugs: [company],
-          evidence: { recent: d.r, previous: d.p, company, keyword: d.label } });
+          evidence: { recent: d.r, previous: d.p, company, keyword: kd.label } });
       }
     }
   }

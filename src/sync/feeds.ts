@@ -1,6 +1,5 @@
 import { inferCompanies } from "../lib/companies.js";
 import { supabase } from "../lib/supabase.js";
-import { filterQuality } from "../lib/ai-quality.js";
 import type { RSSItem, FeedStat } from "../types/index.js";
 
 type FeedConfig = { url: string; source: string; format?: "atom" };
@@ -129,9 +128,10 @@ function parseAtomXml(xml: string, source: string): RSSItem[] {
 
 
 export async function syncAllFeeds(): Promise<FeedStat[]> {
-  const limit = 500;
+  const limit = 50;
   const stats: FeedStat[] = [];
   const allItems: RSSItem[] = [];
+  let totalInserted = 0;
 
   // Fetch all feeds
   const results = await Promise.allSettled(
@@ -168,31 +168,21 @@ export async function syncAllFeeds(): Promise<FeedStat[]> {
     return true;
   }).slice(0, limit);
 
-  // AI quality filter — rates relevance 1-10, discards fluff
-  console.log(`[feeds] Quality filtering ${deduped.length} items...`);
-  const { keep, scores } = filterQuality(deduped.map(i => ({ title: i.title, snippet: i.snippet })));
-  const filtered = deduped.filter((_, i) => keep[i]);
-  const discarded = deduped.length - filtered.length;
-  if (discarded > 0) console.log(`[feeds] Discarded ${discarded} low-quality items`);
+  // Check which are actually new (not in DB yet)
+  const links = deduped.map(i => i.link);
+  const { data: existingRows } = await supabase
+    .from("news_items").select("link").in("link", links);
+  const existingLinks = new Set((existingRows ?? []).map(r => r.link));
+  const newItems = deduped.filter(i => !existingLinks.has(i.link));
 
-  // Insert into DB with relevance score
-  let totalInserted = 0;
-  for (let i = 0; i < filtered.length; i++) {
-    const item = filtered[i];
-    const origIdx = deduped.indexOf(item);
-    const score = origIdx >= 0 ? scores[origIdx] ?? 5 : 5;
-
-    const { data: existing } = await supabase
-      .from("news_items").select("id").eq("link", item.link).maybeSingle();
-    if (!existing) {
-      await supabase.from("news_items").insert({
-        title: item.title, link: item.link, snippet: item.snippet,
-        source: item.source, category: "news",
-        pub_date: item.pubDate, companies: item.companies,
-        relevance_score: score,
-      });
-      totalInserted++;
-    }
+  // Insert new items (classifyNews handles scoring)
+  for (const item of newItems) {
+    await supabase.from("news_items").insert({
+      title: item.title, link: item.link,
+      source: item.source, category: "news",
+      pub_date: item.pubDate, companies: item.companies,
+    });
+    totalInserted++;
   }
 
   await supabase.from("sync_meta").upsert(
@@ -200,5 +190,6 @@ export async function syncAllFeeds(): Promise<FeedStat[]> {
     { onConflict: "entity" },
   );
 
+  console.log(`[feeds] ${totalInserted} new items, ${allItems.length} fetched`);
   return stats;
 }

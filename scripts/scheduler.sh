@@ -18,12 +18,20 @@ run_loop() {
 }
 
 declare -A INTERVALS
-INTERVALS[papers]=21600; INTERVALS[feeds]=3600; INTERVALS[github]=86400
-INTERVALS[rfcs]=43200; INTERVALS[vendor-intel]=86400; INTERVALS[conf-summaries]=86400
+# Light tasks (cheap AI, high frequency)
+INTERVALS[feeds]=3600
+INTERVALS[rfcs]=43200
+# Medium tasks
+INTERVALS[papers]=21600
+INTERVALS[signals]=43200
+# Heavy AI tasks (rare)
+INTERVALS[github]=86400
+INTERVALS[conf-summaries]=2592000  # monthly
+INTERVALS[vendor-intel]=2592000    # monthly
 
 if [ "${1:-}" = "once" ]; then
   log "=== RUN ALL ONCE ==="
-  for task in papers feeds github rfcs vendor-intel conf-summaries; do run_task $task; done
+  for task in papers feeds github rfcs signals conf-summaries vendor-intel; do run_task $task; done
   log "=== ALL DONE ==="; exit 0
 fi
 
@@ -35,7 +43,7 @@ fi
 
 log "=== SCHEDULER START ==="
 run_task papers; run_task feeds
-for task in papers feeds github rfcs vendor-intel conf-summaries; do
+for task in papers feeds github rfcs signals conf-summaries vendor-intel; do
   run_loop $task "${INTERVALS[$task]}" &
 done
 log "All workers launched. Waiting..."
