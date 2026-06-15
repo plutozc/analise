@@ -12,13 +12,12 @@ const COMPANY_GITHUB_ORGS: Record<string, string[]> = {
   bytedance: ["bytedance"],
 };
 
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN && !process.env.GITHUB_TOKEN.startsWith("ghp_xxx") ? process.env.GITHUB_TOKEN : "";
 
 export async function syncGitHubRepos(): Promise<FeedStat[]> {
-  if (!GITHUB_TOKEN) return [{ source: "github", status: "error", count: 0, error: "GITHUB_TOKEN not set" }];
-
   const stats: FeedStat[] = [];
-  const headers = { Authorization: `Bearer ${GITHUB_TOKEN}`, Accept: "application/vnd.github+json" };
+  const headers: Record<string, string> = { Accept: "application/vnd.github+json" };
+  if (GITHUB_TOKEN) headers.Authorization = `Bearer ${GITHUB_TOKEN}`;
 
   for (const [slug, orgs] of Object.entries(COMPANY_GITHUB_ORGS)) {
     for (const org of orgs) {

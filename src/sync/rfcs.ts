@@ -1,48 +1,51 @@
 import { supabase } from "../lib/supabase.js";
 import type { FeedStat } from "../types/index.js";
 
-const RFC_FEEDS = [
-  { name: "Internet-Drafts", url: "https://www.rfc-editor.org/rss/rfc.xml" },
-];
+const RFC_FEED = "https://datatracker.ietf.org/feed/rfc/";
 
 export async function syncRFCs(): Promise<FeedStat[]> {
   const stats: FeedStat[] = [];
 
-  for (const feed of RFC_FEEDS) {
-    try {
-      const res = await fetch(feed.url, { signal: AbortSignal.timeout(15000) });
-      if (!res.ok) { stats.push({ source: feed.name, status: "error", count: 0, error: `HTTP ${res.status}` }); continue; }
-      const xml = await res.text();
-      const entries = xml.split("<entry>").slice(1);
-      let inserted = 0;
-
-      for (const entry of entries) {
-        const title = extractTag(entry, "title")?.trim();
-        const idMatch = title?.match(/RFC\s*(\d+)/i);
-        if (!idMatch) continue;
-        const rfcNumber = parseInt(idMatch[1], 10);
-        const summary = extractTag(entry, "summary")?.trim() || null;
-        const updated = extractTag(entry, "updated")?.trim() || null;
-        const link = extractRfcLink(entry);
-
-        const { data: existing } = await supabase
-          .from("rfcs").select("id").eq("rfc_number", rfcNumber).maybeSingle();
-        if (!existing) {
-          await supabase.from("rfcs").insert({
-            rfc_number: rfcNumber,
-            title: title,
-            summary: summary,
-            published_date: updated ? updated.slice(0, 10) : null,
-            url: link,
-            is_draft: false,
-          });
-          inserted++;
-        }
-      }
-      stats.push({ source: feed.name, status: "ok", count: inserted });
-    } catch (err) {
-      stats.push({ source: feed.name, status: "error", count: 0, error: err instanceof Error ? err.message : "unknown" });
+  try {
+    const res = await fetch(RFC_FEED, { signal: AbortSignal.timeout(15000) });
+    if (!res.ok) {
+      stats.push({ source: "RFCs", status: "error", count: 0, error: `HTTP ${res.status}` });
+      return stats;
     }
+    const xml = await res.text();
+
+    // RSS 2.0 feed — parse <item> entries
+    const items = xml.split("<item>").slice(1);
+    let inserted = 0;
+
+    for (const item of items) {
+      const title = extractTag(item, "title")?.trim();
+      if (!title) continue;
+      const idMatch = title.match(/RFC\s*(\d+)/i);
+      if (!idMatch) continue;
+      const rfcNumber = parseInt(idMatch[1], 10);
+      const summary = extractTag(item, "description")?.trim() || null;
+      const pubDate = extractTag(item, "pubDate")?.trim() || null;
+      const link = extractRfcLink(item);
+
+      const { data: existing } = await supabase
+        .from("rfcs").select("id").eq("rfc_number", rfcNumber).maybeSingle();
+      if (!existing) {
+        await supabase.from("rfcs").insert({
+          rfc_number: rfcNumber,
+          title,
+          summary,
+          published_date: pubDate ? new Date(pubDate).toISOString().slice(0, 10) : null,
+          url: link,
+          is_draft: false,
+        });
+        inserted++;
+      }
+    }
+
+    stats.push({ source: "RFCs", status: "ok", count: inserted });
+  } catch (err) {
+    stats.push({ source: "RFCs", status: "error", count: 0, error: err instanceof Error ? err.message : "unknown" });
   }
 
   await supabase.from("sync_meta").upsert(
@@ -59,6 +62,6 @@ function extractTag(xml: string, tag: string): string {
 }
 
 function extractRfcLink(xml: string): string {
-  const m = xml.match(/<link[^>]*href="([^"]+)"/);
-  return m ? m[1] : "";
+  const m = xml.match(/<link[^>]*>([^<]+)/);
+  return m ? m[1].trim() : "";
 }

@@ -1,4 +1,5 @@
 import { inferCompanies } from "../lib/companies.js";
+import { classifyItems } from "../lib/ai-classify.js";
 import { supabase } from "../lib/supabase.js";
 import type { RSSItem, FeedStat } from "../types/index.js";
 
@@ -127,11 +128,12 @@ function parseAtomXml(xml: string, source: string): RSSItem[] {
 }
 
 
-export async function syncAllFeeds(): Promise<FeedStat[]> {
-  const limit = 50;
+export type InsertedNewsItem = { id: string; title: string; snippet: string; companies: string[] };
+
+export async function syncAllFeeds(): Promise<{ stats: FeedStat[]; inserted: InsertedNewsItem[] }> {
   const stats: FeedStat[] = [];
   const allItems: RSSItem[] = [];
-  let totalInserted = 0;
+  const inserted: InsertedNewsItem[] = [];
 
   // Fetch all feeds
   const results = await Promise.allSettled(
@@ -160,13 +162,22 @@ export async function syncAllFeeds(): Promise<FeedStat[]> {
     if (r.status === "fulfilled") allItems.push(...r.value);
   }
 
+  // Keep only items from the last hour
+  const cutoff = Date.now() - 3600_000;
+  const recent = allItems.filter(i => {
+    if (!i.pubDate) return false;
+    const ts = Date.parse(i.pubDate);
+    return !isNaN(ts) && ts >= cutoff;
+  });
+  console.log(`[feeds] ${recent.length}/${allItems.length} items from last hour`);
+
   // Global dedup by link
   const seen = new Set<string>();
-  const deduped = allItems.filter((i) => {
+  const deduped = recent.filter((i) => {
     if (seen.has(i.link)) return false;
     seen.add(i.link);
     return true;
-  }).slice(0, limit);
+  });
 
   // Check which are actually new (not in DB yet)
   const links = deduped.map(i => i.link);
@@ -175,14 +186,40 @@ export async function syncAllFeeds(): Promise<FeedStat[]> {
   const existingLinks = new Set((existingRows ?? []).map(r => r.link));
   const newItems = deduped.filter(i => !existingLinks.has(i.link));
 
-  // Insert new items (classifyNews handles scoring)
-  for (const item of newItems) {
-    await supabase.from("news_items").insert({
-      title: item.title, link: item.link,
-      source: item.source, category: "news",
-      pub_date: item.pubDate, companies: item.companies,
-    });
-    totalInserted++;
+  // Classify first, then only insert items with relevance_score >= 5
+  if (newItems.length > 0) {
+    console.log(`[feeds] Classifying ${newItems.length} new items...`);
+    const scores = await classifyItems(newItems.map(i => ({ title: i.title, snippet: i.snippet })));
+    let insertedCount = 0;
+
+    for (let i = 0; i < newItems.length; i++) {
+      const item = newItems[i];
+      const s = scores.get(i + 1);
+      const score = s?.relevance_score ?? 0;
+
+      if (score < 5) {
+        console.log(`[feeds] Skip (${score}/10): ${item.title.slice(0, 60)}`);
+        continue;
+      }
+
+      const merged = [...new Set([...item.companies, ...(s?.companies ?? [])])];
+      const { data: row } = await supabase.from("news_items").insert({
+        title: item.title, link: item.link,
+        source: item.source, category: "news",
+        pub_date: item.pubDate, snippet: item.snippet,
+        companies: merged,
+        ai_classified: true,
+        ai_topics: s?.topics ?? [],
+        relevance_score: score,
+      }).select("id");
+
+      if (row?.length) {
+        inserted.push({ id: row[0].id, title: item.title, snippet: item.snippet ?? "", companies: merged });
+        insertedCount++;
+      }
+    }
+
+    console.log(`[feeds] ${insertedCount} inserted (${newItems.length - insertedCount} filtered out by relevance)`);
   }
 
   await supabase.from("sync_meta").upsert(
@@ -190,6 +227,6 @@ export async function syncAllFeeds(): Promise<FeedStat[]> {
     { onConflict: "entity" },
   );
 
-  console.log(`[feeds] ${totalInserted} new items, ${allItems.length} fetched`);
-  return stats;
+  console.log(`[feeds] ${inserted.length} new items, ${allItems.length} fetched`);
+  return { stats, inserted };
 }

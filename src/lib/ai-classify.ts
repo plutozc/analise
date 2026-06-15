@@ -11,7 +11,7 @@ function buildClassifyPrompt(items: { title: string; abstract?: string | null }[
   return `Classify each item. JSON: {"results":[{"idx":1,"topics":["slug"],"summary_cn":"中文摘要","relevance_score":8,"companies":["cisco"]}]}
 Topics: ${TOPICS}
 Companies: ${COMPANIES}
-Score:1-10(10=direct net). ML→machine-learning. AIforNet→network-ai. CN summary. Companies only if clearly mentioned.
+Score:1-10(10=directly relevant to tech/networking/infrastructure/cloud/AI). Low score: non-tech (celebrity, finance, sports, politics). CN summary for tech items. Companies only if clearly mentioned.
 ${block}`;
 }
 
@@ -25,31 +25,99 @@ function callClaudeClassify(prompt: string): string {
 
 type R = { idx: number; topics: string[]; summary_cn?: string; relevance_score?: number; companies?: string[] };
 
-export async function classifyPapers(batchSize = 50): Promise<{ processed: number; updated: number }> {
-  let total = 0, updated = 0, allIds: string[] = [];
-  for (let r = 0; r < 100; r++) {
-    const { data: papers, error } = await supabase.from("papers").select("id,title,abstract,companies").eq("ai_classified", false).neq("title","test paper").limit(batchSize);
-    if (error || !papers?.length) { if (!papers?.length) console.log("[ai] No more unclassified papers"); break; }
-    console.log(`[ai] Batch ${r+1}: ${papers.length} papers (${papers[0].title.slice(0,40)}...)`);
-    const raw = callClaudeClassify(buildClassifyPrompt(papers.map(p => ({ title: p.title, abstract: p.abstract }))));
-    let results: R[]; try { results = JSON.parse(raw); } catch { break; }
-    for (const r of results) {
-      const p = papers[r.idx - 1]; if (!p) continue;
-      if (r.topics?.length) {
-        await supabase.from("paper_topics").delete().eq("paper_id", p.id);
-        await supabase.from("paper_topics").insert(r.topics.map(t => ({ paper_id: p.id, topic_slug: t })));
-      }
-      const d: Record<string, any> = { ai_classified: true };
-      if (r.summary_cn) d.ai_summary = r.summary_cn;
-      if (r.relevance_score) d.relevance_score = r.relevance_score;
-      if (r.companies?.length) d.companies = [...new Set([...((p as any).companies ?? []), ...r.companies])];
-      await supabase.from("papers").update(d).eq("id", p.id);
-      allIds.push(p.id); updated++;
+type PaperItem = { id: string; title: string; abstract: string | null; companies: string[] };
+type NewsItem = { id: string; title: string; snippet: string | null; companies: string[] };
+
+export type ScoredNews = {
+  topics: string[];
+  relevance_score: number;
+  companies: string[];
+};
+
+/** Score news items without touching DB. Returns Map<1-based-index, ScoredNews>. */
+export async function classifyItems(
+  items: { title: string; snippet: string | null }[],
+  batchSize = 50
+): Promise<Map<number, ScoredNews>> {
+  const result = new Map<number, ScoredNews>();
+  for (let offset = 0; offset < items.length; offset += batchSize) {
+    const batch = items.slice(offset, offset + batchSize);
+    const raw = callClaudeClassify(buildClassifyPrompt(batch));
+    let parsed: R[];
+    try { parsed = JSON.parse(raw); } catch { continue; }
+    for (const r of parsed) {
+      result.set(r.idx + offset, {
+        topics: r.topics ?? [],
+        relevance_score: r.relevance_score ?? 0,
+        companies: r.companies ?? [],
+      });
     }
-    total += papers.length;
   }
+  return result;
+}
+
+export async function classifyPapers(
+  batchSize = 50,
+  items?: PaperItem[]
+): Promise<{ processed: number; updated: number }> {
+  let total = 0, updated = 0, allIds: string[] = [];
+
+  if (items) {
+    // Classify only the provided items (from scheduled sync)
+    for (let i = 0; i < items.length; i += batchSize) {
+      const batch = items.slice(i, i + batchSize);
+      console.log(`[ai] Batch ${Math.floor(i/batchSize)+1}: ${batch.length} papers (${batch[0].title.slice(0,40)}...)`);
+      const { resultCount, ids } = await processClassifyBatch(batch);
+      total += batch.length;
+      updated += resultCount;
+      allIds.push(...ids);
+    }
+  } else {
+    // Fallback: query unclassified from DB (manual/backfill usage)
+    for (let r = 0; r < 100; r++) {
+      const { data: papers, error } = await supabase.from("papers")
+        .select("id,title,abstract,companies")
+        .eq("ai_classified", false)
+        .neq("title","test paper")
+        .limit(batchSize);
+      if (error || !papers?.length) {
+        if (!papers?.length) console.log("[ai] No more unclassified papers");
+        break;
+      }
+      console.log(`[ai] Batch ${r+1}: ${papers.length} papers (${papers[0].title.slice(0,40)}...)`);
+      const { resultCount, ids } = await processClassifyBatch(papers);
+      total += papers.length;
+      updated += resultCount;
+      allIds.push(...ids);
+    }
+  }
+
   if (allIds.length) await findSimilarPapers(allIds);
   return { processed: total, updated };
+}
+
+async function processClassifyBatch(
+  papers: PaperItem[]
+): Promise<{ resultCount: number; ids: string[] }> {
+  let resultCount = 0;
+  const ids: string[] = [];
+  const raw = callClaudeClassify(buildClassifyPrompt(papers.map(p => ({ title: p.title, abstract: p.abstract }))));
+  let results: R[];
+  try { results = JSON.parse(raw); } catch { return { resultCount: 0, ids: [] }; }
+  for (const r of results) {
+    const p = papers[r.idx - 1]; if (!p) continue;
+    if (r.topics?.length) {
+      await supabase.from("paper_topics").delete().eq("paper_id", p.id);
+      await supabase.from("paper_topics").insert(r.topics.map(t => ({ paper_id: p.id, topic_slug: t })));
+    }
+    const d: Record<string, any> = { ai_classified: true };
+    if (r.summary_cn) d.ai_summary = r.summary_cn;
+    if (r.relevance_score) d.relevance_score = r.relevance_score;
+    if (r.companies?.length) d.companies = [...new Set([...((p as any).companies ?? []), ...r.companies])];
+    await supabase.from("papers").update(d).eq("id", p.id);
+    ids.push(p.id); resultCount++;
+  }
+  return { resultCount, ids };
 }
 
 async function findSimilarPapers(ids: string[]): Promise<void> {
@@ -66,24 +134,53 @@ async function findSimilarPapers(ids: string[]): Promise<void> {
   }
 }
 
-export async function classifyNews(batchSize = 50): Promise<{ processed: number; updated: number }> {
+export async function classifyNews(
+  batchSize = 50,
+  items?: NewsItem[]
+): Promise<{ processed: number; updated: number }> {
   let total = 0, updated = 0;
-  for (let r = 0; r < 100; r++) {
-    const { data: items, error } = await supabase.from("news_items").select("id,title,snippet,companies").eq("ai_classified", false).limit(batchSize);
-    if (error || !items?.length) { if (!items?.length) console.log("[ai] No more unclassified news"); break; }
-    console.log(`[ai] News batch ${r+1}: ${items.length} items`);
-    const raw = callClaudeClassify(buildClassifyPrompt(items.map(i => ({ title: i.title, abstract: i.snippet }))));
-    let results: R[]; try { results = JSON.parse(raw); } catch { break; }
-    for (const r of results) {
-      const item = items[r.idx - 1]; if (!item) continue;
-      const d: Record<string, any> = { ai_classified: true };
-      if (r.topics?.length) d.ai_topics = r.topics;
-      if (r.relevance_score) d.relevance_score = r.relevance_score;
-      if (r.companies?.length) d.companies = [...new Set([...((item as any).companies ?? []), ...r.companies])];
-      await supabase.from("news_items").update(d).eq("id", item.id);
-      updated++;
+
+  if (items) {
+    // Classify only the provided items (from scheduled sync)
+    for (let i = 0; i < items.length; i += batchSize) {
+      const batch = items.slice(i, i + batchSize);
+      console.log(`[ai] News batch ${Math.floor(i/batchSize)+1}: ${batch.length} items`);
+      updated += await processNewsBatch(batch);
+      total += batch.length;
     }
-    total += items.length;
+  } else {
+    // Fallback: query unclassified from DB (manual/backfill usage)
+    for (let r = 0; r < 100; r++) {
+      const { data: dbItems, error } = await supabase.from("news_items")
+        .select("id,title,snippet,companies")
+        .eq("ai_classified", false)
+        .limit(batchSize);
+      if (error || !dbItems?.length) {
+        if (!dbItems?.length) console.log("[ai] No more unclassified news");
+        break;
+      }
+      console.log(`[ai] News batch ${r+1}: ${dbItems.length} items`);
+      updated += await processNewsBatch(dbItems);
+      total += dbItems.length;
+    }
   }
+
   return { processed: total, updated };
+}
+
+async function processNewsBatch(items: NewsItem[]): Promise<number> {
+  let updated = 0;
+  const raw = callClaudeClassify(buildClassifyPrompt(items.map(i => ({ title: i.title, abstract: i.snippet }))));
+  let results: R[];
+  try { results = JSON.parse(raw); } catch { return 0; }
+  for (const r of results) {
+    const item = items[r.idx - 1]; if (!item) continue;
+    const d: Record<string, any> = { ai_classified: true };
+    if (r.topics?.length) d.ai_topics = r.topics;
+    if (r.relevance_score) d.relevance_score = r.relevance_score;
+    if (r.companies?.length) d.companies = [...new Set([...((item as any).companies ?? []), ...r.companies])];
+    await supabase.from("news_items").update(d).eq("id", item.id);
+    updated++;
+  }
+  return updated;
 }

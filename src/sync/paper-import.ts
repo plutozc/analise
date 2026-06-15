@@ -5,6 +5,8 @@ import type { ImportedPaper, CategoryStat } from "../types/index.js";
 
 const TOPIC_LIMIT = 8;
 
+export type InsertedPaper = { id: string; title: string; abstract: string | null; companies: string[] };
+
 // ── arXiv ──
 
 function parseArxivXml(xml: string): ImportedPaper[] {
@@ -49,8 +51,9 @@ async function fetchArxiv(url: string, category: string): Promise<{ papers: Impo
   return { papers, stat: { category, status: "ok", count: papers.length } };
 }
 
-export async function syncArxivPapers(year: number): Promise<CategoryStat[]> {
+export async function syncArxivPapers(year: number): Promise<{ stats: CategoryStat[]; inserted: InsertedPaper[] }> {
   const stats: CategoryStat[] = [];
+  const inserted: InsertedPaper[] = [];
   const seen = new Set<string>();
 
   for (const cat of ARXIV_CATEGORIES) {
@@ -64,7 +67,8 @@ export async function syncArxivPapers(year: number): Promise<CategoryStat[]> {
         const key = p.title.toLowerCase().trim();
         if (seen.has(key)) continue;
         seen.add(key);
-        if (await upsertPaper(p)) imported++;
+        const r = await upsertPaper(p);
+        if (r) { imported++; inserted.push(r); }
       }
       stats.push({ category: `${cat}_imported`, status: "ok", count: imported });
     } catch (err) {
@@ -72,7 +76,7 @@ export async function syncArxivPapers(year: number): Promise<CategoryStat[]> {
     }
     await new Promise((r) => setTimeout(r, 3000));
   }
-  return stats;
+  return { stats, inserted };
 }
 
 // ── Semantic Scholar ──
@@ -101,14 +105,14 @@ function parseS2Papers(data: S2Paper[], venue: string): ImportedPaper[] {
   }));
 }
 
-export async function syncS2Papers(year: number): Promise<CategoryStat[]> {
-  const apiKey = process.env.SEMANTIC_SCHOLAR_API_KEY;
-  if (!apiKey) {
-    return [{ category: "semantic-scholar", status: "error", count: 0, error: "SEMANTIC_SCHOLAR_API_KEY not set" }];
-  }
+export async function syncS2Papers(year: number): Promise<{ stats: CategoryStat[]; inserted: InsertedPaper[] }> {
+  const raw = process.env.SEMANTIC_SCHOLAR_API_KEY || "";
+  const apiKey = raw && !raw.startsWith("xxx") ? raw : "";
   const stats: CategoryStat[] = [];
+  const inserted: InsertedPaper[] = [];
   const seen = new Set<string>();
-  const headers = { "x-api-key": apiKey };
+  const headers: Record<string, string> = {};
+  if (apiKey) headers["x-api-key"] = apiKey;
 
   for (const venue of S2_VENUES) {
     const params = new URLSearchParams({
@@ -128,7 +132,8 @@ export async function syncS2Papers(year: number): Promise<CategoryStat[]> {
       for (const p of papers) {
         const key = p.title.toLowerCase().trim();
         if (seen.has(key)) continue; seen.add(key);
-        if (await upsertPaper(p)) imported++;
+        const r = await upsertPaper(p);
+        if (r) { imported++; inserted.push(r); }
       }
       stats.push({ category: `${venue}_imported`, status: "ok", count: imported });
     } catch (err) {
@@ -136,7 +141,7 @@ export async function syncS2Papers(year: number): Promise<CategoryStat[]> {
     }
     await new Promise((r) => setTimeout(r, 3000));
   }
-  return stats;
+  return { stats, inserted };
 }
 
 // ── Company-specific arXiv ──
@@ -161,8 +166,9 @@ const COMPANY_ARXIV_QUERIES: Record<string, string> = {
   anthropic: "all:anthropic+AND+all:(network+OR+distributed+OR+training+OR+inference+OR+datacenter)",
 };
 
-export async function syncCompanyPapers(year: number): Promise<CategoryStat[]> {
+export async function syncCompanyPapers(year: number): Promise<{ stats: CategoryStat[]; inserted: InsertedPaper[] }> {
   const stats: CategoryStat[] = [];
+  const inserted: InsertedPaper[] = [];
   const seen = new Set<string>();
 
   for (const [slug, query] of Object.entries(COMPANY_ARXIV_QUERIES)) {
@@ -176,7 +182,8 @@ export async function syncCompanyPapers(year: number): Promise<CategoryStat[]> {
         if (!p.companies.includes(slug)) p.companies.push(slug);
         const key = p.title.toLowerCase().trim();
         if (seen.has(key)) continue; seen.add(key);
-        if (await upsertPaper(p)) imported++;
+        const r = await upsertPaper(p);
+        if (r) { imported++; inserted.push(r); }
       }
       stats.push({ category: `company:${slug}_imported`, status: "ok", count: imported });
     } catch (err) {
@@ -184,7 +191,7 @@ export async function syncCompanyPapers(year: number): Promise<CategoryStat[]> {
     }
     await new Promise((r) => setTimeout(r, 3500));
   }
-  return stats;
+  return { stats, inserted };
 }
 
 // ── DB upsert ──
@@ -193,7 +200,7 @@ function normalizeTitle(title: string): string {
   return title.toLowerCase().replace(/[^\w\s]/g, "").replace(/\s+/g, " ").trim();
 }
 
-async function upsertPaper(p: ImportedPaper): Promise<boolean> {
+async function upsertPaper(p: ImportedPaper): Promise<InsertedPaper | null> {
   // Check by exact title
   const { data: byTitle } = await supabase
     .from("papers")
@@ -205,7 +212,7 @@ async function upsertPaper(p: ImportedPaper): Promise<boolean> {
     if (p.citation_count !== undefined && byTitle.citation_count !== p.citation_count) {
       await supabase.from("papers").update({ citation_count: p.citation_count }).eq("id", byTitle.id);
     }
-    return false;
+    return null;
   }
 
   // Check by URL (same arXiv paper from different queries)
@@ -227,7 +234,7 @@ async function upsertPaper(p: ImportedPaper): Promise<boolean> {
       if (Object.keys(updates).length > 0) {
         await supabase.from("papers").update(updates).eq("id", byUrl.id);
       }
-      return false;
+      return null;
     }
   }
 
@@ -246,14 +253,11 @@ async function upsertPaper(p: ImportedPaper): Promise<boolean> {
       for (const f of fuzzy) {
         const fNorm = normalizeTitle(f.title);
         if (fNorm === norm || fNorm.endsWith(norm) || norm.endsWith(fNorm)) {
-          return false;
+          return null;
         }
       }
     }
   }
-
-  const existing = byTitle;
-  if (existing) return false;
 
   const { data: inserted } = await supabase
     .from("papers")
@@ -265,27 +269,38 @@ async function upsertPaper(p: ImportedPaper): Promise<boolean> {
     .select("id");
 
   if (inserted && inserted.length > 0) {
-    const topicRows = p.topics.map((t) => ({ paper_id: inserted[0].id, topic_slug: t }));
+    const id = inserted[0].id;
+    const topicRows = p.topics.map((t) => ({ paper_id: id, topic_slug: t }));
     if (topicRows.length > 0) {
       await supabase.from("paper_topics").insert(topicRows);
     }
-    return true;
+    return { id, title: p.title, abstract: p.abstract, companies: p.companies };
   }
-  return false;
+  return null;
 }
 
 // ── Master sync ──
 
-export async function syncAllPapers(year: number): Promise<CategoryStat[]> {
-  const all: CategoryStat[] = [];
-  all.push(...await syncArxivPapers(year));
-  all.push(...await syncS2Papers(year));
-  all.push(...await syncCompanyPapers(year));
+export async function syncAllPapers(year: number): Promise<{ stats: CategoryStat[]; inserted: InsertedPaper[] }> {
+  const allStats: CategoryStat[] = [];
+  const allInserted: InsertedPaper[] = [];
+
+  const ar = await syncArxivPapers(year);
+  allStats.push(...ar.stats);
+  allInserted.push(...ar.inserted);
+
+  const s2 = await syncS2Papers(year);
+  allStats.push(...s2.stats);
+  allInserted.push(...s2.inserted);
+
+  const co = await syncCompanyPapers(year);
+  allStats.push(...co.stats);
+  allInserted.push(...co.inserted);
 
   await supabase.from("sync_meta").upsert(
-    { entity: "papers", last_sync_at: new Date().toISOString(), last_result: { categoryStats: all } },
+    { entity: "papers", last_sync_at: new Date().toISOString(), last_result: { categoryStats: allStats } },
     { onConflict: "entity" },
   );
 
-  return all;
+  return { stats: allStats, inserted: allInserted };
 }
