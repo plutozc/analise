@@ -29,9 +29,11 @@ export const COMPANY_KEYWORDS: { slug: string; keywords: string[] }[] = [
 ];
 
 export function inferCompanies(text: string): string[] {
+  // Strip URLs before matching — they can contain company names (e.g. news.google.com → google)
+  const clean = text.replace(/https?:\/\/[^\s]+/g, "");
   return COMPANY_KEYWORDS
     .filter((c) => c.keywords.some((k) => {
-      try { return new RegExp(`\\b${escapeRegExp(k)}\\b`, "i").test(text); } catch { return false; }
+      try { return new RegExp(`\\b${escapeRegExp(k)}\\b`, "i").test(clean); } catch { return false; }
     }))
     .map((c) => c.slug)
     .sort();

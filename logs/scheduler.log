@@ -1,5 +1,16 @@
-mkdir: /var/log/sync-worker: Permission denied
-[2026-06-12 09:24:46] === SCHEDULER START ===
-[2026-06-12 09:24:46] === SCHEDULER START ===
-[2026-06-12 09:24:46] START: papers
-[2026-06-12 09:24:46] START: papers
+[2026-06-15 13:55:36] === RUN ALL ONCE ===
+[2026-06-15 13:55:36] START: papers
+[2026-06-15 13:59:49] OK: papers
+[2026-06-15 13:59:49] START: feeds
+[2026-06-15 14:00:13] OK: feeds
+[2026-06-15 14:00:13] START: github
+[2026-06-15 14:00:18] OK: github
+[2026-06-15 14:00:18] START: rfcs
+[2026-06-15 14:00:19] OK: rfcs
+[2026-06-15 14:00:19] START: signals
+[2026-06-15 14:00:33] OK: signals
+[2026-06-15 14:00:33] START: conf-summaries
+[2026-06-15 14:00:33] OK: conf-summaries
+[2026-06-15 14:00:33] START: vendor-intel
+[2026-06-15 14:07:31] OK: vendor-intel
+[2026-06-15 14:07:31] === ALL DONE ===

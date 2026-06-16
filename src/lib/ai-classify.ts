@@ -5,9 +5,10 @@ const TOPICS = "dc-networking,transport-protocols,programmable-net,sdn-nfv,conge
 const COMPANIES = "cisco,google,ericsson,nokia,aws,microsoft,openai,nvidia,meta,intel,ibm,huawei,cloudflare,apple,amd,tencent,alibaba,baidu,bytedance";
 
 function buildClassifyPrompt(items: { title: string; abstract?: string | null }[]): string {
-  const block = items.map((item, i) =>
-    `[${i+1}] ${item.title}\n${(item.abstract ?? "").slice(0, 400)}`
-  ).join("\n\n");
+  const block = items.map((item, i) => {
+    const clean = (item.abstract ?? "").replace(/https?:\/\/[^\s]+/g, "").slice(0, 400);
+    return `[${i+1}] ${item.title}\n${clean}`;
+  }).join("\n\n");
   return `Classify each item. JSON: {"results":[{"idx":1,"topics":["slug"],"summary_cn":"中文摘要","relevance_score":8,"companies":["cisco"]}]}
 Topics: ${TOPICS}
 Companies: ${COMPANIES}
