@@ -171,11 +171,41 @@ export async function syncAllFeeds(): Promise<{ stats: FeedStat[]; inserted: Ins
   });
   console.log(`[feeds] ${recent.length}/${allItems.length} items from last hour`);
 
-  // Global dedup by link
-  const seen = new Set<string>();
+  // Global dedup by link + title similarity
+  // Title dedup: extract core words (≥4 chars, not stopwords, no numbers/punctuation)
+  // Keep first item; reject later items where ≥60% of core words are contained in a kept item
+  const STOP = new Set(["the","this","that","with","from","have","will","said","says",
+    "after","before","report","over","cross","also","more","than","into","their",
+    "they","them","what","when","been","says","still","billion","million","crore"]);
+  function coreWords(t: string): Set<string> {
+    const words = t
+      .replace(/[—–\-–].+$/, "")        // strip publisher suffix
+      .replace(/^[A-Za-z]+\s*:\s*/, "") // strip prefix
+      .toLowerCase()
+      .replace(/[^a-z\s]/g, "")
+      .split(/\s+/)
+      .filter(w => w.length >= 4 && !STOP.has(w))
+      .map(w => w.replace(/s$/, "").replace(/ed$/, "")); // normalize plurals/past tense
+    return new Set(words);
+  }
+  function isDup(a: Set<string>, b: Set<string>): boolean {
+    if (a.size < 2 || b.size < 2) return false;
+    const smaller = a.size <= b.size ? a : b;
+    const larger  = a.size <= b.size ? b : a;
+    const contained = [...smaller].filter(w => larger.has(w));
+    return contained.length >= 2 && contained.length / smaller.size >= 0.7;
+  }
+
+  const seenLink = new Set<string>();
+  const keptWords: { words: Set<string>; title: string }[] = [];
   const deduped = recent.filter((i) => {
-    if (seen.has(i.link)) return false;
-    seen.add(i.link);
+    if (seenLink.has(i.link)) return false;
+    seenLink.add(i.link);
+    const words = coreWords(i.title);
+    for (const k of keptWords) {
+      if (isDup(words, k.words)) return false;
+    }
+    keptWords.push({ words, title: i.title });
     return true;
   });
 
