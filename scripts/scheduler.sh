@@ -17,17 +17,18 @@ run_loop() {
   while true; do run_task "$task"; log "Sleep ${interval}s until next $task..."; sleep "$interval"; done
 }
 
-TASKS="papers feeds github rfcs signals conf-summaries vendor-intel"
+TASKS="papers feeds github rfcs signals conf-summaries vendor-intel classify-medium"
 
 interval_of() {
   case "$1" in
     feeds)           echo 3600;;
     rfcs)            echo 43200;;
-    papers)          echo 21600;;
+    papers)          echo 86400;;  # daily
     signals)         echo 43200;;
     github)          echo 86400;;
     conf-summaries)  echo 2592000;;  # monthly
-    vendor-intel)    echo 2592000;;  # monthly
+    vendor-intel)       echo 2592000;;  # monthly
+    classify-medium) echo 3600;;     # hourly
     *)               echo "";;
   esac
 }

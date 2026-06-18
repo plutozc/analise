@@ -1,6 +1,7 @@
 import { inferPaperTopics } from "../lib/paper-topics.js";
 import { inferCompanies } from "../lib/companies.js";
 import { supabase } from "../lib/supabase.js";
+import { splitByPriority } from "../lib/paper-filter.js";
 import type { ImportedPaper, CategoryStat } from "../types/index.js";
 
 const TOPIC_LIMIT = 8;
@@ -281,7 +282,7 @@ async function upsertPaper(p: ImportedPaper): Promise<InsertedPaper | null> {
 
 // ── Master sync ──
 
-export async function syncAllPapers(year: number): Promise<{ stats: CategoryStat[]; inserted: InsertedPaper[] }> {
+export async function syncAllPapers(year: number): Promise<{ stats: CategoryStat[]; inserted: InsertedPaper[]; prioritized: { high: InsertedPaper[]; medium: InsertedPaper[]; low: InsertedPaper[] } }> {
   const allStats: CategoryStat[] = [];
   const allInserted: InsertedPaper[] = [];
 
@@ -297,10 +298,24 @@ export async function syncAllPapers(year: number): Promise<{ stats: CategoryStat
   allStats.push(...co.stats);
   allInserted.push(...co.inserted);
 
+  const { high, medium, low } = splitByPriority(allInserted);
+  console.log(`[filter] ${allInserted.length} papers → high:${high.length} medium:${medium.length} low:${low.length}`);
+
+  // Mark medium papers in DB for deferred classification
+  if (medium.length > 0) {
+    const ids = medium.map((p) => p.id);
+    await supabase.from("papers").update({ classify_priority: "medium" }).in("id", ids);
+  }
+  // Mark low papers so they're never sent to AI
+  if (low.length > 0) {
+    const ids = low.map((p) => p.id);
+    await supabase.from("papers").update({ classify_priority: "low" }).in("id", ids);
+  }
+
   await supabase.from("sync_meta").upsert(
     { entity: "papers", last_sync_at: new Date().toISOString(), last_result: { categoryStats: allStats } },
     { onConflict: "entity" },
   );
 
-  return { stats: allStats, inserted: allInserted };
+  return { stats: allStats, inserted: allInserted, prioritized: { high, medium, low } };
 }

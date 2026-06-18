@@ -5,6 +5,7 @@ import { syncAllFeeds } from "./sync/feeds.js";
 import { syncGitHubRepos } from "./sync/github.js";
 import { syncRFCs } from "./sync/rfcs.js";
 import { classifyPapers } from "./lib/ai-classify.js";
+import { supabase } from "./lib/supabase.js";
 import { generateConfSummary, generateAllConfSummaries } from "./sync/conf-ai.js";
 import { syncVendorIntelligence } from "./sync/vendor-intelligence.js";
 import { analyzeTechSignals } from "./sync/tech-signals.js";
@@ -20,14 +21,45 @@ async function main() {
     switch (task) {
       case "papers": {
         const year = parseInt(process.env.SYNC_YEAR ?? String(new Date().getFullYear()), 10);
-        const { stats, inserted } = await syncAllPapers(year);
+        const { stats, prioritized } = await syncAllPapers(year);
         console.log(`[sync-worker] Papers sync complete:`, JSON.stringify(stats));
-        if (inserted.length > 0) {
-          const cr = await classifyPapers(30, inserted);
-          console.log(`[sync-worker] AI classify: ${cr.updated}/${cr.processed}`);
-        } else {
-          console.log(`[sync-worker] No new papers to classify`);
+
+        if (prioritized.high.length > 0) {
+          const cr = await classifyPapers(30, prioritized.high);
+          console.log(`[sync-worker] AI classify (high): ${cr.updated}/${cr.processed}`);
         }
+        if (prioritized.medium.length > 0) {
+          console.log(`[sync-worker] ${prioritized.medium.length} medium papers queued for deferred classify`);
+        }
+        if (prioritized.low.length > 0) {
+          console.log(`[sync-worker] ${prioritized.low.length} low papers skipped AI`);
+        }
+        break;
+      }
+      case "classify-medium": {
+        const { count, error: countErr } = await supabase.from("papers")
+          .select("id", { count: "exact", head: true })
+          .eq("classify_priority", "medium")
+          .eq("ai_classified", false);
+        const pending = count ?? 0;
+        if (countErr) { console.error("[sync-worker] classify-medium count error:", countErr.message); break; }
+        if (pending === 0) { console.log("[sync-worker] No medium papers pending"); break; }
+
+        // Dynamic batch: small queue → small batch, large queue → bigger batch to catch up
+        // ≤20 pending: process all; ≤100: 20/batch; ≤500: 40/batch; >500: 60/batch
+        const batchSize = pending <= 20 ? pending : pending <= 100 ? 20 : pending <= 500 ? 40 : 60;
+        console.log(`[sync-worker] ${pending} medium papers pending, batch size: ${batchSize}`);
+
+        const { data: papers, error } = await supabase.from("papers")
+          .select("id,title,abstract,companies")
+          .eq("classify_priority", "medium")
+          .eq("ai_classified", false)
+          .order("created_at", { ascending: true })
+          .limit(batchSize);
+        if (error) { console.error("[sync-worker] classify-medium query error:", error.message); break; }
+        if (!papers?.length) break;
+        const cr = await classifyPapers(papers.length, papers);
+        console.log(`[sync-worker] AI classify (medium): ${cr.updated}/${cr.processed}, remaining: ${pending - papers.length}`);
         break;
       }
       case "arxiv": {
@@ -96,10 +128,10 @@ async function main() {
           syncRFCs().then((s) => ({ task: "rfcs", stats: s })),
         ]);
 
-        let paperInserted: Awaited<ReturnType<typeof syncAllPapers>>["inserted"] = [];
+        let paperPrioritized: Awaited<ReturnType<typeof syncAllPapers>>["prioritized"] | null = null;
 
         if (papersResult.status === "fulfilled") {
-          paperInserted = papersResult.value.inserted;
+          paperPrioritized = papersResult.value.prioritized;
           console.log(`[sync-worker] papers:`, JSON.stringify(papersResult.value.stats));
         } else {
           console.error(`[sync-worker] papers sync failed:`, papersResult.reason);
@@ -122,17 +154,17 @@ async function main() {
           console.error(`[sync-worker] rfcs sync failed:`, rfcsResult.reason);
         }
 
-        // Phase 2: classify newly inserted papers (feeds are pre-classified inline)
-        const classifyResults = await Promise.allSettled([
-          paperInserted.length > 0
-            ? classifyPapers(30, paperInserted).then((s) => ({ task: "classify-papers", stats: s }))
-            : Promise.resolve({ task: "classify-papers", stats: { processed: 0, updated: 0 } }),
-        ]);
-        for (const r of classifyResults) {
-          if (r.status === "fulfilled") {
-            console.log(`[sync-worker] ${r.value.task}:`, JSON.stringify(r.value.stats));
-          } else {
-            console.error(`[sync-worker] classify failed:`, r.reason);
+        // Phase 2: classify high priority only (medium deferred, low skipped)
+        if (paperPrioritized) {
+          if (paperPrioritized.high.length > 0) {
+            const cr = await classifyPapers(30, paperPrioritized.high);
+            console.log(`[sync-worker] classify-papers (high): ${cr.updated}/${cr.processed}`);
+          }
+          if (paperPrioritized.medium.length > 0) {
+            console.log(`[sync-worker] ${paperPrioritized.medium.length} medium papers queued for deferred classify`);
+          }
+          if (paperPrioritized.low.length > 0) {
+            console.log(`[sync-worker] ${paperPrioritized.low.length} low papers skipped AI`);
           }
         }
         break;

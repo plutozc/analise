@@ -33,8 +33,8 @@ cmd="${1:-help}"; shift || true
 
 case "$cmd" in
   start)
-    if pgrep -f "tsx.*scheduler.sh" >/dev/null 2>&1; then
-      log "Scheduler already running (PID: $(pgrep -f "tsx.*scheduler.sh" | head -1))"
+    if pgrep -f "scheduler.sh" >/dev/null 2>&1; then
+      log "Scheduler already running (PID: $(pgrep -f "scheduler.sh" | head -1))"
       exit 1
     fi
     nohup bash scripts/scheduler.sh >> "$LOG_DIR/scheduler.log" 2>&1 &
@@ -45,15 +45,16 @@ case "$cmd" in
 
   stop)
     PIDS=$(pgrep -f "${SVC_NAME}" 2>/dev/null || true)
-    if [ -z "$PIDS" ]; then
-      log "No ${SVC_NAME} processes running"
+    SCHED_PIDS=$(pgrep -f "scheduler.sh" 2>/dev/null || true)
+    ALL_PIDS=$(echo -e "${PIDS}\n${SCHED_PIDS}" | grep -v '^$' | sort -u)
+    if [ -z "$ALL_PIDS" ]; then
+      log "No ${SVC_NAME} or scheduler processes running"
       exit 0
     fi
-    log "Stopping ${SVC_NAME} (PIDs: $(echo $PIDS | tr '\n' ' '))..."
-    kill $PIDS 2>/dev/null || true
+    log "Stopping (PIDs: $(echo $ALL_PIDS | tr '\n' ' '))..."
+    kill $ALL_PIDS 2>/dev/null || true
     sleep 1
-    # Force kill any survivors
-    SURVIVORS=$(pgrep -f "${SVC_NAME}" 2>/dev/null || true)
+    SURVIVORS=$(echo -e "$(pgrep -f "${SVC_NAME}" 2>/dev/null || true)\n$(pgrep -f "scheduler.sh" 2>/dev/null || true)" | grep -v '^$' | sort -u)
     if [ -n "$SURVIVORS" ]; then
       log "Force killing: $(echo $SURVIVORS | tr '\n' ' ')"
       kill -9 $SURVIVORS 2>/dev/null || true
