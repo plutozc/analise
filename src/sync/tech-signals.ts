@@ -41,8 +41,8 @@ export async function analyzeTechSignals(): Promise<number> {
   }
 
   // Keyword counts
-  const counts = new Map<string, { r: number; p: number; topic: string; label: string }>();
-  for (const kw of TECH_KEYWORDS) counts.set(kw.keyword, { r: 0, p: 0, topic: kw.topic, label: kw.label });
+  const counts = new Map<string, { r: number; p: number; topic: string; label: string; keyword: string }>();
+  for (const kw of TECH_KEYWORDS) counts.set(kw.keyword, { r: 0, p: 0, topic: kw.topic, label: kw.label, keyword: kw.keyword });
   const companyMap = new Map<string, Map<string, { r: number; p: number }>>();
 
   for (const paper of allPapers) {
@@ -91,13 +91,13 @@ export async function analyzeTechSignals(): Promise<number> {
       signals.push({ signal_type: "emerging", severity: Math.min(10, 5 + Math.floor(d.r / 10)),
         title: `🌱 ${d.label} — 新热点`, description: `近7天 ${d.r} 篇涉及 ${d.label}（此前${d.p}篇），热度骤起。`,
         topic_slug: d.topic, keyword_label: d.label, company_slugs: [],
-        evidence: { recent: d.r, previous: d.p, keyword: d.label } });
+        evidence: { recent: d.r, previous: d.p, keyword: d.label, keyword_regex: d.keyword } });
     } else if (pct >= 50 && d.r >= 5) {
       signals.push({ signal_type: "surge", severity: Math.min(10, Math.round(5 + pct / 50)),
         title: `📈 ${d.label} +${pct}%`,
         description: `"${d.label}" 近7天 ${d.r} 篇，环比增长 ${pct}%（上期 ${d.p} 篇）。主题：${d.topic}。`,
         topic_slug: d.topic, keyword_label: d.label, company_slugs: [],
-        evidence: { recent: d.r, previous: d.p, pct, keyword: d.label } });
+        evidence: { recent: d.r, previous: d.p, pct, keyword: d.label, keyword_regex: d.keyword } });
     }
   }
 
@@ -112,7 +112,7 @@ export async function analyzeTechSignals(): Promise<number> {
           title: d.p < 2 ? `🎯 ${company} 进入${kd.label}` : `🔥 ${company} ${kd.label}+${pct}%`,
           description: d.p < 2 ? `${company} 近7天 ${d.r} 篇涉及 ${kd.label}（此前无），值得关注。` : `${company} ${kd.label}方向产出增长${pct}%（${d.p}→${d.r}篇）。`,
           topic_slug: kd.topic, keyword_label: kd.label, company_slugs: [company],
-          evidence: { recent: d.r, previous: d.p, company, keyword: kd.label } });
+          evidence: { recent: d.r, previous: d.p, company, keyword: kd.label, keyword_regex: kd.keyword } });
       }
     }
   }
@@ -121,10 +121,18 @@ export async function analyzeTechSignals(): Promise<number> {
 
   let inserted = 0;
   for (const sig of signals) {
-    const { data: existing } = await supabase
-      .from("tech_signals").select("id, severity").eq("title", sig.title).eq("status", "new").maybeSingle();
-    if (existing) {
-      if (sig.severity > existing.severity) await supabase.from("tech_signals").update({ severity: sig.severity }).eq("id", existing.id);
+    // Dedup by keyword label + signal type (not title, which includes variable percentage)
+    // Dedup by keyword label + signal type (not title, which includes variable percentage)
+    const ekw = (sig.evidence?.keyword as string) ?? "";
+    const existing = ekw ? await supabase
+      .from("tech_signals").select("id, severity")
+      .eq("signal_type", sig.signal_type)
+      .eq("status", "new")
+      .filter("evidence->>keyword", "eq", ekw)
+      .maybeSingle() : null;
+    const existingRow = existing?.data;
+    if (existingRow) {
+      if (sig.severity > existingRow.severity) await supabase.from("tech_signals").update({ severity: sig.severity }).eq("id", existingRow.id);
       continue;
     }
     await supabase.from("tech_signals").insert({
