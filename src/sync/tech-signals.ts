@@ -41,9 +41,9 @@ export async function analyzeTechSignals(): Promise<number> {
   }
 
   // Keyword counts
-  const counts = new Map<string, { r: number; p: number; topic: string; label: string; keyword: string }>();
-  for (const kw of TECH_KEYWORDS) counts.set(kw.keyword, { r: 0, p: 0, topic: kw.topic, label: kw.label, keyword: kw.keyword });
-  const companyMap = new Map<string, Map<string, { r: number; p: number }>>();
+  const counts = new Map<string, { r: number; p: number; topic: string; label: string; keyword: string; recentPapers: string[]; recentNews: string[]; prevPapers: string[]; prevNews: string[] }>();
+  for (const kw of TECH_KEYWORDS) counts.set(kw.keyword, { r: 0, p: 0, topic: kw.topic, label: kw.label, keyword: kw.keyword, recentPapers: [], recentNews: [], prevPapers: [], prevNews: [] });
+  const companyMap = new Map<string, Map<string, { r: number; p: number; recentPapers: string[]; recentNews: string[]; prevPapers: string[]; prevNews: string[] }>>();
 
   for (const paper of allPapers) {
     const d = paper.published_date ?? "";
@@ -53,13 +53,13 @@ export async function analyzeTechSignals(): Promise<number> {
     for (const kw of TECH_KEYWORDS) {
       if (!new RegExp(kw.keyword, "i").test(text)) continue;
       const c = counts.get(kw.keyword)!;
-      if (isRecent) c.r++; else c.p++;
+      if (isRecent) { c.r++; c.recentPapers.push(paper.id); } else { c.p++; c.prevPapers.push(paper.id); }
       for (const co of (paper.companies ?? [])) {
         if (!companyMap.has(co)) companyMap.set(co, new Map());
         const cm = companyMap.get(co)!;
-        if (!cm.has(kw.keyword)) cm.set(kw.keyword, { r: 0, p: 0 });
+        if (!cm.has(kw.keyword)) cm.set(kw.keyword, { r: 0, p: 0, recentPapers: [], recentNews: [], prevPapers: [], prevNews: [] });
         const ce = cm.get(kw.keyword)!;
-        if (isRecent) ce.r++; else ce.p++;
+        if (isRecent) { ce.r++; ce.recentPapers.push(paper.id); } else { ce.p++; ce.prevPapers.push(paper.id); }
       }
     }
   }
@@ -72,13 +72,13 @@ export async function analyzeTechSignals(): Promise<number> {
     for (const kw of TECH_KEYWORDS) {
       if (!new RegExp(kw.keyword, "i").test(text)) continue;
       const c = counts.get(kw.keyword)!;
-      if (isRecent) c.r++; else c.p++;
+      if (isRecent) { c.r++; c.recentNews.push(news.id); } else { c.p++; c.prevNews.push(news.id); }
       for (const co of (news.companies ?? [])) {
         if (!companyMap.has(co)) companyMap.set(co, new Map());
         const cm = companyMap.get(co)!;
-        if (!cm.has(kw.keyword)) cm.set(kw.keyword, { r: 0, p: 0 });
+        if (!cm.has(kw.keyword)) cm.set(kw.keyword, { r: 0, p: 0, recentPapers: [], recentNews: [], prevPapers: [], prevNews: [] });
         const ce = cm.get(kw.keyword)!;
-        if (isRecent) ce.r++; else ce.p++;
+        if (isRecent) { ce.r++; ce.recentNews.push(news.id); } else { ce.p++; ce.prevNews.push(news.id); }
       }
     }
   }
@@ -91,13 +91,15 @@ export async function analyzeTechSignals(): Promise<number> {
       signals.push({ signal_type: "emerging", severity: Math.min(10, 5 + Math.floor(d.r / 10)),
         title: `🌱 ${d.label} — 新热点`, description: `近7天 ${d.r} 篇涉及 ${d.label}（此前${d.p}篇），热度骤起。`,
         topic_slug: d.topic, keyword_label: d.label, company_slugs: [],
-        evidence: { recent: d.r, previous: d.p, keyword: d.label, keyword_regex: d.keyword } });
+        evidence: { recent: d.r, previous: d.p, keyword: d.label, keyword_regex: d.keyword,
+          paper_ids: d.recentPapers, news_ids: d.recentNews } });
     } else if (pct >= 50 && d.r >= 5) {
       signals.push({ signal_type: "surge", severity: Math.min(10, Math.round(5 + pct / 50)),
         title: `📈 ${d.label} +${pct}%`,
         description: `"${d.label}" 近7天 ${d.r} 篇，环比增长 ${pct}%（上期 ${d.p} 篇）。主题：${d.topic}。`,
         topic_slug: d.topic, keyword_label: d.label, company_slugs: [],
-        evidence: { recent: d.r, previous: d.p, pct, keyword: d.label, keyword_regex: d.keyword } });
+        evidence: { recent: d.r, previous: d.p, pct, keyword: d.label, keyword_regex: d.keyword,
+          paper_ids: d.recentPapers, news_ids: d.recentNews } });
     }
   }
 
@@ -112,7 +114,8 @@ export async function analyzeTechSignals(): Promise<number> {
           title: d.p < 2 ? `🎯 ${company} 进入${kd.label}` : `🔥 ${company} ${kd.label}+${pct}%`,
           description: d.p < 2 ? `${company} 近7天 ${d.r} 篇涉及 ${kd.label}（此前无），值得关注。` : `${company} ${kd.label}方向产出增长${pct}%（${d.p}→${d.r}篇）。`,
           topic_slug: kd.topic, keyword_label: kd.label, company_slugs: [company],
-          evidence: { recent: d.r, previous: d.p, company, keyword: kd.label, keyword_regex: kd.keyword } });
+          evidence: { recent: d.r, previous: d.p, company, keyword: kd.label, keyword_regex: kd.keyword,
+            paper_ids: d.recentPapers, news_ids: d.recentNews } });
       }
     }
   }
@@ -132,7 +135,11 @@ export async function analyzeTechSignals(): Promise<number> {
       .maybeSingle() : null;
     const existingRow = existing?.data;
     if (existingRow) {
-      if (sig.severity > existingRow.severity) await supabase.from("tech_signals").update({ severity: sig.severity }).eq("id", existingRow.id);
+      // Update severity and refresh evidence (paper_ids/news_ids are recalculated each time)
+      const updates: Record<string, any> = {};
+      if (sig.severity > existingRow.severity) updates.severity = sig.severity;
+      updates.evidence = sig.evidence;
+      if (Object.keys(updates).length > 0) await supabase.from("tech_signals").update(updates).eq("id", existingRow.id);
       continue;
     }
     await supabase.from("tech_signals").insert({
