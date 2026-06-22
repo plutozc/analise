@@ -44,17 +44,15 @@ case "$cmd" in
     ;;
 
   stop)
-    PIDS=$(pgrep -f "${SVC_NAME}" 2>/dev/null || true)
-    SCHED_PIDS=$(pgrep -f "scheduler.sh" 2>/dev/null || true)
-    ALL_PIDS=$(echo -e "${PIDS}\n${SCHED_PIDS}" | grep -v '^$' | sort -u)
+    ALL_PIDS=$({ pgrep -f "${SVC_NAME}" 2>/dev/null; pgrep -f "scheduler.sh" 2>/dev/null; } | sort -un || true)
     if [ -z "$ALL_PIDS" ]; then
       log "No ${SVC_NAME} or scheduler processes running"
-      exit 0
+      return 0 2>/dev/null || exit 0
     fi
     log "Stopping (PIDs: $(echo $ALL_PIDS | tr '\n' ' '))..."
     kill $ALL_PIDS 2>/dev/null || true
     for i in 1 2 3 4 5; do
-      SURVIVORS=$(echo -e "$(pgrep -f "${SVC_NAME}" 2>/dev/null || true)\n$(pgrep -f "scheduler.sh" 2>/dev/null || true)" | grep -v '^$' | sort -u)
+      SURVIVORS=$({ pgrep -f "${SVC_NAME}" 2>/dev/null; pgrep -f "scheduler.sh" 2>/dev/null; } | sort -un || true)
       [ -z "$SURVIVORS" ] && break
       if [ "$i" -eq 2 ]; then
         log "Force killing: $(echo $SURVIVORS | tr '\n' ' ')"
