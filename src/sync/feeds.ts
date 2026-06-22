@@ -164,11 +164,15 @@ export async function syncAllFeeds(): Promise<{ stats: FeedStat[]; inserted: Ins
 
   // Keep only items from the last hour
   const cutoff = Date.now() - 3600_000;
-  const recent = allItems.filter(i => {
+  let recent = allItems.filter(i => {
     if (!i.pubDate) return false;
     const ts = Date.parse(i.pubDate);
     return !isNaN(ts) && ts >= cutoff;
   });
+
+  // Filter out LWN update announcements (noise like "Security updates for Friday")
+  recent = recent.filter(i => !(i.source === "LWN.net" && /^Security updates|^Eight new stable kernels|^Kernel release announcement/i.test(i.title)));
+
   console.log(`[feeds] ${recent.length}/${allItems.length} items from last hour`);
 
   // Global dedup by link + title similarity
