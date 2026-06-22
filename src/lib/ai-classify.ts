@@ -18,15 +18,29 @@ ${block}`;
 
 function callClaudeClassify(prompt: string): string {
   const raw = callClaude(prompt);
-  if (!raw) { console.error("[ai-debug] callClaude returned empty"); return "[]"; }
-  console.log(`[ai-debug] raw response (${raw.length} chars): ${raw.slice(0, 500)}`);
+  if (!raw) { console.error("[ai] callClaude returned empty"); return "[]"; }
   const m = raw.match(/\{[\s\S]*"results"[\s\S]*\}/);
-  if (!m) { console.error("[ai-debug] No JSON match in response"); return "[]"; }
+  if (!m) { console.error("[ai] No JSON in response"); return "[]"; }
   try {
     const parsed = JSON.parse(m[0]).results ?? JSON.parse(m[0]).classifications ?? [];
-    console.log(`[ai-debug] parsed ${parsed.length} items, first:`, JSON.stringify(parsed[0]));
     return JSON.stringify(parsed);
-  } catch (e) { console.error("[ai-debug] JSON parse error:", e); return "[]"; }
+  } catch {
+    // Truncated JSON — extract complete objects before the break
+    const arrMatch = raw.match(/\[\s*(\{[\s\S]*)/);
+    if (!arrMatch) return "[]";
+    const items: unknown[] = [];
+    const objRe = /\{[^{}]*\}/g;
+    let hit;
+    while ((hit = objRe.exec(arrMatch[1])) !== null) {
+      try { items.push(JSON.parse(hit[0])); } catch { /* skip broken */ }
+    }
+    if (items.length > 0) {
+      console.warn(`[ai] Truncated JSON — salvaged ${items.length} items`);
+    } else {
+      console.error("[ai] JSON parse failed, 0 items salvaged");
+    }
+    return JSON.stringify(items);
+  }
 }
 
 type R = { idx: number; topics: string[]; summary_cn?: string; relevance_score?: number; companies?: string[] };
