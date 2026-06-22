@@ -53,18 +53,23 @@ case "$cmd" in
     fi
     log "Stopping (PIDs: $(echo $ALL_PIDS | tr '\n' ' '))..."
     kill $ALL_PIDS 2>/dev/null || true
-    sleep 1
-    SURVIVORS=$(echo -e "$(pgrep -f "${SVC_NAME}" 2>/dev/null || true)\n$(pgrep -f "scheduler.sh" 2>/dev/null || true)" | grep -v '^$' | sort -u)
+    for i in 1 2 3 4 5; do
+      SURVIVORS=$(echo -e "$(pgrep -f "${SVC_NAME}" 2>/dev/null || true)\n$(pgrep -f "scheduler.sh" 2>/dev/null || true)" | grep -v '^$' | sort -u)
+      [ -z "$SURVIVORS" ] && break
+      if [ "$i" -eq 2 ]; then
+        log "Force killing: $(echo $SURVIVORS | tr '\n' ' ')"
+        kill -9 $SURVIVORS 2>/dev/null || true
+      fi
+      sleep 1
+    done
     if [ -n "$SURVIVORS" ]; then
-      log "Force killing: $(echo $SURVIVORS | tr '\n' ' ')"
-      kill -9 $SURVIVORS 2>/dev/null || true
+      log "WARNING: processes still alive: $(echo $SURVIVORS | tr '\n' ' ')"
     fi
     log "Stopped"
     ;;
 
   restart)
     $0 stop
-    sleep 1
     $0 start
     ;;
 

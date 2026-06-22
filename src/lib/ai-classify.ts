@@ -18,10 +18,15 @@ ${block}`;
 
 function callClaudeClassify(prompt: string): string {
   const raw = callClaude(prompt);
-  if (!raw) return "[]";
+  if (!raw) { console.error("[ai-debug] callClaude returned empty"); return "[]"; }
+  console.log(`[ai-debug] raw response (${raw.length} chars): ${raw.slice(0, 500)}`);
   const m = raw.match(/\{[\s\S]*"results"[\s\S]*\}/);
-  if (!m) { console.error("[ai] No JSON"); return "[]"; }
-  try { return JSON.stringify((JSON.parse(m[0]).results ?? JSON.parse(m[0]).classifications ?? [])); } catch { return "[]"; }
+  if (!m) { console.error("[ai-debug] No JSON match in response"); return "[]"; }
+  try {
+    const parsed = JSON.parse(m[0]).results ?? JSON.parse(m[0]).classifications ?? [];
+    console.log(`[ai-debug] parsed ${parsed.length} items, first:`, JSON.stringify(parsed[0]));
+    return JSON.stringify(parsed);
+  } catch (e) { console.error("[ai-debug] JSON parse error:", e); return "[]"; }
 }
 
 type R = { idx: number; topics: string[]; summary_cn?: string; relevance_score?: number; companies?: string[] };
