@@ -223,7 +223,24 @@ export async function syncAllFeeds(): Promise<{ stats: FeedStat[]; inserted: Ins
   const { data: existingRows } = await supabase
     .from("news_items").select("link").in("link", links);
   const existingLinks = new Set((existingRows ?? []).map(r => r.link));
-  const newItems = deduped.filter(i => !existingLinks.has(i.link));
+  let newItems = deduped.filter(i => !existingLinks.has(i.link));
+
+  // Cross-batch dedup: reject items too similar to recent DB entries (last 24h)
+  if (newItems.length > 0) {
+    const since = new Date(Date.now() - 24 * 3600_000).toISOString();
+    const { data: recentDb } = await supabase.from("news_items")
+      .select("title").gte("created_at", since).limit(500);
+    if (recentDb?.length) {
+      const dbWords = recentDb.map(r => coreWords(r.title));
+      const before = newItems.length;
+      newItems = newItems.filter(i => {
+        const w = coreWords(i.title);
+        return !dbWords.some(dw => isDup(w, dw));
+      });
+      const dropped = before - newItems.length;
+      if (dropped > 0) console.log(`[feeds] Cross-batch dedup: ${dropped} items matched recent DB entries`);
+    }
+  }
 
   if (newItems.length > 0 && newItems.length < minAiBatch) {
     console.log(`[feeds] Deferring AI classify: ${newItems.length}/${minAiBatch} new items`);
