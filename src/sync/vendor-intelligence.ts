@@ -78,11 +78,11 @@ ${data.recentNews ? `- Latest news: ${data.recentNews}` : ""}
 
 Return JSON only:
 {
-  "strengths": ["top 3 technical strengths"],
-  "focus_areas": ["top 3-4 strategic focus areas"],
-  "technology_position": "1-2 sentence assessment of their tech positioning",
+  "strengths": ["top 3 concise technical strengths"],
+  "focus_areas": ["top 3 concise strategic focus areas"],
+  "technology_position": "one short sentence",
   "activity_level": "high" | "medium" | "low",
-  "emerging_signals": ["any notable signals or shifts in their focus"]
+  "emerging_signals": ["top 2 concise signals"]
 }`;
 
   const output = callClaude(prompt, { timeout: 60_000 });
@@ -107,12 +107,30 @@ export async function syncVendorIntelligence(slugs?: string[]): Promise<number> 
       topicCounts.set(t, (topicCounts.get(t) ?? 0) + 1);
     }
 
-    const aiRaw = generateAiAnalysis(data);
-    let aiParsed: Record<string, any> = {};
-    try { aiParsed = JSON.parse(aiRaw); } catch { aiParsed = { error: "parse failed" }; }
+    const fingerprint = JSON.stringify({
+      paperCount: data.paperCount,
+      productCount: data.productCount,
+      newsCount: data.newsCount,
+      paperTopics: data.paperTopics.slice().sort(),
+      productTopics: data.productTopics.slice().sort(),
+      newsTopics: data.newsTopics.slice().sort(),
+      recentPaper: data.recentPaper,
+      recentNews: data.recentNews,
+    });
 
     // Store in vendors table
-    const { data: existing } = await supabase.from("vendors").select("id").eq("name", data.name).maybeSingle();
+    const { data: existing } = await supabase.from("vendors").select("id, ai_insights").eq("name", data.name).maybeSingle();
+    let aiParsed: Record<string, any> = {};
+    const existingInsights = (existing as any)?.ai_insights ?? {};
+    if (existingInsights?._fingerprint === fingerprint) {
+      aiParsed = existingInsights;
+      console.log(`[vendor-intel] Skip AI ${data.name} — unchanged`);
+    } else {
+      const aiRaw = generateAiAnalysis(data);
+      try { aiParsed = JSON.parse(aiRaw); } catch { aiParsed = { error: "parse failed" }; }
+      aiParsed._fingerprint = fingerprint;
+    }
+
     const vdata = { name: data.name, type: "vendor", stage: "active", topics: allTopics, paper_count: data.paperCount, product_count: data.productCount, news_count: data.newsCount, last_activity_date: new Date().toISOString().slice(0, 10), ai_insights: aiParsed };
     if (existing) {
       await supabase.from("vendors").update(vdata).eq("id", existing.id);

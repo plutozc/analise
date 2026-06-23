@@ -6,6 +6,7 @@ LOG_DIR="${SYNC_LOG_DIR:-logs}"
 mkdir -p "$LOG_DIR"
 TSX="${TSX:-npx tsx}"
 SVC_NAME="sync-worker"
+PID_FILE="$LOG_DIR/scheduler.pid"
 
 usage() {
   cat <<EOF
@@ -28,31 +29,56 @@ EOF
 
 log()  { echo "[$(date '+%H:%M:%S')] $*"; }
 error(){ echo "[ERROR] $*" >&2; }
+collect_tree() {
+  local pid child
+  for pid in "$@"; do
+    [ -n "$pid" ] || continue
+    echo "$pid"
+    for child in $(pgrep -P "$pid" 2>/dev/null || true); do
+      collect_tree "$child"
+    done
+  done
+}
 
 cmd="${1:-help}"; shift || true
 
 case "$cmd" in
   start)
-    if pgrep -f "scheduler.sh" >/dev/null 2>&1; then
-      log "Scheduler already running (PID: $(pgrep -f "scheduler.sh" | head -1))"
+    if [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
+      log "Scheduler already running (PID: $(cat "$PID_FILE"))"
       exit 1
     fi
-    nohup bash scripts/scheduler.sh >> "$LOG_DIR/scheduler.log" 2>&1 &
+    if pgrep -f "scripts/scheduler.sh" >/dev/null 2>&1; then
+      log "Scheduler already running (PID: $(pgrep -f "scripts/scheduler.sh" | head -1))"
+      exit 1
+    fi
+    nohup bash scripts/scheduler.sh < /dev/null >> "$LOG_DIR/scheduler.log" 2>&1 &
     PID=$!
+    echo "$PID" > "$PID_FILE"
+    disown "$PID" 2>/dev/null || true
     log "Scheduler started (PID: $PID)"
     log "Log: $LOG_DIR/scheduler.log"
     ;;
 
   stop)
-    ALL_PIDS=$({ pgrep -f "${SVC_NAME}" 2>/dev/null; pgrep -f "scheduler.sh" 2>/dev/null; } | sort -un || true)
+    BASE_PIDS=$({
+      if [ -f "$PID_FILE" ]; then cat "$PID_FILE"; fi
+      pgrep -f "${SVC_NAME}" 2>/dev/null
+      pgrep -f "scripts/scheduler.sh" 2>/dev/null
+    } | sort -un || true)
+    ALL_PIDS=$(collect_tree $BASE_PIDS | sort -run || true)
     if [ -z "$ALL_PIDS" ]; then
       log "No ${SVC_NAME} or scheduler processes running"
+      rm -f "$PID_FILE"
       return 0 2>/dev/null || exit 0
     fi
     log "Stopping (PIDs: $(echo $ALL_PIDS | tr '\n' ' '))..."
     kill $ALL_PIDS 2>/dev/null || true
     for i in 1 2 3 4 5; do
-      SURVIVORS=$({ pgrep -f "${SVC_NAME}" 2>/dev/null; pgrep -f "scheduler.sh" 2>/dev/null; } | sort -un || true)
+      SURVIVORS=$({
+        pgrep -f "${SVC_NAME}" 2>/dev/null
+        pgrep -f "scripts/scheduler.sh" 2>/dev/null
+      } | sort -un || true)
       [ -z "$SURVIVORS" ] && break
       if [ "$i" -eq 2 ]; then
         log "Force killing: $(echo $SURVIVORS | tr '\n' ' ')"
@@ -63,6 +89,7 @@ case "$cmd" in
     if [ -n "$SURVIVORS" ]; then
       log "WARNING: processes still alive: $(echo $SURVIVORS | tr '\n' ' ')"
     fi
+    rm -f "$PID_FILE"
     log "Stopped"
     ;;
 
@@ -81,7 +108,12 @@ case "$cmd" in
     fi
     echo ""
     echo "=== Scheduler PID ==="
-    SCHED_PID=$(pgrep -f "scheduler.sh" 2>/dev/null || true)
+    SCHED_PID=""
+    if [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
+      SCHED_PID=$(cat "$PID_FILE")
+    else
+      SCHED_PID=$(pgrep -f "scripts/scheduler.sh" 2>/dev/null || true)
+    fi
     if [ -n "$SCHED_PID" ]; then
       echo "  PID: $SCHED_PID"
     else

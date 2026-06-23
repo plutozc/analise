@@ -12,7 +12,7 @@ function buildClassifyPrompt(items: { title: string; abstract?: string | null }[
   return `Classify each item. JSON: {"results":[{"idx":1,"topics":["slug"],"summary_cn":"中文摘要","relevance_score":8,"companies":["cisco"]}]}
 Topics: ${TOPICS}
 Companies: ${COMPANIES}
-Score:1-10(10=directly relevant to tech/networking/infrastructure/cloud/AI). Low score: non-tech (celebrity, finance, sports, politics). CN summary for tech items. Companies only if clearly mentioned.
+Score:1-10(10=directly relevant to tech/networking/infrastructure/cloud/AI). Low score: non-tech (celebrity, finance, sports, politics). summary_cn <= 40 Chinese chars; omit summary for score < 5. Companies only if clearly mentioned.
 ${block}`;
 }
 
@@ -112,7 +112,16 @@ export async function classifyPapers(
     }
   }
 
-  if (allIds.length) await findSimilarPapers(allIds);
+  if (allIds.length && process.env.ENABLE_SIMILAR_PAPERS === "1") {
+    const maxSimilar = Number.parseInt(process.env.MAX_SIMILAR_PAPERS_PER_RUN ?? "20", 10);
+    const ids = Number.isFinite(maxSimilar) && maxSimilar >= 0 ? allIds.slice(0, maxSimilar) : allIds.slice(0, 20);
+    if (ids.length > 0) {
+      console.log(`[ai] Similar paper matching enabled: ${ids.length}/${allIds.length}`);
+      await findSimilarPapers(ids);
+    }
+  } else if (allIds.length) {
+    console.log(`[ai] Similar paper matching skipped (ENABLE_SIMILAR_PAPERS=1 to enable)`);
+  }
   return { processed: total, updated };
 }
 

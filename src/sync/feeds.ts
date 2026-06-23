@@ -162,8 +162,13 @@ export async function syncAllFeeds(): Promise<{ stats: FeedStat[]; inserted: Ins
     if (r.status === "fulfilled") allItems.push(...r.value);
   }
 
-  // Keep only items from the last hour
-  const cutoff = Date.now() - 3600_000;
+  const lookbackHoursRaw = Number.parseInt(process.env.FEED_LOOKBACK_HOURS ?? "6", 10);
+  const lookbackHours = Number.isFinite(lookbackHoursRaw) && lookbackHoursRaw > 0 ? lookbackHoursRaw : 6;
+  const minAiBatchRaw = Number.parseInt(process.env.MIN_FEED_AI_BATCH ?? "20", 10);
+  const minAiBatch = Number.isFinite(minAiBatchRaw) && minAiBatchRaw >= 0 ? minAiBatchRaw : 20;
+
+  // Keep a wider window so small hourly bursts can accumulate before AI classification.
+  const cutoff = Date.now() - lookbackHours * 3600_000;
   let recent = allItems.filter(i => {
     if (!i.pubDate) return false;
     const ts = Date.parse(i.pubDate);
@@ -173,7 +178,7 @@ export async function syncAllFeeds(): Promise<{ stats: FeedStat[]; inserted: Ins
   // Filter out LWN update announcements (noise like "Security updates for Friday")
   recent = recent.filter(i => !(i.source === "LWN.net" && /^Security updates|^Eight new stable kernels|^Kernel release announcement/i.test(i.title)));
 
-  console.log(`[feeds] ${recent.length}/${allItems.length} items from last hour`);
+  console.log(`[feeds] ${recent.length}/${allItems.length} items from last ${lookbackHours}h`);
 
   // Global dedup by link + title similarity
   // Title dedup: extract core words (≥4 chars, not stopwords, no numbers/punctuation)
@@ -220,8 +225,12 @@ export async function syncAllFeeds(): Promise<{ stats: FeedStat[]; inserted: Ins
   const existingLinks = new Set((existingRows ?? []).map(r => r.link));
   const newItems = deduped.filter(i => !existingLinks.has(i.link));
 
+  if (newItems.length > 0 && newItems.length < minAiBatch) {
+    console.log(`[feeds] Deferring AI classify: ${newItems.length}/${minAiBatch} new items`);
+  }
+
   // Classify first, then only insert items with relevance_score >= 5
-  if (newItems.length > 0) {
+  if (newItems.length >= minAiBatch) {
     console.log(`[feeds] Classifying ${newItems.length} new items...`);
     const scores = await classifyItems(newItems.map(i => ({ title: i.title, snippet: i.snippet })));
     let insertedCount = 0;

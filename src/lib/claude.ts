@@ -16,6 +16,20 @@ const _usage: TokenUsage = {
   totalTokens: 0, calls: 0, costUsd: 0,
 };
 
+function intEnv(name: string, fallback: number): number {
+  const raw = process.env[name];
+  if (!raw) return fallback;
+  const n = Number.parseInt(raw, 10);
+  return Number.isFinite(n) && n >= 0 ? n : fallback;
+}
+
+function floatEnv(name: string, fallback: number): number {
+  const raw = process.env[name];
+  if (!raw) return fallback;
+  const n = Number.parseFloat(raw);
+  return Number.isFinite(n) && n >= 0 ? n : fallback;
+}
+
 export function getTokenUsage(): TokenUsage {
   return { ..._usage };
 }
@@ -31,6 +45,17 @@ export function resetTokenUsage(): void {
 }
 
 export function callClaude(prompt: string, opts?: { timeout?: number }): string {
+  const maxCalls = intEnv("MAX_CLAUDE_CALLS_PER_RUN", 80);
+  const maxCost = floatEnv("MAX_CLAUDE_COST_PER_RUN", 3);
+  if (maxCalls > 0 && _usage.calls >= maxCalls) {
+    console.warn(`[claude] budget skip: calls=${_usage.calls} max=${maxCalls}`);
+    return "";
+  }
+  if (maxCost > 0 && _usage.costUsd >= maxCost) {
+    console.warn(`[claude] budget skip: cost=$${_usage.costUsd.toFixed(4)} max=$${maxCost}`);
+    return "";
+  }
+
   const timeout = opts?.timeout ?? 120_000;
   const r = spawnSync("claude", ["-p", "--output-format", "json"], {
     input: prompt,
