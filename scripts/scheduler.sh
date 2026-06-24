@@ -51,7 +51,7 @@ TASKS="papers feeds github rfcs signals conf-summaries vendor-intel classify-med
 
 interval_of() {
   case "$1" in
-    feeds)           echo 21600;;    # every 6 hours
+    feeds)           echo 3600;;     # hourly
     rfcs)            echo 43200;;
     papers)          echo 86400;;  # daily
     signals)         echo 43200;;
