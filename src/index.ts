@@ -9,6 +9,8 @@ import { supabase } from "./lib/supabase.js";
 import { generateConfSummary, generateAllConfSummaries } from "./sync/conf-ai.js";
 import { syncVendorIntelligence } from "./sync/vendor-intelligence.js";
 import { analyzeTechSignals } from "./sync/tech-signals.js";
+import { crawlConferences } from "./sync/conference-crawler.js";
+import { backfillVenues } from "./sync/backfill-venue.js";
 import { logTokenUsage } from "./lib/claude.js";
 
 const task = process.argv[2] ?? "all";
@@ -124,6 +126,18 @@ async function main() {
         await generateConfSummary(id);
         break;
       }
+      case "conferences": {
+        const year = process.argv[3] ? parseInt(process.argv[3], 10) : new Date().getFullYear();
+        const result = await crawlConferences(year);
+        console.log(`[sync-worker] Conference crawl: ${result.created} created, ${result.sessions} sessions, ${result.skipped} skipped`);
+        break;
+      }
+      case "backfill-venue": {
+        const batch = process.argv[3] ? parseInt(process.argv[3], 10) : 100;
+        const br = await backfillVenues(batch);
+        console.log(`[sync-worker] Venue backfill: ${br.checked} checked, ${br.updated} updated, ${br.errors} errors`);
+        break;
+      }
       case "signals": {
         const count = await analyzeTechSignals();
         console.log(`[sync-worker] Generated ${count} tech signals`);
@@ -138,11 +152,12 @@ async function main() {
         const year = parseInt(process.env.SYNC_YEAR ?? String(new Date().getFullYear()), 10);
 
         // Phase 1: sync data sources in parallel
-        const [papersResult, feedsResult, githubResult, rfcsResult] = await Promise.allSettled([
+        const [papersResult, feedsResult, githubResult, rfcsResult, confResult] = await Promise.allSettled([
           syncAllPapers(year),
           syncAllFeeds(),
           syncGitHubRepos().then((s) => ({ task: "github", stats: s })),
           syncRFCs().then((s) => ({ task: "rfcs", stats: s })),
+          crawlConferences(year).then((s) => ({ task: "conferences", stats: s })),
         ]);
 
         let paperPrioritized: Awaited<ReturnType<typeof syncAllPapers>>["prioritized"] | null = null;
@@ -171,6 +186,12 @@ async function main() {
           console.error(`[sync-worker] rfcs sync failed:`, rfcsResult.reason);
         }
 
+        if (confResult.status === "fulfilled") {
+          console.log(`[sync-worker] conferences:`, JSON.stringify(confResult.value.stats));
+        } else {
+          console.error(`[sync-worker] conference crawl failed:`, confResult.reason);
+        }
+
         // Phase 2: classify high priority only (medium deferred, low skipped)
         if (paperPrioritized) {
           if (paperPrioritized.high.length > 0) {
@@ -196,7 +217,7 @@ async function main() {
       default:
         console.error(`[sync-worker] Unknown task: ${task}`);
         console.log(`Usage: npx tsx src/index.ts <task>`);
-        console.log(`Tasks: papers, arxiv, s2, company-papers, feeds, github, rfcs, conf-summary, conf-summaries, all`);
+        console.log(`Tasks: papers, arxiv, s2, company-papers, feeds, github, rfcs, conferences, backfill-venue, conf-summary, conf-summaries, all`);
         process.exit(1);
     }
   } catch (err) {

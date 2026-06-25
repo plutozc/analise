@@ -6,6 +6,47 @@ import type { ImportedPaper, CategoryStat } from "../types/index.js";
 
 const TOPIC_LIMIT = 8;
 
+type VenueRule = [RegExp, string];
+const VENUE_RULES: VenueRule[] = [
+  [/SIGCOMM/i,       "SIGCOMM"],
+  [/NSDI/i,          "NSDI"],
+  [/IMC\b/i,         "IMC"],
+  [/OSDI/i,          "OSDI"],
+  [/SOSP/i,          "SOSP"],
+  [/CoNEXT/i,        "CoNEXT"],
+  [/INFOCOM/i,       "INFOCOM"],
+  [/ICNP/i,          "ICNP"],
+  [/HOTNETS|HotNets|Hotnets/i, "HOTNETS"],
+  [/MOBICOM|MobiCom/i, "MOBICOM"],
+  [/SIGMETRICS/i,    "SIGMETRICS"],
+  [/EuroSys/i,       "EuroSys"],
+  [/ASPLOS/i,        "ASPLOS"],
+  [/CCS\b/i,         "CCS"],
+  [/S&P|SP\b/i,      "S&P"],
+  [/USENIX.*Security|Security.*USENIX/i, "USENIX Security"],
+  [/\bATC\b/i,       "ATC"],
+  [/\bFAST\b/i,      "FAST"],
+  [/PPoPP/i,         "PPoPP"],
+  [/\bISCA\b/i,      "ISCA"],
+  [/\bMICRO\b/i,     "MICRO"],
+  [/\bHPCA\b/i,      "HPCA"],
+  [/APNet/i,         "APNet"],
+  [/\bANCS\b/i,      "ANCS"],
+  [/\bPAM\b/i,       "PAM"],
+  [/\bTMA\b/i,       "TMA"],
+  [/Middleware/i,    "Middleware"],
+  [/SenSys/i,        "SenSys"],
+  [/MobiSys/i,       "MobiSys"],
+];
+
+function journalRefToVenue(journalRef: string | null): string {
+  if (!journalRef) return "arXiv";
+  for (const [re, name] of VENUE_RULES) {
+    if (re.test(journalRef)) return name;
+  }
+  return "arXiv";
+}
+
 export type InsertedPaper = { id: string; title: string; abstract: string | null; companies: string[] };
 
 // ── arXiv ──
@@ -26,10 +67,14 @@ function parseArxivXml(xml: string): ImportedPaper[] {
     const categories: string[] = [];
     for (const m of entry.matchAll(/category term="([^"]+)"/g)) categories.push(m[1]);
 
+    // Extract journal_ref (which conference published this paper)
+    const journalRef = entry.match(/<arxiv:journal_ref>([\s\S]*?)<\/arxiv:journal_ref>/)?.[1]?.trim() ?? null;
+    const venue = journalRefToVenue(journalRef);
+
     papers.push({
       title,
       authors,
-      venue: "arXiv",
+      venue,
       url,
       published_date: published ? published.slice(0, 10) : null,
       abstract,
@@ -201,17 +246,28 @@ function normalizeTitle(title: string): string {
   return title.toLowerCase().replace(/[^\w\s]/g, "").replace(/\s+/g, " ").trim();
 }
 
+function isRealVenue(v: string | null | undefined): boolean {
+  return !!v && v !== "arXiv" && v !== "arxiv" && v !== "";
+}
+
 async function upsertPaper(p: ImportedPaper): Promise<InsertedPaper | null> {
   // Check by exact title
   const { data: byTitle } = await supabase
     .from("papers")
-    .select("id, citation_count")
+    .select("id, citation_count, venue")
     .eq("title", p.title)
     .maybeSingle();
 
   if (byTitle) {
+    const updates: Record<string, any> = {};
     if (p.citation_count !== undefined && byTitle.citation_count !== p.citation_count) {
-      await supabase.from("papers").update({ citation_count: p.citation_count }).eq("id", byTitle.id);
+      updates.citation_count = p.citation_count;
+    }
+    if (isRealVenue(p.venue) && !isRealVenue(byTitle.venue)) {
+      updates.venue = p.venue;
+    }
+    if (Object.keys(updates).length > 0) {
+      await supabase.from("papers").update(updates).eq("id", byTitle.id);
     }
     return null;
   }
@@ -220,7 +276,7 @@ async function upsertPaper(p: ImportedPaper): Promise<InsertedPaper | null> {
   if (p.url) {
     const { data: byUrl } = await supabase
       .from("papers")
-      .select("id, citation_count, companies")
+      .select("id, citation_count, companies, venue")
       .eq("url", p.url)
       .maybeSingle();
 
@@ -228,6 +284,9 @@ async function upsertPaper(p: ImportedPaper): Promise<InsertedPaper | null> {
       const updates: Record<string, any> = {};
       if (p.citation_count !== undefined && byUrl.citation_count !== p.citation_count) {
         updates.citation_count = p.citation_count;
+      }
+      if (isRealVenue(p.venue) && !isRealVenue(byUrl.venue)) {
+        updates.venue = p.venue;
       }
       const existingCo = (byUrl.companies as string[]) ?? [];
       const merged = [...new Set([...existingCo, ...p.companies])];
@@ -246,7 +305,7 @@ async function upsertPaper(p: ImportedPaper): Promise<InsertedPaper | null> {
     const coreWords = words.slice(0, 6).join(" ");
     const { data: fuzzy } = await supabase
       .from("papers")
-      .select("id, title")
+      .select("id, title, venue")
       .ilike("title", `%${coreWords.slice(0, 60)}%`)
       .limit(5);
 
@@ -254,6 +313,9 @@ async function upsertPaper(p: ImportedPaper): Promise<InsertedPaper | null> {
       for (const f of fuzzy) {
         const fNorm = normalizeTitle(f.title);
         if (fNorm === norm || fNorm.endsWith(norm) || norm.endsWith(fNorm)) {
+          if (isRealVenue(p.venue) && !isRealVenue(f.venue)) {
+            await supabase.from("papers").update({ venue: p.venue }).eq("id", f.id);
+          }
           return null;
         }
       }
