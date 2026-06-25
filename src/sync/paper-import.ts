@@ -351,12 +351,14 @@ export async function syncAllPapers(year: number): Promise<{ stats: CategoryStat
   allStats.push(...co.stats);
   allInserted.push(...co.inserted);
 
-  console.log(`[filter] ${allInserted.length} new papers imported`);
+  console.log(`[sync] ${allInserted.length} new papers imported`);
 
-  await supabase.from("sync_meta").upsert(
-    { entity: "papers", last_sync_at: new Date().toISOString(), last_result: { categoryStats: allStats } },
-    { onConflict: "entity" },
-  );
+  try {
+    await supabase.from("sync_meta").upsert(
+      { entity: "papers", last_sync_at: new Date().toISOString(), last_result: { categoryStats: allStats } },
+      { onConflict: "entity" },
+    );
+  } catch { /* sync_meta table might not exist */ }
 
   return { stats: allStats, inserted: allInserted };
 }

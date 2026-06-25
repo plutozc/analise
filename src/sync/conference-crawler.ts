@@ -38,7 +38,7 @@ type PapersByVenueYear = {
   papers: { id: string; title: string; authors: string[]; published_date: string | null; abstract: string | null; url: string | null }[];
 };
 
-export async function crawlConferences(year?: number): Promise<{ created: number; sessions: number; linked: number; skipped: number }> {
+export async function crawlConferences(year?: number): Promise<{ created: number; sessions: number; skipped: number }> {
   const targetYear = year ?? new Date().getFullYear();
   console.log(`[conference-crawler] Starting: ${targetYear}, reading from DB...`);
 
@@ -64,7 +64,7 @@ export async function crawlConferences(year?: number): Promise<{ created: number
   if (!papers?.length) {
     console.log(`[conference-crawler] No papers with real venue found in DB`);
     console.log(`[conference-crawler] Run 's2' or 'papers' task first so S2 import enriches venues`);
-    return { created: 0, sessions: 0, linked: 0, skipped: 0 };
+    return { created: 0, sessions: 0, skipped: 0 };
   }
 
   console.log(`[conference-crawler] Found ${papers.length} papers with venue data in DB`);
@@ -94,15 +94,14 @@ export async function crawlConferences(year?: number): Promise<{ created: number
 
   if (groups.size === 0) {
     console.log(`[conference-crawler] No papers found for ${targetYear}`);
-    return { created: 0, sessions: 0, linked: 0, skipped: 0 };
+    return { created: 0, sessions: 0, skipped: 0 };
   }
 
   let created = 0;
   let totalSessions = 0;
-  let linked = 0;
   let skipped = 0;
 
-  for (const [groupKey, group] of groups) {
+  for (const group of groups.values()) {
     const venueConfig = CONFERENCE_VENUES[group.venue];
     if (!venueConfig) continue;
 
@@ -110,13 +109,7 @@ export async function crawlConferences(year?: number): Promise<{ created: number
     const existingConfId = existingByKey.get(abbrevKey);
 
     if (existingConfId) {
-      // Conference exists — link sessions from papers that aren't already linked
-      const freshPapers = group.papers.filter(p => {
-        // simple check: link all papers from this venue that exist
-        // We'll just count them as already covered
-        return false; // skip, conference already exists
-      });
-      linked += group.papers.length;
+      // Already crawled, skip
       skipped++;
       continue;
     }
@@ -188,6 +181,6 @@ export async function crawlConferences(year?: number): Promise<{ created: number
     console.log(`[conference-crawler] Created ${group.venue} ${group.year}: ${sessCount} sessions from ${group.papers.length} papers`);
   }
 
-  console.log(`[conference-crawler] Done: ${created} created, ${totalSessions} sessions, ${linked} linked, ${skipped} skipped`);
-  return { created, sessions: totalSessions, linked, skipped };
+  console.log(`[conference-crawler] Done: ${created} created, ${totalSessions} sessions, ${skipped} skipped`);
+  return { created, sessions: totalSessions, skipped };
 }
