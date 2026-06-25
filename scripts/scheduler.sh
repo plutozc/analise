@@ -47,7 +47,7 @@ run_daily_at() {
   done
 }
 
-TASKS="papers feeds rfcs signals conf-summaries vendor-intel classify-medium"
+TASKS="papers feeds rfcs signals conf-summaries vendor-intel"
 
 interval_of() {
   case "$1" in
@@ -57,7 +57,7 @@ interval_of() {
     signals)         echo 43200;;
     conf-summaries)  echo 2592000;;  # monthly
     vendor-intel)       echo 2592000;;  # monthly
-    classify-medium) echo 86400;;    # daily at CLASSIFY_MEDIUM_AT
+    classify-medium) echo 86400;;    # deprecated
     *)               echo "";;
   esac
 }
@@ -89,8 +89,6 @@ log "=== SCHEDULER START ==="
 for task in $TASKS; do
   if [ "$task" = "papers" ]; then
     run_daily_at "$task" "$PAPERS_AT" &
-  elif [ "$task" = "classify-medium" ]; then
-    run_daily_at "$task" "$CLASSIFY_MEDIUM_AT" &
   else
     run_loop "$task" "$(interval_of "$task")" &
   fi

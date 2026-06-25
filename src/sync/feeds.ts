@@ -249,12 +249,17 @@ export async function syncAllFeeds(): Promise<{ stats: FeedStat[]; inserted: Ins
         }
         return true;
       });
-      // Boost the matched DB entries' coverage (increment coverage_count)
+      // Increment coverage_count on matched DB entries
       if (boostedIds.length > 0) {
-        console.log(`[feeds] Cross-batch: ${boostedIds.length} clusters matched DB entries (coverage boost tracked next insert)`);
+        const idCounts = new Map<string, number>();
+        for (const id of boostedIds) idCounts.set(id, (idCounts.get(id) ?? 0) + 1);
+        for (const [id, inc] of idCounts) {
+          await supabase.rpc("increment_coverage_count", { row_id: id, inc });
+        }
+        console.log(`[feeds] Cross-batch: ${boostedIds.length} dupes boosted ${idCounts.size} DB entries`);
       }
       const dropped = before - newClusters.length;
-      if (dropped > 0) console.log(`[feeds] Cross-batch dedup: ${dropped} clusters matched recent DB entries (boosting instead)`);
+      if (dropped > 0) console.log(`[feeds] Cross-batch dedup: ${dropped} clusters matched recent DB entries`);
     }
   }
 
@@ -309,6 +314,7 @@ export async function syncAllFeeds(): Promise<{ stats: FeedStat[]; inserted: Ins
         ai_classified: true,
         ai_topics: s?.topics ?? [],
         relevance_score: score,
+        coverage_count: coverageCount,
       }).select("id");
 
       if (row?.length) {
