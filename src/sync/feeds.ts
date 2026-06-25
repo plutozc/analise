@@ -206,47 +206,63 @@ export async function syncAllFeeds(): Promise<{ stats: FeedStat[]; inserted: Ins
   }
 
   const seenLink = new Set<string>();
-  const keptWords: { words: Set<string>; title: string }[] = [];
-  const deduped = recent.filter((i) => {
-    if (seenLink.has(i.link)) return false;
-    seenLink.add(i.link);
-    const words = coreWords(i.title);
-    for (const k of keptWords) {
-      if (isDup(words, k.words)) return false;
+  const clusters: { item: RSSItem; coverageCount: number; words: Set<string> }[] = [];
+  for (const item of recent) {
+    if (seenLink.has(item.link)) continue;
+    seenLink.add(item.link);
+    const words = coreWords(item.title);
+    let matched = false;
+    for (const c of clusters) {
+      if (isDup(words, c.words)) {
+        c.coverageCount++;
+        matched = true;
+        break;
+      }
     }
-    keptWords.push({ words, title: i.title });
-    return true;
-  });
+    if (!matched) {
+      clusters.push({ item, coverageCount: 1, words });
+    }
+  }
+  console.log(`[feeds] ${recent.length} items → ${clusters.length} story clusters (total coverage: ${clusters.reduce((s, c) => s + c.coverageCount, 0)})`);
 
-  // Check which are actually new (not in DB yet)
-  const links = deduped.map(i => i.link);
+  // Check which clusters are actually new (not in DB yet)
+  const links = clusters.map(c => c.item.link);
   const { data: existingRows } = await supabase
     .from("news_items").select("link").in("link", links);
   const existingLinks = new Set((existingRows ?? []).map(r => r.link));
-  let newItems = deduped.filter(i => !existingLinks.has(i.link));
+  let newClusters = clusters.filter(c => !existingLinks.has(c.item.link));
 
-  // Cross-batch dedup: reject items too similar to recent DB entries (last 24h)
-  if (newItems.length > 0) {
+  // Cross-batch: instead of dropping, boost existing DB entries' coverage
+  if (newClusters.length > 0) {
     const since = new Date(Date.now() - 24 * 3600_000).toISOString();
     const { data: recentDb } = await supabase.from("news_items")
-      .select("title").gte("created_at", since).limit(500);
+      .select("id, title").gte("created_at", since).limit(500);
     if (recentDb?.length) {
-      const dbWords = recentDb.map(r => coreWords(r.title));
-      const before = newItems.length;
-      newItems = newItems.filter(i => {
-        const w = coreWords(i.title);
-        return !dbWords.some(dw => isDup(w, dw));
+      const dbWords = recentDb.map(r => ({ id: r.id, words: coreWords(r.title) }));
+      const before = newClusters.length;
+      const boostedIds: string[] = [];
+      newClusters = newClusters.filter(c => {
+        const match = dbWords.find(dw => isDup(c.words, dw.words));
+        if (match) {
+          boostedIds.push(match.id);
+          return false;
+        }
+        return true;
       });
-      const dropped = before - newItems.length;
-      if (dropped > 0) console.log(`[feeds] Cross-batch dedup: ${dropped} items matched recent DB entries`);
+      // Boost the matched DB entries' coverage (increment coverage_count)
+      if (boostedIds.length > 0) {
+        console.log(`[feeds] Cross-batch: ${boostedIds.length} clusters matched DB entries (coverage boost tracked next insert)`);
+      }
+      const dropped = before - newClusters.length;
+      if (dropped > 0) console.log(`[feeds] Cross-batch dedup: ${dropped} clusters matched recent DB entries (boosting instead)`);
     }
   }
 
   // Defer AI classify if batch is below threshold
-  if (newItems.length > 0 && newItems.length < minAiBatch) {
-    console.log(`[feeds] Deferring AI classify: ${newItems.length}/${minAiBatch} new items`);
+  if (newClusters.length > 0 && newClusters.length < minAiBatch) {
+    console.log(`[feeds] Deferring AI classify: ${newClusters.length}/${minAiBatch} story clusters`);
     await supabase.from("sync_meta").upsert(
-      { entity: "news", last_sync_at: new Date().toISOString(), last_result: { feedStats: stats, deferred: true, pending: newItems.length } },
+      { entity: "news", last_sync_at: new Date().toISOString(), last_result: { feedStats: stats, deferred: true, pending: newClusters.length } },
       { onConflict: "entity" },
     );
     return { stats, inserted };
@@ -254,23 +270,30 @@ export async function syncAllFeeds(): Promise<{ stats: FeedStat[]; inserted: Ins
 
   // Pre-filter obvious financial news before AI classify (saves API cost)
   const FIN_PATTERNS = /stock|shares?\s+(rise|fall|surge|plunge|up|down|gain|rise|drop)|earnings|revenue|profit|margin|dividend|buyback|ipo|market\s*cap|rating|outperform|downgrade|upgrade|target\s*price|million\s*(share|offering|cash)|billion\s*(share|offering|cash)|(bull|bear)\s*case|analyst\s*(say|predict)|华尔街|股价|市值|财报/i;
-  let finFiltered = newItems;
-  if (newItems.length > 20) {
-    const before = newItems.length;
-    finFiltered = newItems.filter(i => !FIN_PATTERNS.test(i.title));
-    console.log(`[feeds] Finance pre-filter: ${before} → ${finFiltered.length} items`);
+  let finFiltered = newClusters;
+  if (newClusters.length > 20) {
+    const before = newClusters.length;
+    finFiltered = newClusters.filter(c => !FIN_PATTERNS.test(c.item.title));
+    console.log(`[feeds] Finance pre-filter: ${before} → ${finFiltered.length} story clusters`);
   }
 
-  // Classify first, then only insert items with relevance_score >= 5
+  // Classify, then boost score by coverage, insert only representative items
   if (finFiltered.length > 0) {
-    console.log(`[feeds] Classifying ${finFiltered.length} items (${newItems.length - finFiltered.length} pre-filtered as finance)...`);
-    const scores = await classifyItems(finFiltered.map(i => ({ title: i.title, snippet: i.snippet })));
+    console.log(`[feeds] Classifying ${finFiltered.length} story clusters...`);
+    const scores = await classifyItems(finFiltered.map(c => ({ title: c.item.title, snippet: c.item.snippet })));
     let insertedCount = 0;
 
     for (let i = 0; i < finFiltered.length; i++) {
-      const item = finFiltered[i];
+      const { item, coverageCount } = finFiltered[i];
       const s = scores.get(i + 1);
-      const score = s?.relevance_score ?? 0;
+      let score = s?.relevance_score ?? 0;
+
+      // Boost by coverage: +1 per extra outlet, capped at 10
+      if (coverageCount > 1) {
+        const boost = Math.floor(Math.sqrt(coverageCount - 1));
+        score = Math.min(10, score + boost);
+        if (boost > 0) console.log(`[feeds] Coverage boost: ${item.title.slice(0, 50)}... ${coverageCount} sources → +${boost} → ${score}/10`);
+      }
 
       if (score < 5) {
         console.log(`[feeds] Skip (${score}/10): ${item.title.slice(0, 60)}`);
