@@ -2,7 +2,6 @@
 
 import { syncAllPapers, syncArxivPapers, syncS2Papers, syncCompanyPapers } from "./sync/paper-import.js";
 import { syncAllFeeds } from "./sync/feeds.js";
-import { syncGitHubRepos } from "./sync/github.js";
 import { syncRFCs } from "./sync/rfcs.js";
 import { classifyPapers } from "./lib/ai-classify.js";
 import { supabase } from "./lib/supabase.js";
@@ -73,11 +72,6 @@ async function main() {
         console.log(`[sync-worker] ${inserted.length} high-relevance items inserted (pre-classified inline)`);
         break;
       }
-      case "github": {
-        const stats = await syncGitHubRepos();
-        console.log(`[sync-worker] GitHub sync complete:`, JSON.stringify(stats));
-        break;
-      }
       case "rfcs": {
         const stats = await syncRFCs();
         console.log(`[sync-worker] RFC sync complete:`, JSON.stringify(stats));
@@ -120,10 +114,9 @@ async function main() {
         const year = parseInt(process.env.SYNC_YEAR ?? String(new Date().getFullYear()), 10);
 
         // Phase 1: sync data sources in parallel
-        const [papersResult, feedsResult, githubResult, rfcsResult, confResult] = await Promise.allSettled([
+        const [papersResult, feedsResult, rfcsResult, confResult] = await Promise.allSettled([
           syncAllPapers(year),
           syncAllFeeds(),
-          syncGitHubRepos().then((s) => ({ task: "github", stats: s })),
           syncRFCs().then((s) => ({ task: "rfcs", stats: s })),
           crawlConferences(year).then((s) => ({ task: "conferences", stats: s })),
         ]);
@@ -143,11 +136,6 @@ async function main() {
           console.error(`[sync-worker] feeds sync failed:`, feedsResult.reason);
         }
 
-        if (githubResult.status === "fulfilled") {
-          console.log(`[sync-worker] github:`, JSON.stringify(githubResult.value.stats));
-        } else {
-          console.error(`[sync-worker] github sync failed:`, githubResult.reason);
-        }
         if (rfcsResult.status === "fulfilled") {
           console.log(`[sync-worker] rfcs:`, JSON.stringify(rfcsResult.value.stats));
         } else {
@@ -175,7 +163,7 @@ async function main() {
       default:
         console.error(`[sync-worker] Unknown task: ${task}`);
         console.log(`Usage: npx tsx src/index.ts <task>`);
-        console.log(`Tasks: papers, arxiv, s2, company-papers, feeds, github, rfcs, conferences, backfill-venue, conf-summary, conf-summaries, all`);
+        console.log(`Tasks: papers, arxiv, s2, company-papers, feeds, rfcs, conferences, backfill-venue, conf-summary, conf-summaries, all`);
         process.exit(1);
     }
   } catch (err) {

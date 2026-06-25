@@ -6,7 +6,6 @@
   "scripts": {
     "sync:papers": "npx tsx src/index.ts papers",
     "sync:feeds": "npx tsx src/index.ts feeds",
-    "sync:github": "npx tsx src/index.ts github",
     "sync:rfcs": "npx tsx src/index.ts rfcs",
     "sync:classify": "npx tsx src/index.ts classify",
     "sync:vendor-intel": "npx tsx src/index.ts vendor-intel",
