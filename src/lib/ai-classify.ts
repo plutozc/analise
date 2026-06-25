@@ -20,7 +20,7 @@ function callClaudeClassify(prompt: string): string {
   const raw = callClaude(prompt);
   if (!raw) { console.error("[ai] callClaude returned empty"); return "[]"; }
   const m = raw.match(/\{[\s\S]*"results"[\s\S]*\}/);
-  if (!m) { console.error("[ai] No JSON in response"); return "[]"; }
+  if (!m) { console.error(`[ai] No JSON in response (${raw.length} chars): ${raw.slice(0, 300)}`); return "[]"; }
   try {
     const parsed = JSON.parse(m[0]).results ?? JSON.parse(m[0]).classifications ?? [];
     return JSON.stringify(parsed);
