@@ -202,7 +202,7 @@ export async function syncAllFeeds(): Promise<{ stats: FeedStat[]; inserted: Ins
     const smaller = a.size <= b.size ? a : b;
     const larger  = a.size <= b.size ? b : a;
     const contained = [...smaller].filter(w => larger.has(w));
-    return contained.length >= 2 && contained.length / smaller.size >= 0.7;
+    return contained.length >= 2 && contained.length / smaller.size >= 0.55;
   }
 
   const seenLink = new Set<string>();
@@ -242,18 +242,33 @@ export async function syncAllFeeds(): Promise<{ stats: FeedStat[]; inserted: Ins
     }
   }
 
+  // Defer AI classify if batch is below threshold
   if (newItems.length > 0 && newItems.length < minAiBatch) {
     console.log(`[feeds] Deferring AI classify: ${newItems.length}/${minAiBatch} new items`);
+    await supabase.from("sync_meta").upsert(
+      { entity: "news", last_sync_at: new Date().toISOString(), last_result: { feedStats: stats, deferred: true, pending: newItems.length } },
+      { onConflict: "entity" },
+    );
+    return { stats, inserted };
+  }
+
+  // Pre-filter obvious financial news before AI classify (saves API cost)
+  const FIN_PATTERNS = /stock|shares?\s+(rise|fall|surge|plunge|up|down|gain|rise|drop)|earnings|revenue|profit|margin|dividend|buyback|ipo|market\s*cap|rating|outperform|downgrade|upgrade|target\s*price|million\s*(share|offering|cash)|billion\s*(share|offering|cash)|(bull|bear)\s*case|analyst\s*(say|predict)|华尔街|股价|市值|财报/i;
+  let finFiltered = newItems;
+  if (newItems.length > 20) {
+    const before = newItems.length;
+    finFiltered = newItems.filter(i => !FIN_PATTERNS.test(i.title));
+    console.log(`[feeds] Finance pre-filter: ${before} → ${finFiltered.length} items`);
   }
 
   // Classify first, then only insert items with relevance_score >= 5
-  if (newItems.length >= minAiBatch) {
-    console.log(`[feeds] Classifying ${newItems.length} new items...`);
-    const scores = await classifyItems(newItems.map(i => ({ title: i.title, snippet: i.snippet })));
+  if (finFiltered.length > 0) {
+    console.log(`[feeds] Classifying ${finFiltered.length} items (${newItems.length - finFiltered.length} pre-filtered as finance)...`);
+    const scores = await classifyItems(finFiltered.map(i => ({ title: i.title, snippet: i.snippet })));
     let insertedCount = 0;
 
-    for (let i = 0; i < newItems.length; i++) {
-      const item = newItems[i];
+    for (let i = 0; i < finFiltered.length; i++) {
+      const item = finFiltered[i];
       const s = scores.get(i + 1);
       const score = s?.relevance_score ?? 0;
 
@@ -279,7 +294,7 @@ export async function syncAllFeeds(): Promise<{ stats: FeedStat[]; inserted: Ins
       }
     }
 
-    console.log(`[feeds] ${insertedCount} inserted (${newItems.length - insertedCount} filtered out by relevance)`);
+    console.log(`[feeds] ${insertedCount} inserted (${finFiltered.length - insertedCount} filtered out by AI relevance)`);
   }
 
   await supabase.from("sync_meta").upsert(

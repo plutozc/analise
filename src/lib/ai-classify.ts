@@ -12,7 +12,7 @@ function buildClassifyPrompt(items: { title: string; abstract?: string | null }[
   return `Classify each item. JSON: {"results":[{"idx":1,"topics":["slug"],"summary_cn":"中文摘要","relevance_score":8,"companies":["cisco"]}]}
 Topics: ${TOPICS}
 Companies: ${COMPANIES}
-Score:1-10(10=directly relevant to tech/networking/infrastructure/cloud/AI). Low score: non-tech (celebrity, finance, sports, politics). summary_cn <= 40 Chinese chars; omit summary for score < 5. Companies only if clearly mentioned.
+Score:1-10(10=directly relevant to tech/networking/infrastructure/cloud/AI). Low score: non-tech (celebrity, finance, sports, politics). Penalize financial/market news: stock price, funding, investment, revenue — low relevance even if about tech company. summary_cn <= 40 Chinese chars; omit summary for score < 5. Companies only if clearly mentioned.
 ${block}`;
 }
 
