@@ -1,10 +1,6 @@
-import { inferPaperTopics } from "../lib/paper-topics.js";
 import { inferCompanies } from "../lib/companies.js";
 import { supabase } from "../lib/supabase.js";
-import { splitByPriority } from "../lib/paper-filter.js";
 import type { ImportedPaper, CategoryStat } from "../types/index.js";
-
-const TOPIC_LIMIT = 8;
 
 type VenueRule = [RegExp, string];
 const VENUE_RULES: VenueRule[] = [
@@ -78,7 +74,7 @@ function parseArxivXml(xml: string): ImportedPaper[] {
       url,
       published_date: published ? published.slice(0, 10) : null,
       abstract,
-      topics: inferPaperTopics(categories.filter((c) => c.startsWith("cs.")), title, abstract, TOPIC_LIMIT),
+      topics: [],
       companies: inferCompanies(`${title} ${abstract ?? ""}`),
       citation_count: undefined,
       source: "arxiv",
@@ -144,7 +140,7 @@ function parseS2Papers(data: S2Paper[], venue: string): ImportedPaper[] {
     url: p.externalIds?.ArXiv ? `https://arxiv.org/abs/${p.externalIds.ArXiv}` : p.url,
     published_date: p.year ? `${p.year}-01-01` : null,
     abstract: p.abstract?.slice(0, 2000) ?? null,
-    topics: inferPaperTopics([], p.title, p.abstract ?? null, TOPIC_LIMIT),
+    topics: [],
     companies: inferCompanies(`${p.title} ${p.abstract ?? ""}`),
     citation_count: p.citationCount ?? undefined,
     source: "semantic-scholar",
@@ -332,19 +328,14 @@ async function upsertPaper(p: ImportedPaper): Promise<InsertedPaper | null> {
     .select("id");
 
   if (inserted && inserted.length > 0) {
-    const id = inserted[0].id;
-    const topicRows = p.topics.map((t) => ({ paper_id: id, topic_slug: t }));
-    if (topicRows.length > 0) {
-      await supabase.from("paper_topics").insert(topicRows);
-    }
-    return { id, title: p.title, abstract: p.abstract, companies: p.companies };
+    return { id: inserted[0].id, title: p.title, abstract: p.abstract, companies: p.companies };
   }
   return null;
 }
 
 // ── Master sync ──
 
-export async function syncAllPapers(year: number): Promise<{ stats: CategoryStat[]; inserted: InsertedPaper[]; prioritized: { high: InsertedPaper[]; medium: InsertedPaper[]; low: InsertedPaper[] } }> {
+export async function syncAllPapers(year: number): Promise<{ stats: CategoryStat[]; inserted: InsertedPaper[] }> {
   const allStats: CategoryStat[] = [];
   const allInserted: InsertedPaper[] = [];
 
@@ -360,24 +351,12 @@ export async function syncAllPapers(year: number): Promise<{ stats: CategoryStat
   allStats.push(...co.stats);
   allInserted.push(...co.inserted);
 
-  const { high, medium, low } = splitByPriority(allInserted);
-  console.log(`[filter] ${allInserted.length} papers → high:${high.length} medium:${medium.length} low:${low.length}`);
-
-  // Mark medium papers in DB for deferred classification
-  if (medium.length > 0) {
-    const ids = medium.map((p) => p.id);
-    await supabase.from("papers").update({ classify_priority: "medium" }).in("id", ids);
-  }
-  // Mark low papers so they're never sent to AI
-  if (low.length > 0) {
-    const ids = low.map((p) => p.id);
-    await supabase.from("papers").update({ classify_priority: "low" }).in("id", ids);
-  }
+  console.log(`[filter] ${allInserted.length} new papers imported`);
 
   await supabase.from("sync_meta").upsert(
     { entity: "papers", last_sync_at: new Date().toISOString(), last_result: { categoryStats: allStats } },
     { onConflict: "entity" },
   );
 
-  return { stats: allStats, inserted: allInserted, prioritized: { high, medium, low } };
+  return { stats: allStats, inserted: allInserted };
 }

@@ -30,55 +30,23 @@ async function main() {
     switch (task) {
       case "papers": {
         const year = parseInt(process.env.SYNC_YEAR ?? String(new Date().getFullYear()), 10);
-        const { stats, prioritized } = await syncAllPapers(year);
+        const { stats, inserted } = await syncAllPapers(year);
         console.log(`[sync-worker] Papers sync complete:`, JSON.stringify(stats));
 
-        if (prioritized.high.length > 0) {
-          const maxHigh = intEnv("MAX_HIGH_PAPERS_PER_RUN", 500);
-          const selected = maxHigh > 0 ? prioritized.high.slice(0, maxHigh) : [];
-          const deferred = prioritized.high.slice(selected.length);
-          if (deferred.length > 0) {
-            await supabase.from("papers").update({ classify_priority: "medium" }).in("id", deferred.map((p) => p.id));
-            console.log(`[sync-worker] ${deferred.length} high papers deferred by MAX_HIGH_PAPERS_PER_RUN=${maxHigh}`);
+        if (inserted.length > 0) {
+          const maxBatch = intEnv("MAX_PAPERS_PER_RUN", 500);
+          const batch = maxBatch > 0 ? inserted.slice(0, maxBatch) : [];
+          if (batch.length < inserted.length) {
+            console.log(`[sync-worker] ${inserted.length - batch.length} papers deferred by MAX_PAPERS_PER_RUN=${maxBatch}`);
           }
-          const cr = selected.length > 0 ? await classifyPapers(30, selected) : { updated: 0, processed: 0 };
-          console.log(`[sync-worker] AI classify (high): ${cr.updated}/${cr.processed}`);
-        }
-        if (prioritized.medium.length > 0) {
-          console.log(`[sync-worker] ${prioritized.medium.length} medium papers queued for deferred classify`);
-        }
-        if (prioritized.low.length > 0) {
-          console.log(`[sync-worker] ${prioritized.low.length} low papers skipped AI`);
+          const cr = batch.length > 0 ? await classifyPapers(30, batch) : { updated: 0, processed: 0 };
+          console.log(`[sync-worker] AI classify: ${cr.updated}/${cr.processed}`);
         }
         break;
       }
       case "classify-medium": {
-        const { count, error: countErr } = await supabase.from("papers")
-          .select("id", { count: "exact", head: true })
-          .eq("classify_priority", "medium")
-          .eq("ai_classified", false);
-        const pending = count ?? 0;
-        if (countErr) { console.error("[sync-worker] classify-medium count error:", countErr.message); break; }
-        if (pending === 0) { console.log("[sync-worker] No medium papers pending"); break; }
-
-        // Dynamic batch: small queue → small batch, large queue → bigger batch to catch up
-        // ≤20 pending: process all; ≤100: 20/batch; ≤500: 40/batch; >500: 60/batch
-        const maxMedium = intEnv("MAX_MEDIUM_PAPERS_PER_RUN", 100);
-        const dynamicBatch = pending <= 20 ? pending : pending <= 100 ? 20 : pending <= 500 ? 40 : 60;
-        const batchSize = maxMedium > 0 ? Math.min(dynamicBatch, maxMedium) : 0;
-        if (batchSize === 0) { console.log("[sync-worker] classify-medium disabled by MAX_MEDIUM_PAPERS_PER_RUN=0"); break; }
-        console.log(`[sync-worker] ${pending} medium papers pending, batch size: ${batchSize}`);
-
-        const { data: papers, error } = await supabase.from("papers")
-          .select("id,title,abstract,companies")
-          .eq("classify_priority", "medium")
-          .eq("ai_classified", false)
-          .order("created_at", { ascending: true })
-          .limit(batchSize);
-        if (error) { console.error("[sync-worker] classify-medium query error:", error.message); break; }
-        if (!papers?.length) break;
-        const cr = await classifyPapers(papers.length, papers);
-        console.log(`[sync-worker] AI classify (medium): ${cr.updated}/${cr.processed}, remaining: ${pending - papers.length}`);
+        // Legacy task — all papers now classified immediately on import
+        console.log("[sync-worker] classify-medium deprecated — all papers classified during 'papers' task");
         break;
       }
       case "arxiv": {
@@ -160,10 +128,10 @@ async function main() {
           crawlConferences(year).then((s) => ({ task: "conferences", stats: s })),
         ]);
 
-        let paperPrioritized: Awaited<ReturnType<typeof syncAllPapers>>["prioritized"] | null = null;
+        let paperInserted: Awaited<ReturnType<typeof syncAllPapers>>["inserted"] | null = null;
 
         if (papersResult.status === "fulfilled") {
-          paperPrioritized = papersResult.value.prioritized;
+          paperInserted = papersResult.value.inserted;
           console.log(`[sync-worker] papers:`, JSON.stringify(papersResult.value.stats));
         } else {
           console.error(`[sync-worker] papers sync failed:`, papersResult.reason);
@@ -192,25 +160,15 @@ async function main() {
           console.error(`[sync-worker] conference crawl failed:`, confResult.reason);
         }
 
-        // Phase 2: classify high priority only (medium deferred, low skipped)
-        if (paperPrioritized) {
-          if (paperPrioritized.high.length > 0) {
-            const maxHigh = intEnv("MAX_HIGH_PAPERS_PER_RUN", 500);
-            const selected = maxHigh > 0 ? paperPrioritized.high.slice(0, maxHigh) : [];
-            const deferred = paperPrioritized.high.slice(selected.length);
-            if (deferred.length > 0) {
-              await supabase.from("papers").update({ classify_priority: "medium" }).in("id", deferred.map((p) => p.id));
-              console.log(`[sync-worker] ${deferred.length} high papers deferred by MAX_HIGH_PAPERS_PER_RUN=${maxHigh}`);
-            }
-            const cr = selected.length > 0 ? await classifyPapers(30, selected) : { updated: 0, processed: 0 };
-            console.log(`[sync-worker] classify-papers (high): ${cr.updated}/${cr.processed}`);
+        // Phase 2: classify all new papers
+        if (paperInserted && paperInserted.length > 0) {
+          const maxBatch = intEnv("MAX_PAPERS_PER_RUN", 500);
+          const batch = maxBatch > 0 ? paperInserted.slice(0, maxBatch) : [];
+          if (batch.length < paperInserted.length) {
+            console.log(`[sync-worker] ${paperInserted.length - batch.length} papers deferred by MAX_PAPERS_PER_RUN=${maxBatch}`);
           }
-          if (paperPrioritized.medium.length > 0) {
-            console.log(`[sync-worker] ${paperPrioritized.medium.length} medium papers queued for deferred classify`);
-          }
-          if (paperPrioritized.low.length > 0) {
-            console.log(`[sync-worker] ${paperPrioritized.low.length} low papers skipped AI`);
-          }
+          const cr = batch.length > 0 ? await classifyPapers(30, batch) : { updated: 0, processed: 0 };
+          console.log(`[sync-worker] AI classify: ${cr.updated}/${cr.processed}`);
         }
         break;
       }
