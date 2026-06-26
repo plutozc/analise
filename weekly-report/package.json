@@ -1,0 +1,20 @@
+{
+  "name": "weekly-report",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "report": "npx tsx src/index.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.105.4",
+    "dotenv": "^17.4.2",
+    "ws": "^8.21.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.2",
+    "@types/ws": "^8.18.1",
+    "tsx": "^4",
+    "typescript": "^5"
+  }
+}

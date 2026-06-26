@@ -11,6 +11,7 @@
     "sync:vendor-intel": "npx tsx src/index.ts vendor-intel",
     "sync:conf-summaries": "npx tsx src/index.ts conf-summaries",
     "sync:all": "npx tsx src/index.ts all",
+    "report:weekly": "cd weekly-report && npx tsx src/index.ts",
     "scheduler": "bash scripts/scheduler.sh",
     "scheduler:once": "bash scripts/scheduler.sh once"
   },
