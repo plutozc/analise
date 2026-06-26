@@ -6,7 +6,8 @@ mkdir -p "$LOG_DIR"
 if [ -f .env ]; then set -a; source .env; set +a; fi
 TSX="${TSX:-npx tsx}"
 PAPERS_AT="${SYNC_PAPERS_AT:-03:00}"
-CLASSIFY_MEDIUM_AT="${SYNC_CLASSIFY_MEDIUM_AT:-04:00}"
+WEEKLY_REPORT_AT="${SYNC_WEEKLY_REPORT_AT:-06:00}"
+WEEKLY_REPORT_DAY="${SYNC_WEEKLY_REPORT_DAY:-1}"  # 1=Monday
 
 log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"; }
 run_task() {
@@ -46,6 +47,27 @@ run_daily_at() {
     sleep 1
   done
 }
+run_weekly_report() {
+  local hhmm=$1 dow=$2 delay
+  while true; do
+    local current_dow; current_dow=$(date '+%u')
+    local now_secs=$((10#$(date '+%H') * 3600 + 10#$(date '+%M') * 60 + 10#$(date '+%S')))
+    local target_secs=$((10#${hhmm%:*} * 3600 + 10#${hhmm#*:} * 60))
+    if [ "$current_dow" -eq "$dow" ] && [ "$now_secs" -lt "$target_secs" ]; then
+      delay=$((target_secs - now_secs))
+    else
+      local days_until=$(( (dow - current_dow + 7) % 7 ))
+      if [ "$days_until" -eq 0 ]; then days_until=7; fi
+      delay=$(( days_until * 86400 - now_secs + target_secs ))
+    fi
+    log "Sleep ${delay}s until next weekly-report (day=$dow at $hhmm)..."
+    sleep "$delay"
+    local logfile="$LOG_DIR/weekly-report.log"
+    log "START: weekly-report"
+    if $TSX weekly-report/src/index.ts >> "$logfile" 2>&1; then log "OK: weekly-report"; else log "FAIL: weekly-report (exit $?)"; fi
+    sleep 1
+  done
+}
 
 TASKS="papers feeds rfcs signals conf-summaries vendor-intel"
 
@@ -57,7 +79,7 @@ interval_of() {
     signals)         echo 43200;;
     conf-summaries)  echo 2592000;;  # monthly
     vendor-intel)       echo 2592000;;  # monthly
-    classify-medium) echo 86400;;    # deprecated
+    classify-medium) echo 86400;;    # deprecated, not scheduled
     *)               echo "";;
   esac
 }
@@ -71,8 +93,6 @@ fi
 if [ -n "${1:-}" ]; then
   if [ "$1" = "papers" ]; then
     run_daily_at papers "$PAPERS_AT"
-  elif [ "$1" = "classify-medium" ]; then
-    run_daily_at classify-medium "$CLASSIFY_MEDIUM_AT"
   else
     iv=$(interval_of "$1")
     if [ -n "$iv" ]; then
@@ -93,5 +113,6 @@ for task in $TASKS; do
     run_loop "$task" "$(interval_of "$task")" &
   fi
 done
-log "All workers launched in wait-first mode. papers_at=$PAPERS_AT classify_medium_at=$CLASSIFY_MEDIUM_AT"
+run_weekly_report "$WEEKLY_REPORT_AT" "$WEEKLY_REPORT_DAY" &
+log "All workers launched. papers_at=$PAPERS_AT weekly_report=day${WEEKLY_REPORT_DAY}@${WEEKLY_REPORT_AT}"
 wait
