@@ -187,15 +187,23 @@ export async function syncAllFeeds(): Promise<{ stats: FeedStat[]; inserted: Ins
     "after","before","report","over","cross","also","more","than","into","their",
     "they","them","what","when","been","says","still","billion","million","crore"]);
   function coreWords(t: string): Set<string> {
+    // Extract CJK bigrams (2-char sliding windows) for Chinese dedup
+    const cjkRuns = t.match(/[一-鿿]+/g) ?? [];
+    const cjkTokens: string[] = [];
+    for (const run of cjkRuns) {
+      for (let i = 0; i < run.length - 1; i++) cjkTokens.push(run.slice(i, i + 2));
+    }
+
     const words = t
       .replace(/[—–\-–].+$/, "")        // strip publisher suffix
       .replace(/^[A-Za-z]+\s*:\s*/, "") // strip prefix
       .toLowerCase()
+      .replace(/[一-鿿]/g, " ") // replace CJK with space before Latin extraction
       .replace(/[^a-z\s]/g, "")
       .split(/\s+/)
       .filter(w => w.length >= 4 && !STOP.has(w))
       .map(w => w.replace(/s$/, "").replace(/ed$/, "")); // normalize plurals/past tense
-    return new Set(words);
+    return new Set([...words, ...cjkTokens]);
   }
   function isDup(a: Set<string>, b: Set<string>): boolean {
     if (a.size < 2 || b.size < 2) return false;
