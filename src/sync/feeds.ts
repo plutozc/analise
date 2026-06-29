@@ -39,8 +39,6 @@ const NEWS_FEEDS: FeedConfig[] = [
   { url: "https://news.google.com/rss/search?q=%E7%BD%91%E7%BB%9C+%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83+when:7d&hl=zh-CN&gl=CN&ceid=CN:zh-Hans", source: "Google新闻-网络数据中心" },
   { url: "https://news.google.com/rss/search?q=%E4%BA%91%E8%AE%A1%E7%AE%97+%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84+when:7d&hl=zh-CN&gl=CN&ceid=CN:zh-Hans", source: "Google新闻-云计算网络" },
   { url: "https://news.google.com/rss/search?q=SDN+OR+eBPF+OR+RDMA+OR+%E4%BA%A4%E6%8D%A2%E6%9C%BA+OR+%E8%B7%AF%E7%94%B1%E5%99%A8+when:7d&hl=zh-CN&gl=CN&ceid=CN:zh-Hans", source: "Google新闻-SDN交换机" },
-  { url: "https://news.google.com/rss/search?q=%E5%8D%8E%E4%B8%BA+%E7%BD%91%E7%BB%9C+OR+5G+OR+%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%83+when:7d&hl=zh-CN&gl=CN&ceid=CN:zh-Hans", source: "Google新闻-华为网络" },
-  { url: "https://news.google.com/rss/search?q=%E9%98%BF%E9%87%8C%E4%BA%91+OR+%E8%85%BE%E8%AE%AF%E4%BA%91+%E7%BD%91%E7%BB%9C+when:7d&hl=zh-CN&gl=CN&ceid=CN:zh-Hans", source: "Google新闻-阿里腾讯云" },
   // --- Google News company watches ---
   { url: "https://news.google.com/rss/search?q=%22Ericsson%22+network+OR+5G+OR+6G+OR+RAN+when:7d", source: "Ericsson" },
   { url: "https://news.google.com/rss/search?q=%22Nokia%22+network+OR+5G+OR+6G+OR+IP+optical+when:7d", source: "Nokia" },
