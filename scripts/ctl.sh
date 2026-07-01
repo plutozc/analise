@@ -80,15 +80,15 @@ case "$cmd" in
         pgrep -f "scripts/scheduler.sh" 2>/dev/null
       } | sort -un || true)
       [ -z "$SURVIVORS" ] && break
-      if [ "$i" -eq 2 ]; then
-        log "Force killing: $(echo $SURVIVORS | tr '\n' ' ')"
-        kill -9 $SURVIVORS 2>/dev/null || true
+      ALL_SURVIVORS=$(collect_tree $SURVIVORS | sort -run || true)
+      if [ "$i" -ge 2 ]; then
+        log "Force killing: $(echo $ALL_SURVIVORS | tr '\n' ' ')"
+        kill -9 $ALL_SURVIVORS 2>/dev/null || true
+      else
+        kill $ALL_SURVIVORS 2>/dev/null || true
       fi
       sleep 1
     done
-    if [ -n "$SURVIVORS" ]; then
-      log "WARNING: processes still alive: $(echo $SURVIVORS | tr '\n' ' ')"
-    fi
     rm -f "$PID_FILE"
     log "Stopped"
     ;;
