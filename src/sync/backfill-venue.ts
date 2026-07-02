@@ -46,24 +46,7 @@ function extractArxivId(url: string): string | null {
   return m ? m[1] : null;
 }
 
-export async function backfillVenues(batchSize = 100): Promise<{ checked: number; updated: number; errors: number }> {
-  console.log(`[backfill-venue] Starting...`);
-
-  const { data: papers, error } = await supabase
-    .from("papers")
-    .select("id, url")
-    .eq("venue", "arXiv")
-    .ilike("url", "%arxiv%")
-    .order("published_date", { ascending: false })
-    .limit(500);
-
-  if (error || !papers?.length) {
-    console.log(`[backfill-venue] No papers to process: ${error?.message ?? "empty"}`);
-    return { checked: 0, updated: 0, errors: 0 };
-  }
-
-  console.log(`[backfill-venue] ${papers.length} papers to check`);
-
+async function backfillViaArxiv(papers: { id: string; url: string }[], batchSize: number): Promise<{ updated: number; errors: number }> {
   let updated = 0;
   let errors = 0;
 
@@ -102,26 +85,40 @@ export async function backfillVenues(batchSize = 100): Promise<{ checked: number
             .update({ venue })
             .eq("id", paper.id);
 
-          if (updErr) {
-            console.error(`[backfill-venue] Update error for ${entryId}: ${updErr.message}`);
-            errors++;
-          } else {
-            updated++;
-          }
+          if (updErr) { errors++; } else { updated++; }
         }
       }
-
-      console.log(`[backfill-venue] Batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(papers.length / batchSize)}: ${updated} updated so far`);
     } catch (err) {
-      console.error(`[backfill-venue] Batch error:`, err instanceof Error ? err.message : err);
+      console.error(`[backfill-venue] arXiv batch error:`, err instanceof Error ? err.message : err);
       errors += batch.length;
     }
 
     await new Promise(r => setTimeout(r, 3000));
   }
 
-  console.log(`[backfill-venue] Done: ${papers.length} checked, ${updated} updated, ${errors} errors`);
-  return { checked: papers.length, updated, errors };
+  return { updated, errors };
+}
+
+export async function backfillVenues(batchSize = 100): Promise<{ checked: number; updated: number; errors: number }> {
+  console.log(`[backfill-venue] Starting...`);
+
+  const { data: papers, error } = await supabase
+    .from("papers")
+    .select("id, url")
+    .eq("venue", "arXiv")
+    .ilike("url", "%arxiv%")
+    .order("published_date", { ascending: false })
+    .limit(500);
+
+  if (error || !papers?.length) {
+    console.log(`[backfill-venue] No papers to process: ${error?.message ?? "empty"}`);
+    return { checked: 0, updated: 0, errors: 0 };
+  }
+
+  console.log(`[backfill-venue] ${papers.length} papers to check via arXiv journal_ref`);
+  const result = await backfillViaArxiv(papers, batchSize);
+  console.log(`[backfill-venue] Done: ${papers.length} checked, ${result.updated} updated, ${result.errors} errors`);
+  return { checked: papers.length, ...result };
 }
 
 const isMain = process.argv[1]?.includes("backfill-venue");

@@ -41,6 +41,12 @@ async function main() {
           const cr = batch.length > 0 ? await classifyPapers(30, batch) : { updated: 0, processed: 0 };
           console.log(`[sync-worker] AI classify: ${cr.updated}/${cr.processed}`);
         }
+
+        // Backfill arXiv paper venues via arXiv API, then rebuild conferences
+        const bfResult = await backfillVenues(100);
+        console.log(`[sync-worker] Venue backfill: ${bfResult.checked} checked, ${bfResult.updated} updated`);
+        const confResult = await crawlConferences(year);
+        console.log(`[sync-worker] Conference crawl: ${confResult.created} created, ${confResult.sessions} sessions`);
         break;
       }
       case "classify-medium": {

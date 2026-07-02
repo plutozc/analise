@@ -46,9 +46,11 @@ export async function crawlConferences(year?: number): Promise<{ created: number
   const { data: existing } = await supabase
     .from("conferences")
     .select("id, name, abbreviation, start_date");
+  const normalizeKey = (s: string) => s.toLowerCase().replace(/[\s_-]+/g, "-").trim();
   const existingByKey = new Map<string, string>(); // key → conference_id
   for (const c of existing ?? []) {
-    if (c.abbreviation) existingByKey.set(c.abbreviation.toLowerCase(), c.id);
+    if (c.abbreviation) existingByKey.set(normalizeKey(c.abbreviation), c.id);
+    if (c.name) existingByKey.set(normalizeKey(c.name), c.id);
   }
 
   // Build venue list for SQL IN clause
@@ -105,19 +107,44 @@ export async function crawlConferences(year?: number): Promise<{ created: number
     const venueConfig = CONFERENCE_VENUES[group.venue];
     if (!venueConfig) continue;
 
-    const abbrevKey = `${group.venue.toLowerCase()}-${group.year}`;
-    const existingConfId = existingByKey.get(abbrevKey);
+    const abbrevKey = normalizeKey(`${group.venue} ${group.year}`);
+    const existingConfId = existingByKey.get(abbrevKey) ?? existingByKey.get(normalizeKey(group.venue));
 
-    if (existingConfId) {
-      // Already crawled, skip
+    // Need ≥3 papers to create or populate a conference
+    if (group.papers.length < 3) {
+      console.log(`[conference-crawler] ${group.venue} ${group.year}: only ${group.papers.length} papers, skip`);
       skipped++;
       continue;
     }
 
-    // Need ≥3 papers to create a conference
-    if (group.papers.length < 3) {
-      console.log(`[conference-crawler] ${group.venue} ${group.year}: only ${group.papers.length} papers, skip`);
-      skipped++;
+    if (existingConfId) {
+      // Conference exists — check if sessions need populating
+      const { count } = await supabase
+        .from("conference_sessions")
+        .select("id", { count: "exact", head: true })
+        .eq("conference_id", existingConfId);
+      if (count && count > 0) {
+        skipped++;
+        continue;
+      }
+      // Populate sessions for existing conference
+      const sessions = group.papers.map(p => ({
+        conference_id: existingConfId,
+        title: p.title,
+        authors: p.authors ?? [],
+        topics: [],
+        affiliations: [],
+        url: p.url,
+        abstract: p.abstract?.slice(0, 2000) ?? null,
+      }));
+      let sessCount = 0;
+      for (let si = 0; si < sessions.length; si += 50) {
+        const batch = sessions.slice(si, si + 50);
+        const { error: sessErr } = await supabase.from("conference_sessions").insert(batch);
+        if (!sessErr) sessCount += batch.length;
+      }
+      totalSessions += sessCount;
+      console.log(`[conference-crawler] Populated ${group.venue} ${group.year}: ${sessCount} sessions`);
       continue;
     }
 

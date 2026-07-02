@@ -123,7 +123,13 @@ export async function syncArxivPapers(year: number): Promise<{ stats: CategorySt
 
 // ── Semantic Scholar ──
 
-export const S2_VENUES = ["SIGCOMM", "NSDI", "IMC", "OSDI", "SOSP", "CoNEXT"] as const;
+export const S2_VENUES = [
+  "SIGCOMM", "NSDI", "IMC", "OSDI", "SOSP", "CoNEXT",
+  "INFOCOM", "ICNP", "HOTNETS", "MOBICOM", "SIGMETRICS",
+  "EuroSys", "ASPLOS", "CCS", "S&P", "USENIX Security",
+  "ATC", "FAST", "PPoPP", "ISCA", "MICRO", "HPCA",
+  "APNet", "ANCS", "PAM", "TMA", "Middleware", "SenSys", "MobiSys",
+] as const;
 const S2_FIELDS = "title,authors,venue,year,citationCount,url,abstract,externalIds";
 
 type S2Paper = {
@@ -156,10 +162,24 @@ export async function syncS2Papers(year: number): Promise<{ stats: CategoryStat[
   const headers: Record<string, string> = {};
   if (apiKey) headers["x-api-key"] = apiKey;
 
+  const S2_QUERIES: Record<string, string> = {
+    "SIGCOMM": "network", "NSDI": "system", "IMC": "measurement",
+    "OSDI": "system", "SOSP": "system", "CoNEXT": "network",
+    "INFOCOM": "network", "ICNP": "protocol", "HOTNETS": "network",
+    "MOBICOM": "mobile", "SIGMETRICS": "performance",
+    "EuroSys": "system", "ASPLOS": "architecture",
+    "CCS": "security", "S&P": "security", "USENIX Security": "security",
+    "ATC": "system", "FAST": "storage", "PPoPP": "parallel",
+    "ISCA": "architecture", "MICRO": "architecture", "HPCA": "architecture",
+    "APNet": "network", "ANCS": "network", "PAM": "measurement",
+    "TMA": "traffic", "Middleware": "middleware",
+    "SenSys": "sensor", "MobiSys": "mobile",
+  };
+
   for (const venue of S2_VENUES) {
+    const query = S2_QUERIES[venue] ?? "computer science";
     const params = new URLSearchParams({
-      query: "networking OR SDN OR eBPF OR datacenter",
-      year: String(year), venue, fieldsOfStudy: "Computer Science",
+      query, year: String(year), venue,
       fields: S2_FIELDS, limit: "100",
     });
     try {
@@ -181,7 +201,7 @@ export async function syncS2Papers(year: number): Promise<{ stats: CategoryStat[
     } catch (err) {
       stats.push({ category: venue, status: "error", count: 0, error: err instanceof Error ? err.message : "unknown" });
     }
-    await new Promise((r) => setTimeout(r, 3000));
+    await new Promise((r) => setTimeout(r, 5000));
   }
   return { stats, inserted };
 }
