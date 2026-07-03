@@ -133,6 +133,7 @@ export const S2_VENUES = [
 const S2_FIELDS = "title,authors,venue,year,citationCount,url,abstract,externalIds";
 
 type S2Paper = {
+  paperId: string;
   title: string; authors: { name: string }[]; venue: string | null;
   year: number | null; citationCount: number | null; url: string | null;
   abstract: string | null; externalIds: Record<string, string> | null;
@@ -188,6 +189,27 @@ export async function syncS2Papers(year: number): Promise<{ stats: CategoryStat[
       });
       if (!res.ok) { stats.push({ category: venue, status: "error", count: 0, error: `HTTP ${res.status}` }); continue; }
       const json: { data: S2Paper[] } = await res.json();
+
+      // Backfill null abstracts via single-paper detail API (much higher return rate)
+      const nullAbstract = (json.data ?? []).filter(p => !p.abstract && p.paperId);
+      if (nullAbstract.length > 0) {
+        let filled = 0;
+        for (const p of nullAbstract) {
+          await new Promise((r) => setTimeout(r, 1100)); // 1 req/s rate limit
+          try {
+            const dr = await fetch(
+              `https://api.semanticscholar.org/graph/v1/paper/${p.paperId}?fields=abstract`,
+              { headers, signal: AbortSignal.timeout(10000) },
+            );
+            if (dr.ok) {
+              const detail: { abstract: string | null } = await dr.json();
+              if (detail.abstract) { p.abstract = detail.abstract; filled++; }
+            }
+          } catch { /* skip on timeout/network err */ }
+        }
+        if (filled > 0) console.log(`[s2] ${venue}: backfilled ${filled}/${nullAbstract.length} null abstracts`);
+      }
+
       const papers = parseS2Papers(json.data ?? [], venue);
       stats.push({ category: venue, status: "ok", count: papers.length });
       let imported = 0;
