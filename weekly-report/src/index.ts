@@ -355,6 +355,25 @@ function renderTopPapersSection(context: ReturnType<typeof reportContext>): stri
   return lines.join("\n").trimEnd();
 }
 
+function newsComment(n: { title: string; source: string; relevance: number }): string {
+  const t = n.title.toLowerCase();
+  const s = n.source.toLowerCase();
+  const isGoogleNews = s.includes("google news");
+  const isOfficial = s.includes("blog") || s.includes("developer") || s.includes("engineering");
+  const isStandard = s.includes("ietf") || s.includes("rfc") || s.includes("3gpp") || s.includes("ieee");
+
+  if (isStandard) return "标准组织一手信源，可直接引用。";
+  if (isOfficial) return "厂商官方技术博客，信息可靠度较高。";
+  if (t.includes("收购") || t.includes("acquisition") || t.includes("merger")) return "涉及收购/合并，需核验官方公告确认交易状态。";
+  if (t.includes("partnership") || t.includes("合作") || t.includes("联合")) return "涉及合作关系，建议回查双方官方声明。";
+  if (t.includes("market share") || t.includes("市场份额") || t.includes("revenue")) return "涉及市场数据，建议交叉核验原始数据来源。";
+  if (t.includes("vulnerability") || t.includes("cve") || t.includes("漏洞")) return "安全漏洞信息，建议核查 CVE 数据库和厂商安全公告。";
+  if (t.includes("open source") || t.includes("开源") || t.includes("github")) return "开源动态，可直接查看项目仓库验证。";
+  if (isGoogleNews) return "Google News 聚合来源，正式引用前建议回查原始报道。";
+  if (n.relevance >= 8) return "高相关度情报信号，建议优先跟进原始信源。";
+  return "可作为早期情报信号持续跟踪。";
+}
+
 function renderTopNewsSection(context: ReturnType<typeof reportContext>): string {
   const lines: string[] = ["## 📰 Top News", ""];
 
@@ -367,7 +386,7 @@ function renderTopNewsSection(context: ReturnType<typeof reportContext>): string
     const n = context.topNews[i];
     const title = n.link ? markdownLink(n.title, n.link) : `**${n.title}**`;
     lines.push(`${i + 1}. ${title} — relevance: ${n.relevance}/10 | ${n.source}  `);
-    lines.push("   本条可作为早期情报信号，涉及产品、合作或市场份额时需二次核验。");
+    lines.push(`   ${newsComment(n)}`);
     lines.push("");
   }
 
@@ -397,12 +416,24 @@ function updateMarkdownSection(report: string, heading: string, transform: (sect
   return `${report.slice(0, headingIndex)}${transform(section)}${report.slice(endIndex)}`;
 }
 
+function sectionHasLinks(report: string, heading: string): boolean {
+  const idx = report.indexOf(heading);
+  if (idx === -1) return false;
+  const after = report.slice(idx + heading.length);
+  const nextH = after.match(/\n## /);
+  const section = nextH ? after.slice(0, nextH.index!) : after;
+  return (section.match(/\]\(https?:\/\//g) ?? []).length >= 2;
+}
+
 function enforceEvidenceSections(report: string, context: ReturnType<typeof reportContext>): string {
-  return replaceMarkdownSection(
-    replaceMarkdownSection(report, "## 📄 Top Papers", renderTopPapersSection(context)),
-    "## 📰 Top News",
-    renderTopNewsSection(context),
-  );
+  let result = report;
+  if (!sectionHasLinks(result, "## 📄 Top Papers")) {
+    result = replaceMarkdownSection(result, "## 📄 Top Papers", renderTopPapersSection(context));
+  }
+  if (!sectionHasLinks(result, "## 📰 Top News")) {
+    result = replaceMarkdownSection(result, "## 📰 Top News", renderTopNewsSection(context));
+  }
+  return result;
 }
 
 function isCompleteIntelligenceReport(report: string): boolean {
@@ -668,7 +699,7 @@ function buildFallbackReport(signals: Signal[], papers: Paper[], news: NewsItem[
       const n = news[i];
       const titleLink = n.link ? `[${n.title}](${n.link})` : `**${n.title}**`;
       lines.push(`${i + 1}. ${titleLink} — relevance: ${n.relevance_score}/10 | ${n.source}  `);
-      lines.push(`   本条可作为早期情报信号，涉及产品、合作或市场份额时需二次核验。`);
+      lines.push(`   ${newsComment({ title: n.title, source: n.source, relevance: n.relevance_score })}`);
       lines.push("");
     }
   } else {
