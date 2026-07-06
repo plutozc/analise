@@ -64,7 +64,12 @@ run_weekly_report() {
     sleep "$delay"
     local logfile="$LOG_DIR/weekly-report.log"
     log "START: weekly-report"
-    if $TSX weekly-report/src/index.ts >> "$logfile" 2>&1; then log "OK: weekly-report"; else log "FAIL: weekly-report (exit $?)"; fi
+    if $TSX weekly-report/src/index.ts >> "$logfile" 2>&1; then
+      log "OK: weekly-report"
+      git add weekly-report/reports/ && git commit -m "docs: weekly report $(date '+%Y-%m-%d')" && git push && log "OK: weekly-report pushed" || log "WARN: weekly-report git push failed"
+    else
+      log "FAIL: weekly-report (exit $?)"
+    fi
     sleep 1
   done
 }
