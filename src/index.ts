@@ -10,6 +10,7 @@ import { syncVendorIntelligence } from "./sync/vendor-intelligence.js";
 import { analyzeTechSignals } from "./sync/tech-signals.js";
 import { crawlConferences } from "./sync/conference-crawler.js";
 import { backfillVenues } from "./sync/backfill-venue.js";
+import { discoverInsightDirections } from "./sync/insight-discovery.js";
 import { logTokenUsage } from "./lib/claude.js";
 
 const task = process.argv[2] ?? "all";
@@ -47,6 +48,10 @@ async function main() {
         console.log(`[sync-worker] Venue backfill: ${bfResult.checked} checked, ${bfResult.updated} updated`);
         const confResult = await crawlConferences(year);
         console.log(`[sync-worker] Conference crawl: ${confResult.created} created, ${confResult.sessions} sessions`);
+
+        // Discover insight directions from recent papers/news
+        const insightResult = await discoverInsightDirections();
+        console.log(`[sync-worker] Insight discovery: ${insightResult.directions} directions found`);
         break;
       }
       case "classify-medium": {
@@ -104,6 +109,11 @@ async function main() {
         const batch = process.argv[3] ? parseInt(process.argv[3], 10) : 100;
         const br = await backfillVenues(batch);
         console.log(`[sync-worker] Venue backfill: ${br.checked} checked, ${br.updated} updated, ${br.errors} errors`);
+        break;
+      }
+      case "insights": {
+        const ir = await discoverInsightDirections();
+        console.log(`[sync-worker] Insight discovery: ${ir.directions} directions, output: ${ir.outputPath}`);
         break;
       }
       case "signals": {
