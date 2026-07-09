@@ -228,6 +228,13 @@ export async function discoverInsightDirections(): Promise<{ directions: number;
     if (jsonMatch) parsed = JSON.parse(jsonMatch[0]);
   } catch { /* fall through */ }
 
+  // Build idx→url lookup for the 30 items sent to Claude
+  const itemsForClaude = scored.slice(0, 30);
+  const evidenceUrlMap = new Map<number, string | null>();
+  for (let i = 0; i < itemsForClaude.length; i++) {
+    evidenceUrlMap.set(i + 1, itemsForClaude[i].url);
+  }
+
   const dateStr = new Date().toISOString().slice(0, 10);
   mkdirSync(OUTPUT_DIR, { recursive: true });
   const filename = `directions-${dateStr}.md`;
@@ -257,7 +264,20 @@ export async function discoverInsightDirections(): Promise<{ directions: number;
       lines.push("");
       if (d.evidence?.length) {
         lines.push("**支撑证据:**");
-        for (const e of d.evidence) lines.push(`- ${e}`);
+        for (const e of d.evidence) {
+          // Try to extract leading idx number → convert to link
+          const idxMatch = e.match(/^(\d+)\.?\s*/);
+          let linkText = e;
+          if (idxMatch) {
+            const idx = parseInt(idxMatch[1], 10);
+            const url = evidenceUrlMap.get(idx);
+            if (url) {
+              const title = e.slice(idxMatch[0].length).replace(/^["""]|["""]$/g, "").trim();
+              linkText = `[${title}](${url})`;
+            }
+          }
+          lines.push(`- ${linkText}`);
+        }
         lines.push("");
       }
       lines.push("---");
