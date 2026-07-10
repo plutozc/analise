@@ -1,0 +1,87 @@
+[
+  {
+    "date": "2026-07-10",
+    "title": "O-RAN智能体可信运行：从后门检测到实时决策护栏机制",
+    "keywords": [
+      "O-RAN RIC",
+      "near-RT xApp",
+      "自治网络L4-L5决策面",
+      "深度强化学习后门检测（子空间分析）",
+      "临界度分级推理校验",
+      "运行时Guard Rail"
+    ],
+    "evidence_titles": [
+      "Criticality-Based Guard Rail Validation for AI Agent Decisions in Autonomous Telecom Networks",
+      "ORAN-DEFEND: Subspace Detection and Sanitization of Backdoor DRL xApps in Open RAN",
+      "From Agentic to Autogenic Network Management for AI-Native 6G and Beyond: A Standards Perspective"
+    ]
+  },
+  {
+    "date": "2026-07-10",
+    "title": "RAN实时智能控制中轻量化强化学习的部署范式演进",
+    "keywords": [
+      "O-RAN near-RT RIC",
+      "xApp",
+      "IAB回传",
+      "V2X调度器",
+      "多臂赌博机（MAB）",
+      "PPO策略梯度",
+      "小语言模型（SLM）Agent"
+    ],
+    "evidence_titles": [
+      "A Low-Complexity O-RAN xApp Based on Multi-Armed Bandit to Optimize Traffic Steering Decisions",
+      "PHaul: A PPO-based forwarding agent for Sub6 enhanced Integrated Access and Backhaul networks",
+      "Agentic-V2X: Small Language Model Agents for Deadline-Aware V2X Scheduling in 5G/6G Networks"
+    ]
+  },
+  {
+    "date": "2026-07-10",
+    "title": "Agentic AI与MCP协议驱动光传送网全生命周期闭环自动化",
+    "keywords": [
+      "IPoDWDM多层网络",
+      "SDN控制面",
+      "光遥测",
+      "GNPy光层模型",
+      "Agentic AI",
+      "MCP协议集成",
+      "闭环控制",
+      "LLM驱动的网络运维Agent"
+    ],
+    "evidence_titles": [
+      "Agentic AI for IPoDWDM Network Lifecycle Automation: An MCP-Enabled Architecture",
+      "Huawei Chair sees agents ushering in new decade of mobile growth"
+    ]
+  },
+  {
+    "date": "2026-07-10",
+    "title": "面向6G网络自治的AI Agent标准化路径：从Agentic到Autogenic",
+    "keywords": [
+      "6G网络管理",
+      "意图驱动网络",
+      "网络自治层级",
+      "Large AI Model (LAM)",
+      "Agentic AI框架",
+      "意图解析与资源协调"
+    ],
+    "evidence_titles": [
+      "From Agentic to Autogenic Network Management for AI-Native 6G and Beyond: A Standards Perspective",
+      "Huawei Chair sees agents ushering in new decade of mobile growth",
+      "Criticality-Based Guard Rail Validation for AI Agent Decisions in Autonomous Telecom Networks"
+    ]
+  },
+  {
+    "date": "2026-07-10",
+    "title": "物理信息图神经网络驱动的多径无线环境数字地图构建",
+    "keywords": [
+      "RF传播地图",
+      "多径信道建模",
+      "无线覆盖分析",
+      "Physics-Informed Neural Network (PINN)",
+      "图神经网络（GNN）",
+      "物理约束训练"
+    ],
+    "evidence_titles": [
+      "Scene-Conditioned PINN-GNN for Multipath RF Maps: Cross-Scene Generation and In-Scene Completion"
+    ]
+  }
+]

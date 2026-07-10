@@ -1,11 +1,34 @@
 import { supabase } from "../lib/supabase.js";
 import { callClaude } from "../lib/claude.js";
-import { mkdirSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUTPUT_DIR = join(__dirname, "..", "..", "insights");
+const HISTORY_PATH = join(OUTPUT_DIR, "history.json");
+const HISTORY_RETENTION_DAYS = 30;
+
+type HistoryEntry = {
+  date: string;
+  title: string;
+  keywords: string[];
+  evidence_titles: string[];
+};
+
+function loadHistory(): HistoryEntry[] {
+  if (!existsSync(HISTORY_PATH)) return [];
+  try {
+    const raw = JSON.parse(readFileSync(HISTORY_PATH, "utf-8"));
+    const cutoff = new Date(Date.now() - HISTORY_RETENTION_DAYS * 86400_000).toISOString().slice(0, 10);
+    return (raw as HistoryEntry[]).filter(h => h.date >= cutoff);
+  } catch { return []; }
+}
+
+function saveHistory(history: HistoryEntry[]): void {
+  mkdirSync(OUTPUT_DIR, { recursive: true });
+  writeFileSync(HISTORY_PATH, JSON.stringify(history, null, 2), "utf-8");
+}
 
 const NETWORK_KEYWORDS = [
   "O-RAN", "AI-RAN", "RIC", "xApp", "rApp", "RAN", "5G", "6G",
@@ -114,7 +137,7 @@ type ScoredItem = {
   score: number;
 };
 
-function buildDiscoveryPrompt(candidates: ScoredItem[]): string {
+function buildDiscoveryPrompt(candidates: ScoredItem[], history: HistoryEntry[]): string {
   const items = candidates.slice(0, 30).map((c, i) => ({
     idx: i + 1,
     type: c.type,
@@ -146,13 +169,15 @@ function buildDiscoveryPrompt(candidates: ScoredItem[]): string {
 降权方向：纯通用 AI、应用层聊天机器人、纯政策/投资信息、无网络机制的云基础设施
 剔除：neural network/social network/quantum network 等非通信网络
 
+请直接输出纯 JSON，不要用 markdown 代码块包裹，不要在 JSON 前后添加任何说明文字。
+
 输出格式（JSON）：
 {
   "directions": [
     {
       "title": "具体的技术方向标题（20-25字中文）",
       "summary": "150字以内技术概要",
-      "evidence": ["引用的论文/新闻编号和标题"],
+      "evidence": ["Paper 1: 论文标题", "News 5: 新闻标题"],
       "network_object": "涉及的网络对象",
       "ai_method": "涉及的 AI 方法",
       "europe_connection": "欧洲连接点（机构/标准/运营商/项目），无则写'无直接连接'",
@@ -164,7 +189,12 @@ function buildDiscoveryPrompt(candidates: ScoredItem[]): string {
   "dropped": ["被剔除的候选及原因（简述）"]
 }
 
-候选数据：
+${history.length > 0 ? `去重要求：以下方向已在近期推荐过，请跳过这些方向，除非本周有重要的新论文/新实验/新标准进展（不是同一批论文的不同组合）。如果某个已推荐方向确实有显著新证据，可以再次推荐但必须在 summary 中明确标注"[更新]"并说明新增了什么。
+
+已推荐方向：
+${history.map(h => `- [${h.date}] ${h.title}（关键词: ${h.keywords.join(", ")}）`).join("\n")}
+
+` : ""}候选数据：
 ${JSON.stringify(items, null, 2)}`;
 }
 
@@ -212,7 +242,10 @@ export async function discoverInsightDirections(): Promise<{ directions: number;
     return { directions: 0, outputPath: "" };
   }
 
-  const prompt = buildDiscoveryPrompt(scored);
+  const history = loadHistory();
+  console.log(`[insight-discovery] ${history.length} past directions in history (${HISTORY_RETENTION_DAYS}d window)`);
+
+  const prompt = buildDiscoveryPrompt(scored, history);
   console.log("[insight-discovery] Calling Claude for direction analysis...");
   const result = callClaude(prompt, { timeout: 180_000 });
 
@@ -221,18 +254,49 @@ export async function discoverInsightDirections(): Promise<{ directions: number;
     return { directions: 0, outputPath: "" };
   }
 
-  // Parse JSON from Claude response
+  // Parse JSON from Claude response — handle code fences and trailing text
   let parsed: any = null;
   try {
-    const jsonMatch = result.match(/\{[\s\S]*"directions"[\s\S]*\}/);
-    if (jsonMatch) parsed = JSON.parse(jsonMatch[0]);
-  } catch { /* fall through */ }
+    let json = result;
+    const fenceMatch = result.match(/```(?:json)?\s*\n([\s\S]*?)```/);
+    if (fenceMatch) json = fenceMatch[1];
+    const braceStart = json.indexOf("{");
+    if (braceStart >= 0) {
+      let depth = 0;
+      let end = -1;
+      for (let i = braceStart; i < json.length; i++) {
+        if (json[i] === "{") depth++;
+        else if (json[i] === "}") { depth--; if (depth === 0) { end = i; break; } }
+      }
+      if (end > 0) parsed = JSON.parse(json.slice(braceStart, end + 1));
+    }
+  } catch (e) {
+    console.warn("[insight-discovery] JSON parse failed:", e instanceof Error ? e.message : e);
+  }
 
   // Build idx→url lookup for the 30 items sent to Claude
   const itemsForClaude = scored.slice(0, 30);
   const evidenceUrlMap = new Map<number, string | null>();
   for (let i = 0; i < itemsForClaude.length; i++) {
     evidenceUrlMap.set(i + 1, itemsForClaude[i].url);
+  }
+
+  // Save new directions to history for dedup
+  if (parsed?.directions?.length) {
+    const dateStr = new Date().toISOString().slice(0, 10);
+    const newEntries: HistoryEntry[] = parsed.directions.map((d: any) => ({
+      date: dateStr,
+      title: d.title,
+      keywords: [
+        ...(d.network_object ?? "").split(/[,、，]/).map((s: string) => s.trim()).filter(Boolean),
+        ...(d.ai_method ?? "").split(/[,、，]/).map((s: string) => s.trim()).filter(Boolean),
+      ].slice(0, 10),
+      evidence_titles: (d.evidence ?? []).map((e: string) =>
+        e.replace(/^[#]?\s*(?:Paper|News)?\s*\d+(?:\s*[/／]\s*#?\d+)?\s*[.:]\s*/i, "").trim()
+      ),
+    }));
+    saveHistory([...history, ...newEntries]);
+    console.log(`[insight-discovery] Saved ${newEntries.length} directions to history`);
   }
 
   const dateStr = new Date().toISOString().slice(0, 10);
@@ -265,15 +329,26 @@ export async function discoverInsightDirections(): Promise<{ directions: number;
       if (d.evidence?.length) {
         lines.push("**支撑证据:**");
         for (const e of d.evidence) {
-          // Try to extract leading idx number → convert to link
-          const idxMatch = e.match(/^(\d+)\.?\s*/);
+          // Extract idx from various formats: "1.", "#1", "Paper 1:", "#1/#2"
+          const nums: number[] = [];
+          const patterns = [
+            /^#?(Paper|News)?\s*(\d+)\s*[/／]\s*#?(\d+)/i,  // #29/#30 or Paper 29/30
+            /^#?(?:Paper|News)?\s*(\d+)[.:\s]/i,             // Paper 1: or #1. or 1.
+          ];
+          for (const pat of patterns) {
+            const m = e.match(pat);
+            if (m) {
+              if (m[3]) { nums.push(parseInt(m[2], 10), parseInt(m[3], 10)); }
+              else { nums.push(parseInt(m[1] ?? m[2], 10)); }
+              break;
+            }
+          }
           let linkText = e;
-          if (idxMatch) {
-            const idx = parseInt(idxMatch[1], 10);
-            const url = evidenceUrlMap.get(idx);
+          if (nums.length > 0) {
+            const url = evidenceUrlMap.get(nums[0]);
             if (url) {
-              const title = e.slice(idxMatch[0].length).replace(/^["""]|["""]$/g, "").trim();
-              linkText = `[${title}](${url})`;
+              const titlePart = e.replace(/^[#]?\s*(?:Paper|News)?\s*\d+(?:\s*[/／]\s*#?\d+)?\s*[.:]\s*/i, "").replace(/^["""]|["""]$/g, "").trim();
+              linkText = `[${titlePart || e}](${url})`;
             }
           }
           lines.push(`- ${linkText}`);
