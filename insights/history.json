@@ -83,5 +83,63 @@
     "evidence_titles": [
       "Scene-Conditioned PINN-GNN for Multipath RF Maps: Cross-Scene Generation and In-Scene Completion"
     ]
+  },
+  {
+    "date": "2026-07-11",
+    "title": "图神经网络时空预测补偿5G协作波束赋形回传时延失配",
+    "keywords": [
+      "5G RAN协作波束赋形（CBF）",
+      "基站间回传链路",
+      "多小区调度协调",
+      "图神经网络（GNN）",
+      "时空序列预测"
+    ],
+    "evidence_titles": [
+      "Spatio-Temporal Scheduling Prediction Under Backhaul Delay for Resilient Coordinated Beamforming"
+    ]
+  },
+  {
+    "date": "2026-07-11",
+    "title": "小语言模型驱动LEO卫星网络BBR拥塞控制自适应",
+    "keywords": [
+      "LEO卫星网络传输层",
+      "BBR拥塞控制协议",
+      "小语言模型（SLM）",
+      "序列化网络状态推理"
+    ],
+    "evidence_titles": [
+      "Small Language Model-based Control for BBR over Low Earth Orbit Satellite Internet"
+    ]
+  },
+  {
+    "date": "2026-07-11",
+    "title": "O-RAN AI模型运行时漂移自适应与xApp部署实测验证",
+    "keywords": [
+      "O-RAN Near-RT RIC",
+      "xApp",
+      "RAN闭环控制",
+      "强化学习驱动的模型漂移自适应",
+      "AI推理延迟实测分析"
+    ],
+    "evidence_titles": [
+      "ADORN: Adaptive Drift handling for Open RAN using Reinforcement Learning",
+      "Enabling Real-Time AI in O-RAN: Deploying and Measuring AI Inside a Near-RT RIC xApp"
+    ]
+  },
+  {
+    "date": "2026-07-11",
+    "title": "分布式LLM推理中KV缓存跨节点网络传输加速技术",
+    "keywords": [
+      "数据中心网络",
+      "RoCE/RDMA",
+      "AI集群互联",
+      "投机量化传输",
+      "位置无关KV缓存",
+      "LLM推理服务优化"
+    ],
+    "evidence_titles": [
+      "Lynx: Progressive Speculative Quantization for accelerating KV Transfer in Long-Context Inference",
+      "HYPIC: Accelerating Hybrid-Attention LLM Serving with Position-Independent Caching"
+    ]
   }
 ]
