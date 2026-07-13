@@ -182,5 +182,58 @@
     "evidence_titles": [
       "Communication-Efficient Digital-Twin Coordination for Heterogeneous LLM Embodied Agents over Computing Power Networks"
     ]
+  },
+  {
+    "date": "2026-07-13",
+    "title": "Wi-Fi 7/8多链路异构网络的多智能体演进式吞吐量优化",
+    "keywords": [
+      "Wi-Fi 7/8 WLAN",
+      "多链路操作（MLO）",
+      "异构终端接入",
+      "多智能体演进式引导框架",
+      "协同优化"
+    ],
+    "evidence_titles": [
+      "EvoOMG: An Evolution-Oriented Multi-Agent Guidance Framework for Heterogeneous Legacy-and-MLO Wi-Fi Networks"
+    ]
+  },
+  {
+    "date": "2026-07-13",
+    "title": "数字孪生增强联邦强化学习的车联网抗投毒安全防护",
+    "keywords": [
+      "V2X车联网",
+      "车辆间通信协作决策面",
+      "联邦强化学习（FRL）",
+      "数字孪生驱动的投毒检测"
+    ],
+    "evidence_titles": [
+      "Securing Autonomous Vehicle Systems via Twin-Aware Federated Reinforcement Learning"
+    ]
+  },
+  {
+    "date": "2026-07-13",
+    "title": "UAV辅助6G网络中AI服务质量双维度感知资源调配",
+    "keywords": [
+      "UAV辅助6G网络",
+      "空地协同资源调度",
+      "AI服务质量（QoAIS）建模",
+      "个性化资源优化"
+    ],
+    "evidence_titles": [
+      "Quality-Aware Personalized AI Service Provisioning in UAV-Assisted 6G Networks"
+    ]
+  },
+  {
+    "date": "2026-07-13",
+    "title": "德国电信参与的欧洲主权混合稀疏架构基础大模型",
+    "keywords": [
+      "电信运营商AI基础设施",
+      "端网协同推理",
+      "MoE混合Mamba-Transformer",
+      "稀疏激活推理优化"
+    ],
+    "evidence_titles": [
+      "A Sovereign, Open-Source Foundation Model for German and English"
+    ]
   }
 ]
