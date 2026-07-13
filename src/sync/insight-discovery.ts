@@ -99,11 +99,11 @@ function scoreCandidate(title: string, abstract: string | null): {
 }
 
 async function fetchRecentPapers(days = 7): Promise<CandidatePaper[]> {
-  const since = new Date(Date.now() - days * 86400_000).toISOString();
+  const since = new Date(Date.now() - days * 86400_000).toISOString().slice(0, 10);
   const { data } = await supabase
     .from("papers")
     .select("id, title, abstract, authors, venue, url, relevance_score, companies, created_at")
-    .gte("created_at", since)
+    .gte("published_date", since)
     .order("relevance_score", { ascending: false })
     .limit(200);
   return (data ?? []) as CandidatePaper[];
@@ -183,13 +183,15 @@ function buildDiscoveryPrompt(candidates: ScoredItem[], history: HistoryEntry[])
       "europe_connection": "欧洲连接点（机构/标准/运营商/项目），无则写'无直接连接'",
       "huawei_relevance": "与华为研究方向的技术关联",
       "confidence": "high/medium/low",
-      "priority": 1-5
+      "priority": 1-5,
+      "is_update": false,
+      "update_reason": "仅当 is_update=true 时填写：相比上次推荐新增了什么证据"
     }
   ],
   "dropped": ["被剔除的候选及原因（简述）"]
 }
 
-${history.length > 0 ? `去重要求：以下方向已在近期推荐过，请跳过这些方向，除非本周有重要的新论文/新实验/新标准进展（不是同一批论文的不同组合）。如果某个已推荐方向确实有显著新证据，可以再次推荐但必须在 summary 中明确标注"[更新]"并说明新增了什么。
+${history.length > 0 ? `去重要求：以下方向已在近期推荐过，请跳过这些方向，除非本周有重要的新论文/新实验/新标准进展（不是同一批论文的不同组合）。如果某个已推荐方向确实有显著新证据，可以再次推荐，将 is_update 设为 true 并填写 update_reason。
 
 已推荐方向：
 ${history.map(h => `- [${h.date}] ${h.title}（关键词: ${h.keywords.join(", ")}）`).join("\n")}
@@ -247,7 +249,7 @@ export async function discoverInsightDirections(): Promise<{ directions: number;
 
   const prompt = buildDiscoveryPrompt(scored, history);
   console.log("[insight-discovery] Calling Claude for direction analysis...");
-  const result = callClaude(prompt, { timeout: 180_000 });
+  const result = callClaude(prompt, { timeout: 300_000 });
 
   if (!result) {
     console.error("[insight-discovery] Claude returned empty result");
@@ -315,9 +317,12 @@ export async function discoverInsightDirections(): Promise<{ directions: number;
   if (parsed?.directions?.length) {
     for (const d of parsed.directions) {
       const priorityTag = d.priority <= 2 ? "🔴" : d.priority <= 3 ? "🟡" : "⚪";
-      lines.push(`## ${priorityTag} ${d.title}`);
+      const updateTag = d.is_update ? " 🔄" : "";
+      lines.push(`## ${priorityTag}${updateTag} ${d.title}`);
       lines.push("");
-      lines.push(`**优先级:** ${d.priority}/5 | **置信度:** ${d.confidence}`);
+      const meta = [`**优先级:** ${d.priority}/5`, `**置信度:** ${d.confidence}`];
+      if (d.is_update) meta.push(`**更新**`);
+      lines.push(meta.join(" | "));
       lines.push("");
       lines.push(d.summary);
       lines.push("");
@@ -325,6 +330,9 @@ export async function discoverInsightDirections(): Promise<{ directions: number;
       lines.push(`- **AI 方法:** ${d.ai_method}`);
       lines.push(`- **欧洲连接:** ${d.europe_connection}`);
       lines.push(`- **华为关联:** ${d.huawei_relevance}`);
+      if (d.is_update && d.update_reason) {
+        lines.push(`- **🔄 更新原因:** ${d.update_reason}`);
+      }
       lines.push("");
       if (d.evidence?.length) {
         lines.push("**支撑证据:**");

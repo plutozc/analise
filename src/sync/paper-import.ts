@@ -90,12 +90,13 @@ export const S2_VENUES = [
   "ATC", "FAST", "PPoPP", "ISCA", "MICRO", "HPCA",
   "APNet", "ANCS", "PAM", "TMA", "Middleware", "SenSys", "MobiSys",
 ] as const;
-const S2_FIELDS = "title,authors,venue,year,citationCount,url,abstract,externalIds";
+const S2_FIELDS = "title,authors,venue,year,publicationDate,citationCount,url,abstract,externalIds";
 
 type S2Paper = {
   paperId: string;
   title: string; authors: { name: string }[]; venue: string | null;
-  year: number | null; citationCount: number | null; url: string | null;
+  year: number | null; publicationDate: string | null;
+  citationCount: number | null; url: string | null;
   abstract: string | null; externalIds: Record<string, string> | null;
 };
 
@@ -105,7 +106,7 @@ function parseS2Papers(data: S2Paper[], venue: string): ImportedPaper[] {
     authors: p.authors.map((a) => a.name),
     venue,
     url: p.externalIds?.ArXiv ? `https://arxiv.org/abs/${p.externalIds.ArXiv}` : p.url,
-    published_date: p.year ? `${p.year}-01-01` : null,
+    published_date: p.publicationDate ?? (p.year ? `${p.year}-01-01` : null),
     abstract: p.abstract?.slice(0, 2000) ?? null,
     topics: [],
     companies: inferCompanies(`${p.title} ${p.abstract ?? ""}`),
@@ -268,7 +269,7 @@ async function upsertPaper(p: ImportedPaper): Promise<InsertedPaper | null> {
   // Check by exact title
   const { data: byTitle } = await supabase
     .from("papers")
-    .select("id, citation_count, venue")
+    .select("id, citation_count, venue, published_date")
     .eq("title", p.title)
     .maybeSingle();
 
@@ -279,6 +280,9 @@ async function upsertPaper(p: ImportedPaper): Promise<InsertedPaper | null> {
     }
     if (isRealVenue(p.venue) && !isRealVenue(byTitle.venue)) {
       updates.venue = p.venue;
+    }
+    if (p.published_date && p.published_date > "1970-01-01" && (!byTitle.published_date || byTitle.published_date.endsWith("-01-01")) && !p.published_date.endsWith("-01-01")) {
+      updates.published_date = p.published_date;
     }
     if (Object.keys(updates).length > 0) {
       await supabase.from("papers").update(updates).eq("id", byTitle.id);

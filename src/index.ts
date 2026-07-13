@@ -127,6 +127,17 @@ async function main() {
       case "insights": {
         const ir = await discoverInsightDirections();
         console.log(`[sync-worker] Insight discovery: ${ir.directions} directions, output: ${ir.outputPath}`);
+        if (ir.directions > 0) {
+          const { execSync } = await import("child_process");
+          try {
+            execSync('git add insights/ && git commit -m "docs: insight directions $(date +%Y-%m-%d)" && git push', {
+              encoding: "utf-8", timeout: 30_000, stdio: "pipe",
+            });
+            console.log("[sync-worker] Insights pushed to github");
+          } catch (e) {
+            console.warn("[sync-worker] Insights git push failed:", e instanceof Error ? e.message : e);
+          }
+        }
         break;
       }
       case "signals": {
