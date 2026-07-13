@@ -141,5 +141,46 @@
       "Lynx: Progressive Speculative Quantization for accelerating KV Transfer in Long-Context Inference",
       "HYPIC: Accelerating Hybrid-Attention LLM Serving with Position-Independent Caching"
     ]
+  },
+  {
+    "date": "2026-07-13",
+    "title": "AI原生RAN多智能体冲突检测与交互图自主重建机制",
+    "keywords": [
+      "AI-RAN 6G多智能体控制面",
+      "xApp间策略交互",
+      "图神经网络（GNN）",
+      "交互学习",
+      "自主图重建"
+    ],
+    "evidence_titles": [
+      "Conflict Detection in AI-RAN: Efficient Interaction Learning and Autonomous Graph Reconstruction"
+    ]
+  },
+  {
+    "date": "2026-07-13",
+    "title": "6G意图驱动网络的隐私保护闭环履行与保障机制",
+    "keywords": [
+      "O-RAN RIC",
+      "6G RAN意图管理框架",
+      "3GPP TS 28.312",
+      "隐私保护学习",
+      "轻量级意图保障推理"
+    ],
+    "evidence_titles": [
+      "Privacy-Preserving Intent Fulfilment and Assurance for 6G RAN"
+    ]
+  },
+  {
+    "date": "2026-07-13",
+    "title": "算力网络中异构LLM智能体团队的数字孪生通信协调",
+    "keywords": [
+      "算力网络（Computing Power Network）",
+      "数字孪生通信面",
+      "异构LLM多智能体协调",
+      "数字孪生驱动通信优化"
+    ],
+    "evidence_titles": [
+      "Communication-Efficient Digital-Twin Coordination for Heterogeneous LLM Embodied Agents over Computing Power Networks"
+    ]
   }
 ]
