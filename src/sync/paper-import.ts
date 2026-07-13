@@ -76,7 +76,7 @@ export async function syncArxivPapers(year: number): Promise<{ stats: CategorySt
     } catch (err) {
       stats.push({ category: cat, status: "error", count: 0, error: err instanceof Error ? err.message : "unknown" });
     }
-    await new Promise((r) => setTimeout(r, 3000));
+    await new Promise((r) => setTimeout(r, 5000));
   }
   return { stats, inserted };
 }
@@ -144,30 +144,46 @@ export async function syncS2Papers(year: number): Promise<{ stats: CategoryStat[
       fields: S2_FIELDS, limit: "100",
     });
     try {
-      const res = await fetch(`https://api.semanticscholar.org/graph/v1/paper/search?${params}`, {
-        headers, signal: AbortSignal.timeout(15000),
-      });
-      if (!res.ok) { stats.push({ category: venue, status: "error", count: 0, error: `HTTP ${res.status}` }); continue; }
+      let res: Response | null = null;
+      for (const backoff of [0, 10_000, 30_000, 60_000]) {
+        if (backoff > 0) {
+          console.log(`[s2] ${venue}: 429, retrying in ${backoff / 1000}s...`);
+          await new Promise((r) => setTimeout(r, backoff));
+        }
+        res = await fetch(`https://api.semanticscholar.org/graph/v1/paper/search?${params}`, {
+          headers, signal: AbortSignal.timeout(15000),
+        });
+        if (res.status !== 429) break;
+      }
+      if (!res || !res.ok) { stats.push({ category: venue, status: "error", count: 0, error: `HTTP ${res?.status ?? "no response"}` }); continue; }
       const json: { data: S2Paper[] } = await res.json();
 
-      // Backfill null abstracts via single-paper detail API (much higher return rate)
+      // Backfill null abstracts via batch API (1 request per venue instead of N)
       const nullAbstract = (json.data ?? []).filter(p => !p.abstract && p.paperId);
       if (nullAbstract.length > 0) {
-        let filled = 0;
-        for (const p of nullAbstract) {
-          await new Promise((r) => setTimeout(r, 1100)); // 1 req/s rate limit
-          try {
-            const dr = await fetch(
-              `https://api.semanticscholar.org/graph/v1/paper/${p.paperId}?fields=abstract`,
-              { headers, signal: AbortSignal.timeout(10000) },
-            );
-            if (dr.ok) {
-              const detail: { abstract: string | null } = await dr.json();
-              if (detail.abstract) { p.abstract = detail.abstract; filled++; }
+        try {
+          const br = await fetch(
+            `https://api.semanticscholar.org/graph/v1/paper/batch?fields=abstract`,
+            {
+              method: "POST",
+              headers: { ...headers, "Content-Type": "application/json" },
+              body: JSON.stringify({ ids: nullAbstract.map(p => p.paperId) }),
+              signal: AbortSignal.timeout(30000),
+            },
+          );
+          if (br.ok) {
+            const details: ({ paperId: string; abstract: string | null } | null)[] = await br.json();
+            let filled = 0;
+            for (let i = 0; i < details.length; i++) {
+              const d = details[i];
+              if (d?.abstract && nullAbstract[i]) {
+                nullAbstract[i].abstract = d.abstract;
+                filled++;
+              }
             }
-          } catch { /* skip on timeout/network err */ }
-        }
-        if (filled > 0) console.log(`[s2] ${venue}: backfilled ${filled}/${nullAbstract.length} null abstracts`);
+            if (filled > 0) console.log(`[s2] ${venue}: backfilled ${filled}/${nullAbstract.length} abstracts (batch)`);
+          }
+        } catch { /* skip on batch error */ }
       }
 
       const papers = parseS2Papers(json.data ?? [], venue);
@@ -233,7 +249,7 @@ export async function syncCompanyPapers(year: number): Promise<{ stats: Category
     } catch (err) {
       stats.push({ category: `company:${slug}`, status: "error", count: 0, error: err instanceof Error ? err.message : "unknown" });
     }
-    await new Promise((r) => setTimeout(r, 3500));
+    await new Promise((r) => setTimeout(r, 5000));
   }
   return { stats, inserted };
 }

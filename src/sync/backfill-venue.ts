@@ -62,12 +62,14 @@ async function backfillViaArxiv(papers: { id: string; url: string }[], batchSize
 export async function backfillVenues(batchSize = 100): Promise<{ checked: number; updated: number; errors: number }> {
   console.log(`[backfill-venue] Starting...`);
 
+  const since = new Date(Date.now() - 7 * 86400_000).toISOString();
   const { data: papers, error } = await supabase
     .from("papers")
     .select("id, url")
     .eq("venue", "arXiv")
     .ilike("url", "%arxiv%")
-    .order("published_date", { ascending: false })
+    .gte("created_at", since)
+    .order("created_at", { ascending: false })
     .limit(500);
 
   if (error || !papers?.length) {

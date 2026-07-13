@@ -142,12 +142,11 @@ async function main() {
       case "all": {
         const year = parseInt(process.env.SYNC_YEAR ?? String(new Date().getFullYear()), 10);
 
-        // Phase 1: sync data sources in parallel
-        const [papersResult, feedsResult, rfcsResult, confResult] = await Promise.allSettled([
+        // Phase 1: sync data sources in parallel (papers + feeds + rfcs)
+        const [papersResult, feedsResult, rfcsResult] = await Promise.allSettled([
           syncAllPapers(year),
           syncAllFeeds(),
           syncRFCs().then((s) => ({ task: "rfcs", stats: s })),
-          crawlConferences(year).then((s) => ({ task: "conferences", stats: s })),
         ]);
 
         let paperInserted: Awaited<ReturnType<typeof syncAllPapers>>["inserted"] | null = null;
@@ -171,13 +170,7 @@ async function main() {
           console.error(`[sync-worker] rfcs sync failed:`, rfcsResult.reason);
         }
 
-        if (confResult.status === "fulfilled") {
-          console.log(`[sync-worker] conferences:`, JSON.stringify(confResult.value.stats));
-        } else {
-          console.error(`[sync-worker] conference crawl failed:`, confResult.reason);
-        }
-
-        // Phase 2: classify all new papers
+        // Phase 2: classify new papers + rebuild conferences (depends on papers)
         if (paperInserted && paperInserted.length > 0) {
           const maxBatch = intEnv("MAX_PAPERS_PER_RUN", 500);
           const batch = maxBatch > 0 ? paperInserted.slice(0, maxBatch) : [];
@@ -186,6 +179,13 @@ async function main() {
           }
           const cr = batch.length > 0 ? await classifyPapers(30, batch) : { updated: 0, processed: 0 };
           console.log(`[sync-worker] AI classify: ${cr.updated}/${cr.processed}`);
+        }
+
+        try {
+          const confResult = await crawlConferences(year);
+          console.log(`[sync-worker] conferences:`, JSON.stringify(confResult));
+        } catch (err) {
+          console.error(`[sync-worker] conference crawl failed:`, err);
         }
         break;
       }
