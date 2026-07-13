@@ -48,6 +48,19 @@ const AI_KEYWORDS = [
   "transformer", "neural network", "deep learning", "federated learning",
 ];
 
+const SOFTWARE_KEYWORDS = [
+  // Network software
+  "SDN controller", "network OS", "SONiC", "VRP", "ONOS", "OpenDaylight",
+  "network orchestration", "service mesh", "CNI", "Cilium", "Calico",
+  // System software
+  "eBPF", "XDP", "DPDK", "kernel", "P4", "programmable switch",
+  "container network", "Kubernetes", "cloud native", "microservice",
+  // AI engineering
+  "MLOps", "model serving", "inference framework", "vLLM", "TensorRT",
+  "AI agent framework", "LLM serving", "model deployment", "ONNX",
+  "distributed training", "pipeline parallel", "tensor parallel",
+];
+
 const EUROPE_KEYWORDS = [
   "ETH Zurich", "EPFL", "TU Munich", "TU Berlin", "KTH", "Aalto",
   "Politecnico", "UCL", "Cambridge", "Oxford", "Imperial College",
@@ -78,12 +91,13 @@ function hasKeywordMatch(text: string, keywords: string[]): string[] {
 }
 
 function scoreCandidate(title: string, abstract: string | null): {
-  networkHits: string[]; aiHits: string[]; europeHits: string[];
+  networkHits: string[]; aiHits: string[]; softwareHits: string[]; europeHits: string[];
   isNetworkAI: boolean; score: number;
 } {
   const text = `${title} ${abstract ?? ""}`;
   const networkHits = hasKeywordMatch(text, NETWORK_KEYWORDS);
   const aiHits = hasKeywordMatch(text, AI_KEYWORDS);
+  const softwareHits = hasKeywordMatch(text, SOFTWARE_KEYWORDS);
   const europeHits = hasKeywordMatch(text, EUROPE_KEYWORDS);
   const isNetworkAI = networkHits.length > 0 && aiHits.length > 0;
 
@@ -92,10 +106,13 @@ function scoreCandidate(title: string, abstract: string | null): {
   else if (networkHits.length > 0) score += 2;
   else if (aiHits.length > 0) score += 1;
   if (europeHits.length > 0) score += 3;
+  if (softwareHits.length > 0) score += 3;
+  if (networkHits.length > 0 && softwareHits.length > 0) score += 2;
   score += Math.min(networkHits.length, 3);
   score += Math.min(aiHits.length, 2);
+  score += Math.min(softwareHits.length, 2);
 
-  return { networkHits, aiHits, europeHits, isNetworkAI, score };
+  return { networkHits, aiHits, softwareHits, europeHits, isNetworkAI, score };
 }
 
 async function fetchRecentPapers(days = 7): Promise<CandidatePaper[]> {
@@ -132,6 +149,7 @@ type ScoredItem = {
   relevance: number;
   networkHits: string[];
   aiHits: string[];
+  softwareHits: string[];
   europeHits: string[];
   isNetworkAI: boolean;
   score: number;
@@ -149,6 +167,7 @@ function buildDiscoveryPrompt(candidates: ScoredItem[], history: HistoryEntry[])
     companies: c.companies,
     networkKeywords: c.networkHits,
     aiKeywords: c.aiHits,
+    softwareKeywords: c.softwareHits,
     europeKeywords: c.europeHits,
     isNetworkAI: c.isNetworkAI,
     relevance: c.relevance,
@@ -156,16 +175,21 @@ function buildDiscoveryPrompt(candidates: ScoredItem[], history: HistoryEntry[])
 
   return `你是华为研究所的技术情报分析员。基于以下最近一周的论文和新闻数据，发掘 3-5 个可以撰写技术洞察文章的方向。
 
-研究范围：面向欧洲的网络 AI 技术发展。优先选择同时涉及"网络系统/协议/基础设施"和"AI 方法"的交叉方向。
+研究范围：面向欧洲的网络 AI 技术发展与网络软件创新。优先选择以下交叉方向：
+- "网络系统/协议/基础设施" × "AI 方法"
+- "网络系统" × "软件工程/系统软件"
+- "AI 工程软件" × "网络部署"
 
 评估维度：
 1. 技术新颖度：是否有新架构/新实验/新数据？
-2. Network AI 相关性：必须同时包含明确的网络对象和 AI 方法
-3. 欧洲连接：作者、机构、资助、标准化是否涉及欧洲？
-4. 技术深度：是否有量化指标或具体技术设计？
-5. 与华为研究方向关联：NCE、网络数字地图、自动驾驶网络、光网络控制、网络大模型等
+2. Network AI 相关性：同时包含明确的网络对象和 AI 方法（高权重）
+3. 网络软件相关性：涉及网络OS、SDN控制器、eBPF/XDP数据面、可编程交换、云原生网络、服务网格、网络编排（高权重）
+4. AI 工程软件相关性：涉及模型服务/部署、推理框架、分布式训练、MLOps、AI Agent 框架（中权重）
+5. 欧洲连接：作者、机构、资助、标准化是否涉及欧洲？
+6. 技术深度：是否有量化指标或具体技术设计？
+7. 与华为研究方向关联：NCE、网络数字地图、自动驾驶网络、光网络控制、网络大模型、CloudEngine、iMaster NCE等
 
-高优先方向：网络控制闭环、RAN 智能控制、CSI/PHY AI、网络数字孪生、AI 集群网络、分布式推理
+高优先方向：网络控制闭环、RAN 智能控制、CSI/PHY AI、网络数字孪生、AI 集群网络、分布式推理、网络可编程数据面（eBPF/P4）、云原生网络（CNI/服务网格）、网络OS演进（SONiC）、AI推理服务架构
 降权方向：纯通用 AI、应用层聊天机器人、纯政策/投资信息、无网络机制的云基础设施
 剔除：neural network/social network/quantum network 等非通信网络
 
@@ -179,7 +203,8 @@ function buildDiscoveryPrompt(candidates: ScoredItem[], history: HistoryEntry[])
       "summary": "150字以内技术概要",
       "evidence": ["Paper 1: 论文标题", "News 5: 新闻标题"],
       "network_object": "涉及的网络对象",
-      "ai_method": "涉及的 AI 方法",
+      "ai_method": "涉及的 AI 方法，无则写'无'",
+      "software_stack": "涉及的软件技术栈（网络OS/控制器/数据面/云原生/推理框架等），无则写'无'",
       "europe_connection": "欧洲连接点（机构/标准/运营商/项目），无则写'无直接连接'",
       "huawei_relevance": "与华为研究方向的技术关联",
       "confidence": "high/medium/low",
@@ -328,6 +353,9 @@ export async function discoverInsightDirections(): Promise<{ directions: number;
       lines.push("");
       lines.push(`- **网络对象:** ${d.network_object}`);
       lines.push(`- **AI 方法:** ${d.ai_method}`);
+      if (d.software_stack && d.software_stack !== "无") {
+        lines.push(`- **软件技术栈:** ${d.software_stack}`);
+      }
       lines.push(`- **欧洲连接:** ${d.europe_connection}`);
       lines.push(`- **华为关联:** ${d.huawei_relevance}`);
       if (d.is_update && d.update_reason) {
