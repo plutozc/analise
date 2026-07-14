@@ -138,7 +138,9 @@ export async function syncS2Papers(year: number): Promise<{ stats: CategoryStat[
     "SenSys": "sensor", "MobiSys": "mobile",
   };
 
-  for (const venue of S2_VENUES) {
+  for (let vi = 0; vi < S2_VENUES.length; vi++) {
+    const venue = S2_VENUES[vi];
+    if (vi > 0) await new Promise((r) => setTimeout(r, 2000));
     const query = S2_QUERIES[venue] ?? "computer science";
     const params = new URLSearchParams({
       query, year: String(year), venue,
