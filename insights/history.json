@@ -294,5 +294,66 @@
       "Security and Privacy in Agentic AI: Grand Challenges and Future Directions",
       "Blockchain-Linked Auditable Decision Management for Telecom/IoT Fraud-Control Requests"
     ]
+  },
+  {
+    "date": "2026-07-14",
+    "title": "分离式LLM推理集群MoE专家感知路由与会话级调度优化",
+    "keywords": [
+      "AI推理集群GPU池间网络",
+      "Prefill-Decode分离式数据中心拓扑",
+      "MoE专家局部性路由",
+      "负载感知请求偏转",
+      "会话级吞吐量调度"
+    ],
+    "evidence_titles": [
+      "ELDR: Expert-Locality-Aware Decode Routing for PD-Disaggregated MoE Serving",
+      "Towards Load-Aware Prefill Deflection for Disaggregated LLM Serving",
+      "SMetric: Rethink LLM Scheduling for Serving Agents with Balanced Session-centric Scheduling",
+      "Omni-Flow: A Unified Workflow Orchestration and Distributed KV Cache Sharing Framework for Multimodal Inference"
+    ]
+  },
+  {
+    "date": "2026-07-14",
+    "title": "LLM跨域分布式训练驱动光传输网新型技术使能与容错",
+    "keywords": [
+      "WAN光传输网络",
+      "AI训练集群跨域互联",
+      "ZR+光模块",
+      "分布式训练并行策略",
+      "非均匀张量并行容错"
+    ],
+    "evidence_titles": [
+      "LLMs and Optical Networks: A Symbiotic Relationship",
+      "Enhancing Goodput in Large-Scale LLM Training with Nonuniform Tensor Parallelism"
+    ]
+  },
+  {
+    "date": "2026-07-14",
+    "title": "6G RIS-OFDM联合优化从凸松弛到基础模型方法论演进",
+    "keywords": [
+      "6G智能反射面（RIS）",
+      "OFDM波形设计",
+      "无线物理层优化",
+      "图神经网络（GNN）",
+      "基础模型（Foundation Model）",
+      "深度展开优化"
+    ],
+    "evidence_titles": [
+      "Optimization Algorithms for Joint OFDM Waveform Design and RIS Configuration in 6G Networks: From Convex Relaxation to Foundation Models"
+    ]
+  },
+  {
+    "date": "2026-07-14",
+    "title": "IoT异构拓扑下GNN与KAN融合的网络入侵检测增强架构",
+    "keywords": [
+      "IoT异构网络拓扑",
+      "网络流量检测面",
+      "图神经网络（GNN）",
+      "Kolmogorov-Arnold网络（KAN）",
+      "图结构特征增强"
+    ],
+    "evidence_titles": [
+      "Enhanced Feature Extraction for IoT Network Intrusion Detection Using GNNs and KAN"
+    ]
   }
 ]
