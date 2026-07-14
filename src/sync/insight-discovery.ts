@@ -115,18 +115,32 @@ function scoreCandidate(title: string, abstract: string | null): {
   return { networkHits, aiHits, softwareHits, europeHits, isNetworkAI, score };
 }
 
-async function fetchRecentPapers(days = 7): Promise<CandidatePaper[]> {
-  const since = new Date(Date.now() - days * 86400_000).toISOString().slice(0, 10);
-  const { data } = await supabase
-    .from("papers")
-    .select("id, title, abstract, authors, venue, url, relevance_score, companies, created_at")
-    .gte("published_date", since)
-    .order("relevance_score", { ascending: false })
-    .limit(200);
-  return (data ?? []) as CandidatePaper[];
+async function fetchRecentPapers(days = 14): Promise<CandidatePaper[]> {
+  const sinceDate = new Date(Date.now() - days * 86400_000).toISOString().slice(0, 10);
+  const sinceTs = new Date(Date.now() - days * 86400_000).toISOString();
+  const fields = "id, title, abstract, authors, venue, url, relevance_score, companies, created_at";
+
+  const [byPublished, byCreated] = await Promise.all([
+    supabase.from("papers").select(fields)
+      .gte("published_date", sinceDate)
+      .order("relevance_score", { ascending: false }).limit(200),
+    supabase.from("papers").select(fields)
+      .gte("created_at", sinceTs)
+      .order("relevance_score", { ascending: false }).limit(200),
+  ]);
+
+  const seen = new Set<string>();
+  const result: CandidatePaper[] = [];
+  for (const p of [...(byPublished.data ?? []), ...(byCreated.data ?? [])]) {
+    if (seen.has(p.id)) continue;
+    seen.add(p.id);
+    result.push(p as CandidatePaper);
+  }
+  result.sort((a, b) => (b.relevance_score ?? 0) - (a.relevance_score ?? 0));
+  return result.slice(0, 300);
 }
 
-async function fetchRecentNews(days = 7): Promise<CandidateNews[]> {
+async function fetchRecentNews(days = 14): Promise<CandidateNews[]> {
   const since = new Date(Date.now() - days * 86400_000).toISOString();
   const { data } = await supabase
     .from("news_items")
@@ -173,7 +187,7 @@ function buildDiscoveryPrompt(candidates: ScoredItem[], history: HistoryEntry[])
     relevance: c.relevance,
   }));
 
-  return `你是华为研究所的技术情报分析员。基于以下最近一周的论文和新闻数据，发掘 3-5 个可以撰写技术洞察文章的方向。
+  return `你是华为研究所的技术情报分析员。基于以下最近两周的论文和新闻数据，发掘 3-5 个可以撰写技术洞察文章的方向。
 
 研究范围：面向欧洲的网络 AI 技术发展与网络软件创新。优先选择以下交叉方向：
 - "网络系统/协议/基础设施" × "AI 方法"
@@ -193,7 +207,7 @@ function buildDiscoveryPrompt(candidates: ScoredItem[], history: HistoryEntry[])
 降权方向：纯通用 AI、应用层聊天机器人、纯政策/投资信息、无网络机制的云基础设施
 剔除：neural network/social network/quantum network 等非通信网络
 
-请直接输出纯 JSON，不要用 markdown 代码块包裹，不要在 JSON 前后添加任何说明文字。
+请直接输出纯 JSON，不要用 markdown 代码块包裹，不要在 JSON 前后添加任何说明文字。JSON 字符串值中不要使用双引号（"），用单引号或书名号替代。
 
 输出格式（JSON）：
 {
@@ -229,8 +243,8 @@ export async function discoverInsightDirections(): Promise<{ directions: number;
   console.log("[insight-discovery] Fetching recent papers and news...");
 
   const [papers, news] = await Promise.all([
-    fetchRecentPapers(7),
-    fetchRecentNews(7),
+    fetchRecentPapers(),
+    fetchRecentNews(),
   ]);
 
   console.log(`[insight-discovery] ${papers.length} papers, ${news.length} news in last 7 days`);
@@ -287,6 +301,8 @@ export async function discoverInsightDirections(): Promise<{ directions: number;
     let json = result;
     const fenceMatch = result.match(/```(?:json)?\s*\n([\s\S]*?)```/);
     if (fenceMatch) json = fenceMatch[1];
+    // Replace smart quotes with plain equivalents before extracting JSON
+    json = json.replace(/[\u201c\u201d]/g, "'").replace(/[\u2018\u2019]/g, "'");
     const braceStart = json.indexOf("{");
     if (braceStart >= 0) {
       let depth = 0;
@@ -295,7 +311,20 @@ export async function discoverInsightDirections(): Promise<{ directions: number;
         if (json[i] === "{") depth++;
         else if (json[i] === "}") { depth--; if (depth === 0) { end = i; break; } }
       }
-      if (end > 0) parsed = JSON.parse(json.slice(braceStart, end + 1));
+      if (end > 0) {
+        let raw = json.slice(braceStart, end + 1);
+        try {
+          parsed = JSON.parse(raw);
+        } catch {
+          // Fallback: fix unescaped quotes in string values line by line
+          const fixed = raw.split("\n").map(line => {
+            const m = line.match(/^(\s*"[^"]+"\s*:\s*")(.+)("\s*,?\s*)$/);
+            if (!m) return line;
+            return m[1] + m[2].replace(/"/g, "'") + m[3];
+          }).join("\n");
+          parsed = JSON.parse(fixed);
+        }
+      }
     }
   } catch (e) {
     console.warn("[insight-discovery] JSON parse failed:", e instanceof Error ? e.message : e);
@@ -334,7 +363,7 @@ export async function discoverInsightDirections(): Promise<{ directions: number;
   const lines: string[] = [];
   lines.push(`# 技术洞察方向发掘 — ${dateStr}`);
   lines.push("");
-  lines.push(`数据范围：最近 7 天 | 论文 ${papers.length} 篇 | 新闻 ${news.length} 条 | 候选 ${scored.length} 条`);
+  lines.push(`数据范围：最近 14 天 | 论文 ${papers.length} 篇 | 新闻 ${news.length} 条 | 候选 ${scored.length} 条`);
   lines.push("");
   lines.push("---");
   lines.push("");
