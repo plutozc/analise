@@ -355,5 +355,61 @@
     "evidence_titles": [
       "Enhanced Feature Extraction for IoT Network Intrusion Detection Using GNNs and KAN"
     ]
+  },
+  {
+    "date": "2026-07-14",
+    "title": "分布式AI集群集合通信原语的低精度量化与无同步化革新",
+    "keywords": [
+      "AI训练/推理集群互联网络",
+      "AllReduce集合通信原语",
+      "LLM分布式训练与推理"
+    ],
+    "evidence_titles": [
+      "GIFT: Geometry-Informed Low-precision Gradient Communication for LLM Pretraining",
+      "SiFAR: Synchronization-Free All-Reduce for Low-Latency LLM Inference",
+      "Enhancing Goodput in Large-Scale LLM Training with Nonuniform Tensor Parallelism"
+    ]
+  },
+  {
+    "date": "2026-07-14",
+    "title": "非GPU加速器大模型推理部署工程瓶颈与生态迁移实测",
+    "keywords": [
+      "AI推理集群",
+      "加速器互联",
+      "MoE大模型推理",
+      "多模态模型推理"
+    ],
+    "evidence_titles": [
+      "On the Limitations of Non-GPU AI Accelerators for Large-Model Inference: A Field Study of MoE and Multimodal Serving on Huawei Ascend"
+    ]
+  },
+  {
+    "date": "2026-07-14",
+    "title": "LLM多智能体驱动电信核心网云原生隐式信任漏洞发现",
+    "keywords": [
+      "5G核心网（5GC）",
+      "3GPP核心网接口",
+      "云原生网元",
+      "LLM多智能体协同推理"
+    ],
+    "evidence_titles": [
+      "Understanding Implicit Trust Errors in Core Carrier Networks through Multi-Agent Flaw Discovery and Analysis"
+    ]
+  },
+  {
+    "date": "2026-07-14",
+    "title": "多智能体LLM工作流的分布式KV缓存零拷贝编排架构",
+    "keywords": [
+      "数据中心网络",
+      "GPU集群互联",
+      "RoCE/RDMA",
+      "LLM多智能体推理",
+      "混合注意力机制"
+    ],
+    "evidence_titles": [
+      "AAFLOW+: Stateful Operator Abstraction with Zero-Copy Distributed KV Cache Orchestration for Multi-Agent Workflows",
+      "HYPIC: Accelerating Hybrid-Attention LLM Serving with Position-Independent Caching",
+      "From Tensor Buffer to Distributed Memory Hierarchy: A Survey of KV Cache Management for LLM Serving"
+    ]
   }
 ]
