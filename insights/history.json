@@ -411,5 +411,45 @@
       "HYPIC: Accelerating Hybrid-Attention LLM Serving with Position-Independent Caching",
       "From Tensor Buffer to Distributed Memory Hierarchy: A Survey of KV Cache Management for LLM Serving"
     ]
+  },
+  {
+    "date": "2026-07-15",
+    "title": "云原生微服务网络故障的LLM恢复动作推理闭环评估",
+    "keywords": [
+      "云原生微服务网络（5GC NFV网元",
+      "服务网格）",
+      "LLM推理链",
+      "Agent决策规划"
+    ],
+    "evidence_titles": [
+      "Can LLMs Really Recover Microservice Failures? A Recovery-Aware Evaluation of Diagnosis-to-Action Reasoning"
+    ]
+  },
+  {
+    "date": "2026-07-15",
+    "title": "MoE推理集群通信感知的专家放置裁剪与弹性分组优化",
+    "keywords": [
+      "AI推理集群GPU间互联网络",
+      "跨节点通信拓扑",
+      "MoE稀疏激活",
+      "通信感知联合优化算法"
+    ],
+    "evidence_titles": [
+      "Communication-Aware Placement and Pruning for Efficient Mixture-of-Experts Inference",
+      "BrownoutMoE: Structure-Aware Expert Grouping for Efficient and Accurate LLM Web-based Services"
+    ]
+  },
+  {
+    "date": "2026-07-15",
+    "title": "边缘异构设备弹性协同的分布式大模型推理网络编排",
+    "keywords": [
+      "边缘计算网络",
+      "设备间协同通信链路",
+      "LLM分布式推理",
+      "弹性模型分片策略"
+    ],
+    "evidence_titles": [
+      "Voltron: Enabling Elastic Multi-Device Execution of LLM Inference for Empowered Edge Intelligence"
+    ]
   }
 ]
