@@ -451,5 +451,18 @@
     "evidence_titles": [
       "Voltron: Enabling Elastic Multi-Device Execution of LLM Inference for Empowered Edge Intelligence"
     ]
+  },
+  {
+    "date": "2026-07-16",
+    "title": "面向车联网URLLC的ML信道预测前瞻性链路自适应机制",
+    "keywords": [
+      "5G/6G URLLC链路层",
+      "V2X无线信道",
+      "RAN调度",
+      "ML信道预测模型（神经网络）"
+    ],
+    "evidence_titles": [
+      "Proactive URLLC Adaptation for Connected Vehicles Through ML-Based Channel Prediction"
+    ]
   }
 ]
