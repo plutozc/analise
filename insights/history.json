@@ -464,5 +464,45 @@
     "evidence_titles": [
       "Proactive URLLC Adaptation for Connected Vehicles Through ML-Based Channel Prediction"
     ]
+  },
+  {
+    "date": "2026-07-17",
+    "title": "AI集群RoCE异构NIC通用多路径负载均衡机制",
+    "keywords": [
+      "RoCE/RDMA数据中心网络",
+      "多路径传输",
+      "AI集群互联fabric",
+      "无（网络基础设施层",
+      "服务AI训练/推理工作负载）"
+    ],
+    "evidence_titles": [
+      "Tlaloc: A Generic Multipath Load Balancing for RoCE"
+    ]
+  },
+  {
+    "date": "2026-07-17",
+    "title": "大规模MIMO深度学习功控的神经网络形式化验证",
+    "keywords": [
+      "Massive MIMO RAN物理层",
+      "下行功率控制",
+      "深度学习 + 形式化验证（SMT求解器",
+      "神经网络可达性分析）"
+    ],
+    "evidence_titles": [
+      "Formal Verification for Deep Learning-based Power Control in Massive MIMO"
+    ]
+  },
+  {
+    "date": "2026-07-17",
+    "title": "欧洲云安全合规标准向网络控制指标的语义自动映射",
+    "keywords": [
+      "云网络安全控制面",
+      "安全监控指标体系",
+      "领域自适应Sentence Transformer",
+      "语义相似度匹配"
+    ],
+    "evidence_titles": [
+      "Automated Compliance Mapping in Cloud Security with Domain-Adapted Sentence Transformers"
+    ]
   }
 ]
