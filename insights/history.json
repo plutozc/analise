@@ -504,5 +504,47 @@
     "evidence_titles": [
       "Automated Compliance Mapping in Cloud Security with Domain-Adapted Sentence Transformers"
     ]
+  },
+  {
+    "date": "2026-07-19",
+    "title": "微服务网络真实遥测根因分析的LLM推理能力边界与评测体系",
+    "keywords": [
+      "云原生微服务网络遥测管道（metrics/logs/traces）",
+      "LLM推理链",
+      "图推理",
+      "多模态证据融合"
+    ],
+    "evidence_titles": [
+      "How Far Can Root Cause Analysis Go on Real-World Telemetry Data?",
+      "Can LLMs Really Recover Microservice Failures? A Recovery-Aware Evaluation of Diagnosis-to-Action Reasoning"
+    ]
+  },
+  {
+    "date": "2026-07-19",
+    "title": "端-边-云LLM推理隐私保护分割的通信-计算-隐私三维协同优化",
+    "keywords": [
+      "边缘-云通信链路",
+      "设备间协同网络",
+      "LLM推理分割",
+      "隐私保护计算"
+    ],
+    "evidence_titles": [
+      "Efficient and Privacy Aware Edge Cloud Collaborative Inference for Large Language Models",
+      "Voltron: Enabling Elastic Multi-Device Execution of LLM Inference for Empowered Edge Intelligence"
+    ]
+  },
+  {
+    "date": "2026-07-19",
+    "title": "推理型Agent多步工作流的集群能耗特征刻画与通信调度启示",
+    "keywords": [
+      "GPU推理集群互联网络",
+      "数据中心功耗-网络拓扑联合设计",
+      "LLM多步推理",
+      "Agentic工作流"
+    ],
+    "evidence_titles": [
+      "Characterizing Performance-Energy Trade-offs of Large Language Models in Multi-Request Workflows",
+      "SiFAR: Synchronization-Free All-Reduce for Low-Latency LLM Inference"
+    ]
   }
 ]
