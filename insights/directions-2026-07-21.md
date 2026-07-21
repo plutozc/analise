@@ -1,110 +1,123 @@
 # 技术洞察方向发掘 — 2026-07-21
 
-数据范围：最近 14 天 | 论文 201 篇 | 新闻 100 条 | 候选 253 条
+数据范围：最近 14 天 | 论文 269 篇 | 新闻 100 条 | 候选 316 条
 
 ---
 
-## 🟡 🔄 CXL内存互联扩展AI推理集群KV缓存多级存储调度架构
+## 🔴 🔄 GPU集合通信从带宽优化到微秒级延迟极限优化的范式突破
 
-**优先级:** 3/5 | **置信度:** medium | **更新**
+**优先级:** 1/5 | **置信度:** high | **更新**
 
-HyMCache提出利用CXL异构内存（GPU HBM-主机DRAM-CXL扩展内存）构建集群级KV缓存三级存储层次，解决多轮/Agent工作负载下可复用KV状态的容量瓶颈。CXL作为新型内存互联协议，为推理集群引入成本可控的大容量近内存存储层，改变了KV缓存从请求内GPU显存到跨节点分布式存储的架构路径。
+NVIDIA团队实现逼近光速传播延迟的GPU集合通信，标志着集合通信优化从带宽导向转向延迟导向的范式转变。推理型大模型和Agentic系统使token生成延迟成为关键瓶颈，每次集合通信的微秒级优化直接影响端到端推理速度。论文通过内核级优化消除软件开销，将延迟推至物理传输极限。相比已推荐的低精度量化和无同步化方向，本方向聚焦延迟维度的极致工程优化。
 
-- **网络对象:** AI推理集群CXL/PCIe内存互联, 跨节点KV缓存通信
-- **AI 方法:** LLM多轮推理KV缓存复用优化
-- **软件技术栈:** LLM推理服务框架, CXL内存管理层
+- **网络对象:** AI推理集群GPU互联网络、集合通信链路
+- **AI 方法:** 无（服务LLM推理工作负载）
+- **软件技术栈:** GPU集合通信内核、NCCL/自研通信库
 - **欧洲连接:** 无直接连接
-- **华为关联:** AI集群网络架构与内存互联设计, CloudEngine数据中心交换, 推理集群存储分层与iMaster NCE算力编排
-- **🔄 更新原因:** 相比2026-07-21『KV缓存从请求级张量到集群级分布式存储的架构演进』，新增CXL异构内存互联作为第三级存储层的具体框架设计（HyMCache），从纯软件缓存管理扩展到硬件互联协议层面
+- **华为关联:** CloudEngine AI集群交换、HCCS互联延迟优化、Ascend集合通信库
+- **🔄 更新原因:** 相比2026-07-14推荐的'低精度量化与无同步化革新'，新增NVIDIA逼近光速延迟的实验突破（Paper 8），从带宽优化拓展到延迟优化维度，提供全新内核级延迟消除实验数据
 
 **支撑证据:**
-- [HyMCache: A KV Cache Framework for Multi-Turn LLM Serving with CXL-Hybrid Memory](http://arxiv.org/abs/2607.18141v1)
+- [Every Microsecond Matters: Achieving Near Speed-of-Light Latency in GPU Collectives](http://arxiv.org/abs/2607.16100v1)
 
 ---
 
-## ⚪ 🔄 Agentic工作流驱动LLM推理集群从请求级到会话级调度范式迁移
+## 🔴 Agent框架控制原语执行语义缺陷对网络智能体可信部署的警示
 
-**优先级:** 4/5 | **置信度:** low | **更新**
+**优先级:** 2/5 | **置信度:** medium
 
-Talaria针对工具调用Agent场景，将推理调度单元从单次请求提升为跨工具间隙的完整会话。利用Agent会话中KV前缀高度可复用特性，在无服务器多模型GPU池上实现会话感知全局调度。该范式迁移反映Agent工作负载对推理集群网络编排层的新要求：会话亲和性路由、前缀感知放置、短间隙资源保持策略。
+研究发现主流LLM Agent框架（LangGraph、CrewAI等）的暂停、取消、超时等控制原语存在系统性执行语义缺陷：运行被暂停或取消后，受控副作用仍可继续执行。对电信网络中AI智能体部署有直接安全启示——若控制原语无法保证barrier语义，网络配置变更可能在Agent被紧急停止后继续生效，对自治网络L4-L5闭环控制构成严重风险。
 
-- **网络对象:** AI推理集群GPU池间网络, 无服务器推理路由层
-- **AI 方法:** LLM Agent多轮推理, 会话级KV前缀复用调度
-- **软件技术栈:** 无服务器推理调度框架, 多模型服务编排
+- **网络对象:** 网络AI智能体运行时（xApp/rApp/自治网络闭环Agent）
+- **AI 方法:** LLM Agent框架（LangGraph、CrewAI、AutoGen）
+- **软件技术栈:** Agent编排框架控制原语实现、运行时沙箱
 - **欧洲连接:** 无直接连接
-- **华为关联:** AI推理服务架构演进, iMaster NCE算力调度, AI集群网络会话级编排
-- **🔄 更新原因:** 相比2026-07-14推理调度方向和2026-07-19 Agent工作流能耗方向，Talaria提供了会话级调度在百B参数多模型无服务器场景的完整系统设计，聚焦Agent工作负载的调度原语而非能耗特征
+- **华为关联:** 自动驾驶网络L4-L5闭环控制安全、iMaster NCE Agent部署可信运行保障
 
 **支撑证据:**
-- [Talaria: Session-Aware Serverless Serving of Hundred-Billion-Parameter LLMs](http://arxiv.org/abs/2607.17181v1)
+- [Stop Means Stop: Measuring and Repairing the Enforcement Gap in Agent-Framework Control Primitives](http://arxiv.org/abs/2607.14166v2)
 
 ---
 
-## ⚪ 🔄 MoE大模型专家级全分离推理系统自适应持久化内核架构
+## 🟡 Agent驱动实时多模态AI推理流水线异构加速器自动化部署编排
 
-**优先级:** 4/5 | **置信度:** low | **更新**
+**优先级:** 3/5 | **置信度:** medium
 
-ExpertPlex将MoE推理分离粒度从实例级prefill-decode推进到专家级：当MoE权重增长到单实例需跨数十GPU时，按专家而非按阶段分配计算资源。提出自适应持久化CUDA内核处理MoE动态负载不均衡，减少跨节点专家通信开销。该架构对AI集群网络拓扑设计和专家间互联带宽规划提出新要求。
+FlashRT提出以LLM Agent为核心的harness架构，自动为实时多模态应用（语音Agent、交互式视频生成）做出放置、流式传输、模型内并行度等部署决策。现有推理系统和自动并行工具无法处理应用级流水线的异构性，FlashRT通过Agent推理实现跨GPU/NPU的自适应编排。对华为Ascend异构集群上多模态推理服务的自动化部署编排具有参考价值。
 
-- **网络对象:** AI推理集群GPU间互联网络, 专家级跨节点通信拓扑
-- **AI 方法:** MoE稀疏激活推理, 自适应持久化CUDA内核
-- **软件技术栈:** 分离式推理服务框架, 持久化GPU内核调度
+- **网络对象:** GPU/NPU集群互联、流式推理数据流拓扑
+- **AI 方法:** LLM Agent决策（放置策略、流式优化、并行度选择）
+- **软件技术栈:** vLLM、推理框架、流水线编排器
 - **欧洲连接:** 无直接连接
-- **华为关联:** AI集群网络拓扑设计, MoE推理集群互联带宽规划, CloudEngine AI fabric
-- **🔄 更新原因:** 相比2026-07-15 MoE通信感知方向（裁剪+分组优化）和2026-07-14分离式推理方向（prefill-decode级），ExpertPlex将分离粒度推进到专家级并提出持久化内核方案
+- **华为关联:** Ascend集群推理部署编排、AI推理服务架构、多模态模型服务化
 
 **支撑证据:**
-- [ExpertPlex: A High-Goodput Disaggregated Serving System for MoE LLMs with Adaptive Persistent Kernels](http://arxiv.org/abs/2607.18002v1)
+- [FlashRT: Agent Harness for Guiding Agents to Deploy Real-Time Multimodal Applications](http://arxiv.org/abs/2607.18171v1)
+
+---
+
+## ⚪ 多供应商LLM推理网关架构层故障模式分类学与韧性路由设计
+
+**优先级:** 4/5 | **置信度:** medium
+
+FailureAtlas首次系统性分类LLM多供应商推理网关（反向代理/路由/负载均衡/限速）的故障模式。该架构层已成为生产关键基础设施，但其特有故障模式（跨供应商failover语义不一致、限速策略冲突、部分降级下路由决策等）此前散落在issue tracker和事后分析中，缺乏体系化认知。对华为AI推理服务网关和NCE网络AI编排层的韧性设计有直接参考意义。
+
+- **网络对象:** LLM推理反向代理/API网关/负载均衡路由层
+- **AI 方法:** LLM推理服务
+- **软件技术栈:** API网关中间件、路由/限速/failover策略引擎
+- **欧洲连接:** 无直接连接
+- **华为关联:** AI推理服务架构韧性设计、iMaster NCE AI编排层可靠性
+
+**支撑证据:**
+- [FailureAtlas: A Taxonomy of Failure Modes in Multi-Provider LLM Serving Infrastructure](http://arxiv.org/abs/2607.17525v1)
 
 ---
 
 ## 剔除方向
 
-- Paper 2 (SAGA): 合成图基准生成工具，与通信网络无关，属纯AI数据工程
-- Paper 3: 卡车运输投标决策，物流运筹学非通信网络，routing为误匹配
-- Paper 5 (LaT): 车辆路径问题求解器，routing为物流路由非网络路由
-- Paper 6: LLM问答顺序效应审计，纯AI行为研究无网络对象
-- Paper 7: 线性注意力核化方法，纯AI架构无网络对象
-- Paper 8: LLM驱动GPU内核生成(NVIDIA)，AI工程软件但无网络维度且非欧洲
-- Paper 10: POMDP路由为Agent工作流路由非网络路由，纯AI Agent框架
-- Paper 11: RAG向量检索隐私(OpenAI)，企业AI应用层无网络机制
-- Paper 12: 儿童骨龄深度学习预测，医学影像完全无关
-- Paper 13: 显式世界模型本体论，纯AI知识表示无网络对象
-- News 14: Ericsson 5G用户数报告，行业统计无技术深度无AI方法
-- News 15: AT&T/Ericsson 5G感知演示，缺技术论文支撑且摘要无量化细节
-- Paper 16: Agent轨迹评估指标，纯AI评估方法论无网络对象
-- Paper 17: 推荐系统统一模型(WHALE)，非网络领域
-- Paper 18: AI材料科学Agent，非网络领域
-- Paper 19: LLM集成多样性量化，纯AI理论无网络对象
-- Paper 20: 稀疏自编码器可解释性，纯AI可解释性研究
-- Paper 21: 电商推荐后排序Agent，非网络领域
-- Paper 22: 3D高斯渲染(KTH)，虽有欧洲背景但属图形渲染非网络
-- Paper 23: 自然语言领域元数据查询，纯AI应用无网络对象
-- Paper 24: POMDP自由能理论，纯AI理论研究
-- Paper 25: 脑MRI基础模型，医学影像完全无关
-- Paper 26: 双曲空间专家AI(UCL)，纯AI几何方法论
-- Paper 27: 业务流程监控可解释性，非网络领域
-- Paper 28: 强化学习综述，综述类无具体网络应用
-- Paper 29: 少样本逆强化学习，机器人操作领域
-- Paper 30: 多Agent取送货调度，物流仓储非通信网络
-- 【批次总评】本批30条候选中无一条具有真实通信网络/电信对象。RIC/RAN/RoCE等网络关键词均为误匹配（论文实际内容为物流/医学/推荐系统等）。仅Paper 1/4/9涉及AI推理集群基础设施，但均为已推荐方向增量更新且无欧洲连接。建议检查数据采集管道网络关键词过滤精度——当前批次误报率超90%。
+- Paper 1 (LLM微服务故障恢复): 已推荐2026-07-15
+- Paper 2 (HyMCache CXL KV缓存): 已推荐2026-07-21
+- Paper 3 (KV缓存鲁棒管理): 已推荐2026-07-21 KV缓存架构演进覆盖
+- Paper 4 (GIFT梯度量化): 已推荐2026-07-21黎曼流形梯度量化
+- Paper 6 (端侧字幕翻译): relevance=0无网络机制
+- Paper 7 (SiFAR无同步AllReduce): 已推荐2026-07-14
+- Paper 9 (ExpertPlex MoE全分离): 已推荐2026-07-21
+- Paper 10 (ADASCALE微服务弹性): 已推荐2026-07-21云边微服务编排
+- Paper 11 (Ascend非GPU加速器): 已推荐2026-07-14
+- Paper 12 (Voltron边缘推理): 已推荐2026-07-15
+- Paper 13 (BrownoutMoE): 已被多个MoE方向覆盖(2026-07-15/21)
+- Paper 14 (LLM生成GPU内核): 无网络对象，纯AI工程工具
+- Paper 16 (量子网络测量面): 剔除-quantum network
+- Paper 17 (Roomie模型混部): 网络相关性不足，核心是GPU资源调度
+- Paper 18 (PHaul IAB PPO): 已推荐2026-07-14
+- Paper 19 (5GC隐式信任漏洞): 已推荐2026-07-14
+- Paper 20 (AAFLOW+ KV缓存零拷贝): 已推荐2026-07-14/21
+- Paper 21 (KV缓存综述): 已推荐2026-07-21
+- Paper 22 (CAP通信感知MoE放置): 已推荐2026-07-15
+- Paper 24 (云安全合规映射): 已推荐2026-07-17
+- Paper 25 (GPU-Tile-Sim): 无网络对象，纯GPU模拟器
+- Paper 26 (RubriQ量子电路): relevance=0剔除
+- Paper 27 (SPL编排语言): relevance=0无网络对象
+- Paper 30 (6G意图隐私保护): 已推荐2026-07-13
+- News 28 (Ericsson 5G订阅报告): 市场统计无技术深度
+- News 29 (AT&T/Ericsson 5G感知演示): 演示公告无技术细节
 
 ## 候选数据摘要（Top 15）
 
 | # | 类型 | 标题 | Network AI | 分数 |
 |---|------|------|-----------|------|
-| paper | arXiv | Talaria: Session-Aware Serverless Serving of Hu... | ✅ | 18 |
-| paper | arXiv | SAGA: Synthetic Agentic Graph Architecture for ... | ✅ | 18 |
-| paper | arXiv | Certified-Gap Dual-Price Policies for Real-Time... | ✅ | 17 |
+| paper | arXiv | Can LLMs Really Recover Microservice Failures? ... | ✅ | 19 |
 | paper | arXiv | HyMCache: A KV Cache Framework for Multi-Turn L... | ✅ | 17 |
-| paper | arXiv | LaT: LLM-as-Trainer for Multi-Task Vehicle Rout... | ✅ | 17 |
-| paper | arXiv | Auditing Question-Order Effects in Large Langua... | ✅ | 14 |
-| paper | arXiv | Kernelized Linear Attention: Breaking the Capac... | ✅ | 14 |
-| paper | arXiv | Harness Engineering for LLM-Driven GPU Kernel G... | ✅ | 14 |
+| paper | arXiv | Robust KV Cache Management for LLM Serving unde... | ✅ | 17 |
+| paper | arXiv | GIFT: Geometry-Informed Low-precision Gradient ... | ✅ | 17 |
+| paper | arXiv | FlashRT: Agent Harness for Guiding Agents to De... | ✅ | 16 |
+| paper | arXiv | Workload-Driven Optimization for On-Device Real... | ✅ | 16 |
+| paper | arXiv | SiFAR: Synchronization-Free All-Reduce for Low-... | ✅ | 14 |
+| paper | arXiv | Every Microsecond Matters: Achieving Near Speed... | ✅ | 14 |
 | paper | arXiv | ExpertPlex: A High-Goodput Disaggregated Servin... | ✅ | 14 |
-| paper | arXiv | Reward-Driven LLM Agent Workflows: Synthesizing... | ✅ | 13 |
-| paper | arXiv | TurboVec: A Case Study in Cost-Efficient Privat... | ✅ | 13 |
-| paper | arXiv | Pediatric Bone Age Prediction Using Deep Learning | ✅ | 13 |
-| paper | arXiv | An Explicit World Model Based on Data-First Ont... | ✅ | 13 |
-| news | Ericsson | Ericsson Mobility Report: 5G subscriptions top ... | ❌ | 13 |
-| news | Ericsson | AT&T, Ericsson demo 5G network sensing - teleco... | ❌ | 13 |
+| paper | arXiv | ADASCALE: An Adaptive Scaling and Placement Fra... | ❌ | 14 |
+| paper | arXiv | On the Limitations of Non-GPU AI Accelerators f... | ✅ | 14 |
+| paper | arXiv | Voltron: Enabling Elastic Multi-Device Executio... | ✅ | 14 |
+| paper | arXiv | BrownoutMoE: Structure-Aware Expert Grouping fo... | ✅ | 14 |
+| paper | arXiv | Harness Engineering for LLM-Driven GPU Kernel G... | ✅ | 14 |
+| paper | arXiv | Stop Means Stop: Measuring and Repairing the En... | ✅ | 14 |

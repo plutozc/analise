@@ -622,5 +622,55 @@
     "evidence_titles": [
       "ExpertPlex: A High-Goodput Disaggregated Serving System for MoE LLMs with Adaptive Persistent Kernels"
     ]
+  },
+  {
+    "date": "2026-07-21",
+    "title": "GPU集合通信从带宽优化到微秒级延迟极限优化的范式突破",
+    "keywords": [
+      "AI推理集群GPU互联网络",
+      "集合通信链路",
+      "无（服务LLM推理工作负载）"
+    ],
+    "evidence_titles": [
+      "Every Microsecond Matters: Achieving Near Speed-of-Light Latency in GPU Collectives"
+    ]
+  },
+  {
+    "date": "2026-07-21",
+    "title": "Agent框架控制原语执行语义缺陷对网络智能体可信部署的警示",
+    "keywords": [
+      "网络AI智能体运行时（xApp/rApp/自治网络闭环Agent）",
+      "LLM Agent框架（LangGraph",
+      "CrewAI",
+      "AutoGen）"
+    ],
+    "evidence_titles": [
+      "Stop Means Stop: Measuring and Repairing the Enforcement Gap in Agent-Framework Control Primitives"
+    ]
+  },
+  {
+    "date": "2026-07-21",
+    "title": "Agent驱动实时多模态AI推理流水线异构加速器自动化部署编排",
+    "keywords": [
+      "GPU/NPU集群互联",
+      "流式推理数据流拓扑",
+      "LLM Agent决策（放置策略",
+      "流式优化",
+      "并行度选择）"
+    ],
+    "evidence_titles": [
+      "FlashRT: Agent Harness for Guiding Agents to Deploy Real-Time Multimodal Applications"
+    ]
+  },
+  {
+    "date": "2026-07-21",
+    "title": "多供应商LLM推理网关架构层故障模式分类学与韧性路由设计",
+    "keywords": [
+      "LLM推理反向代理/API网关/负载均衡路由层",
+      "LLM推理服务"
+    ],
+    "evidence_titles": [
+      "FailureAtlas: A Taxonomy of Failure Modes in Multi-Provider LLM Serving Infrastructure"
+    ]
   }
 ]
