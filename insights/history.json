@@ -546,5 +546,43 @@
       "Characterizing Performance-Energy Trade-offs of Large Language Models in Multi-Request Workflows",
       "SiFAR: Synchronization-Free All-Reduce for Low-Latency LLM Inference"
     ]
+  },
+  {
+    "date": "2026-07-21",
+    "title": "黎曼流形感知AI训练集群梯度通信极致量化新范式",
+    "keywords": [
+      "AI训练集群互联网络",
+      "AllReduce集合通信",
+      "黎曼几何（Grassmann流形）感知的梯度量化"
+    ],
+    "evidence_titles": [
+      "GIFT: Geometry-Informed Low-precision Gradient Communication for LLM Pretraining"
+    ]
+  },
+  {
+    "date": "2026-07-21",
+    "title": "云边异构环境微服务非平稳流量自适应弹性编排框架",
+    "keywords": [
+      "云边微服务网络",
+      "节点间通信链路",
+      "异构延迟拓扑",
+      "无（自适应优化算法）"
+    ],
+    "evidence_titles": [
+      "ADASCALE: An Adaptive Scaling and Placement Framework for Microservices Under Dynamics"
+    ]
+  },
+  {
+    "date": "2026-07-21",
+    "title": "KV缓存从请求级张量到集群级分布式存储的架构演进",
+    "keywords": [
+      "AI推理集群网络",
+      "GPU间互联",
+      "跨节点存储通信",
+      "LLM推理KV缓存优化（多种架构范式）"
+    ],
+    "evidence_titles": [
+      "From Tensor Buffer to Distributed Memory Hierarchy: A Survey of KV Cache Management for LLM Serving"
+    ]
   }
 ]
