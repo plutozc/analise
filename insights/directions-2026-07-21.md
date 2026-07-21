@@ -1,109 +1,110 @@
 # 技术洞察方向发掘 — 2026-07-21
 
-数据范围：最近 14 天 | 论文 278 篇 | 新闻 100 条 | 候选 322 条
+数据范围：最近 14 天 | 论文 201 篇 | 新闻 100 条 | 候选 253 条
 
 ---
 
-## 🔴 🔄 黎曼流形感知AI训练集群梯度通信极致量化新范式
+## 🟡 🔄 CXL内存互联扩展AI推理集群KV缓存多级存储调度架构
 
-**优先级:** 2/5 | **置信度:** high | **更新**
+**优先级:** 3/5 | **置信度:** medium | **更新**
 
-NVIDIA与UCL提出GIFT框架，将梯度量化从欧几里得空间映射提升至Grassmann流形，利用梯度张量的几何结构实现FP8/NVFP4精度下更优的通信压缩效果。相比传统线性或非线性量化，流形感知方法保留梯度方向信息，在大规模LLM预训练AllReduce通信中显著降低精度损失，为AI集群网络通信瓶颈提供新的理论工具。
+HyMCache提出利用CXL异构内存（GPU HBM-主机DRAM-CXL扩展内存）构建集群级KV缓存三级存储层次，解决多轮/Agent工作负载下可复用KV状态的容量瓶颈。CXL作为新型内存互联协议，为推理集群引入成本可控的大容量近内存存储层，改变了KV缓存从请求内GPU显存到跨节点分布式存储的架构路径。
 
-- **网络对象:** AI训练集群互联网络, AllReduce集合通信
-- **AI 方法:** 黎曼几何（Grassmann流形）感知的梯度量化
-- **软件技术栈:** 分布式训练框架, NCCL通信库
-- **欧洲连接:** UCL（伦敦大学学院, 英国）参与研究
-- **华为关联:** Ascend集群分布式训练通信优化, HCCL通信后端量化策略
-- **🔄 更新原因:** 相比7月14日推荐的'低精度量化与无同步化革新'方向, GIFT提出全新的流形几何量化理论框架, 从欧几里得线性映射跃迁至Grassmann流形, 是方法论层面的显著升级, 非同一批论文的不同组合
-
-**支撑证据:**
-- [GIFT: Geometry-Informed Low-precision Gradient Communication for LLM Pretraining](http://arxiv.org/abs/2607.07494v1)
-
----
-
-## 🟡 云边异构环境微服务非平稳流量自适应弹性编排框架
-
-**优先级:** 3/5 | **置信度:** medium
-
-ADASCALE针对云边混合部署场景，解决异构节点能力差异与节点间时变延迟对微服务放置决策的放大效应。框架应对非平稳流量模式和请求操作混合比例漂移，实现自适应扩缩容与服务放置联合优化。研究直接关联云原生网络编排与服务网格场景，为5G核心网NFV网元和边缘MEC服务的弹性部署提供参考架构。
-
-- **网络对象:** 云边微服务网络, 节点间通信链路, 异构延迟拓扑
-- **AI 方法:** 无（自适应优化算法）
-- **软件技术栈:** Kubernetes, 微服务编排, QUIC传输
-- **欧洲连接:** EU相关研究机构
-- **华为关联:** iMaster NCE服务编排, CloudEngine边缘部署, 5GC NFV弹性扩缩
-
-**支撑证据:**
-- [ADASCALE: An Adaptive Scaling and Placement Framework for Microservices Under Dynamics](http://arxiv.org/abs/2607.15681v1)
-
----
-
-## 🔴 🔄 KV缓存从请求级张量到集群级分布式存储的架构演进
-
-**优先级:** 2/5 | **置信度:** high | **更新**
-
-综述论文系统分类30余种KV缓存管理系统与框架，提出局部性、生命周期、所有权、基底四维分类轴，揭示五种架构原型。研究指出KV缓存已从临时的每请求张量演变为LLM推理系统中的一等分布式存储对象，其管理策略直接影响跨节点通信量与推理延迟。体系化视角为AI推理集群网络架构设计提供系统性路线图。
-
-- **网络对象:** AI推理集群网络, GPU间互联, 跨节点存储通信
-- **AI 方法:** LLM推理KV缓存优化（多种架构范式）
-- **软件技术栈:** LLM推理服务框架（vLLM等）, 分布式缓存系统
+- **网络对象:** AI推理集群CXL/PCIe内存互联, 跨节点KV缓存通信
+- **AI 方法:** LLM多轮推理KV缓存复用优化
+- **软件技术栈:** LLM推理服务框架, CXL内存管理层
 - **欧洲连接:** 无直接连接
-- **华为关联:** Ascend推理集群KV缓存架构, MindIE推理引擎存储层优化
-- **🔄 更新原因:** 相比7月11日推荐的'KV缓存跨节点网络传输加速技术'聚焦具体加速手段, 本综述提供四维分类体系和五种架构原型的全景视图, 从单点技术升级为系统化架构参考框架
+- **华为关联:** AI集群网络架构与内存互联设计, CloudEngine数据中心交换, 推理集群存储分层与iMaster NCE算力编排
+- **🔄 更新原因:** 相比2026-07-21『KV缓存从请求级张量到集群级分布式存储的架构演进』，新增CXL异构内存互联作为第三级存储层的具体框架设计（HyMCache），从纯软件缓存管理扩展到硬件互联协议层面
 
 **支撑证据:**
-- [From Tensor Buffer to Distributed Memory Hierarchy: A Survey of KV Cache Management for LLM Serving](http://arxiv.org/abs/2607.02574v1)
+- [HyMCache: A KV Cache Framework for Multi-Turn LLM Serving with CXL-Hybrid Memory](http://arxiv.org/abs/2607.18141v1)
+
+---
+
+## ⚪ 🔄 Agentic工作流驱动LLM推理集群从请求级到会话级调度范式迁移
+
+**优先级:** 4/5 | **置信度:** low | **更新**
+
+Talaria针对工具调用Agent场景，将推理调度单元从单次请求提升为跨工具间隙的完整会话。利用Agent会话中KV前缀高度可复用特性，在无服务器多模型GPU池上实现会话感知全局调度。该范式迁移反映Agent工作负载对推理集群网络编排层的新要求：会话亲和性路由、前缀感知放置、短间隙资源保持策略。
+
+- **网络对象:** AI推理集群GPU池间网络, 无服务器推理路由层
+- **AI 方法:** LLM Agent多轮推理, 会话级KV前缀复用调度
+- **软件技术栈:** 无服务器推理调度框架, 多模型服务编排
+- **欧洲连接:** 无直接连接
+- **华为关联:** AI推理服务架构演进, iMaster NCE算力调度, AI集群网络会话级编排
+- **🔄 更新原因:** 相比2026-07-14推理调度方向和2026-07-19 Agent工作流能耗方向，Talaria提供了会话级调度在百B参数多模型无服务器场景的完整系统设计，聚焦Agent工作负载的调度原语而非能耗特征
+
+**支撑证据:**
+- [Talaria: Session-Aware Serverless Serving of Hundred-Billion-Parameter LLMs](http://arxiv.org/abs/2607.17181v1)
+
+---
+
+## ⚪ 🔄 MoE大模型专家级全分离推理系统自适应持久化内核架构
+
+**优先级:** 4/5 | **置信度:** low | **更新**
+
+ExpertPlex将MoE推理分离粒度从实例级prefill-decode推进到专家级：当MoE权重增长到单实例需跨数十GPU时，按专家而非按阶段分配计算资源。提出自适应持久化CUDA内核处理MoE动态负载不均衡，减少跨节点专家通信开销。该架构对AI集群网络拓扑设计和专家间互联带宽规划提出新要求。
+
+- **网络对象:** AI推理集群GPU间互联网络, 专家级跨节点通信拓扑
+- **AI 方法:** MoE稀疏激活推理, 自适应持久化CUDA内核
+- **软件技术栈:** 分离式推理服务框架, 持久化GPU内核调度
+- **欧洲连接:** 无直接连接
+- **华为关联:** AI集群网络拓扑设计, MoE推理集群互联带宽规划, CloudEngine AI fabric
+- **🔄 更新原因:** 相比2026-07-15 MoE通信感知方向（裁剪+分组优化）和2026-07-14分离式推理方向（prefill-decode级），ExpertPlex将分离粒度推进到专家级并提出持久化内核方案
+
+**支撑证据:**
+- [ExpertPlex: A High-Goodput Disaggregated Serving System for MoE LLMs with Adaptive Persistent Kernels](http://arxiv.org/abs/2607.18002v1)
 
 ---
 
 ## 剔除方向
 
-- Paper 1 (LLM微服务故障恢复): 与7月15日/19日推荐方向重复, 同一论文
-- Paper 3 (边云协同推理): 与7月19日'端-边-云推理隐私分割'方向重复
-- Paper 4 (设备端字幕翻译): 相关度为0, 无网络机制
-- Paper 5 (遥测根因分析): 与7月19日推荐方向重复
-- Paper 6 (SiFAR无同步AllReduce): 已纳入7月14日'集合通信原语'推荐
-- Paper 7 (华为Ascend实测): 已纳入7月14日推荐
-- Paper 9 (Voltron边缘推理): 与7月15日'边缘协同推理'方向重复
-- Paper 10 (BrownoutMoE专家分组): 疑似已纳入7月15日MoE推荐, 无显著新增理论突破
-- Paper 11 (Agentic HPC编排): 网络维度薄弱, 核心为HPC工作流自动化非网络对象
-- Paper 12 (LLM能耗特征): 已纳入7月19日推荐
-- Paper 13 (PHaul IAB转发): 已纳入7月14日推荐
-- Paper 14 (AAFLOW+ KV缓存零拷贝): 已纳入7月14日推荐
-- Paper 15 (核心网隐式信任漏洞): 已纳入7月14日推荐
-- Paper 16 (量子网络测量面): 剔除—量子网络非通信网络
-- Paper 17 (CAP MoE放置裁剪): 已纳入7月15日推荐
-- Paper 19 (云安全合规映射): 已纳入7月17日推荐
-- Paper 20 (GPU-Tile-Sim): 纯GPU模拟器, 网络维度不足
-- Paper 21 (时空调度预测CBF): 已纳入7月11日推荐
-- Paper 22 (Agent记忆注入攻击): 纯Agent安全, 网络维度不足
-- Paper 23 (RubriQ量子电路): 相关度为0, 量子计算剔除
-- Paper 24 (SPL编排语言): 相关度为0, 纯编程语言设计
-- News 25 (Ericsson 5G用户3B): 市场报告无技术深度
-- News 26 (AT&T+Ericsson 5G感知演示): 仅演示新闻无技术论文支撑
-- Paper 27 (6G隐私保护意图): 已纳入7月13日推荐
-- Paper 28 (Tlaloc RoCE多路径): 已纳入7月17日推荐
-- Paper 29 (V2X URLLC信道预测): 已纳入7月16日推荐
-- Paper 30 (SMetric Agent调度): 疑似已纳入7月14日'智能体工作负载推理调度'推荐
-- 整体说明: 本批次30条候选中约20条与7月10-19日已推荐的33个方向直接重复, 仅产出3个方向（2个更新+1个新增）, 反映近两周该领域进入论文消化期而非爆发期
+- Paper 2 (SAGA): 合成图基准生成工具，与通信网络无关，属纯AI数据工程
+- Paper 3: 卡车运输投标决策，物流运筹学非通信网络，routing为误匹配
+- Paper 5 (LaT): 车辆路径问题求解器，routing为物流路由非网络路由
+- Paper 6: LLM问答顺序效应审计，纯AI行为研究无网络对象
+- Paper 7: 线性注意力核化方法，纯AI架构无网络对象
+- Paper 8: LLM驱动GPU内核生成(NVIDIA)，AI工程软件但无网络维度且非欧洲
+- Paper 10: POMDP路由为Agent工作流路由非网络路由，纯AI Agent框架
+- Paper 11: RAG向量检索隐私(OpenAI)，企业AI应用层无网络机制
+- Paper 12: 儿童骨龄深度学习预测，医学影像完全无关
+- Paper 13: 显式世界模型本体论，纯AI知识表示无网络对象
+- News 14: Ericsson 5G用户数报告，行业统计无技术深度无AI方法
+- News 15: AT&T/Ericsson 5G感知演示，缺技术论文支撑且摘要无量化细节
+- Paper 16: Agent轨迹评估指标，纯AI评估方法论无网络对象
+- Paper 17: 推荐系统统一模型(WHALE)，非网络领域
+- Paper 18: AI材料科学Agent，非网络领域
+- Paper 19: LLM集成多样性量化，纯AI理论无网络对象
+- Paper 20: 稀疏自编码器可解释性，纯AI可解释性研究
+- Paper 21: 电商推荐后排序Agent，非网络领域
+- Paper 22: 3D高斯渲染(KTH)，虽有欧洲背景但属图形渲染非网络
+- Paper 23: 自然语言领域元数据查询，纯AI应用无网络对象
+- Paper 24: POMDP自由能理论，纯AI理论研究
+- Paper 25: 脑MRI基础模型，医学影像完全无关
+- Paper 26: 双曲空间专家AI(UCL)，纯AI几何方法论
+- Paper 27: 业务流程监控可解释性，非网络领域
+- Paper 28: 强化学习综述，综述类无具体网络应用
+- Paper 29: 少样本逆强化学习，机器人操作领域
+- Paper 30: 多Agent取送货调度，物流仓储非通信网络
+- 【批次总评】本批30条候选中无一条具有真实通信网络/电信对象。RIC/RAN/RoCE等网络关键词均为误匹配（论文实际内容为物流/医学/推荐系统等）。仅Paper 1/4/9涉及AI推理集群基础设施，但均为已推荐方向增量更新且无欧洲连接。建议检查数据采集管道网络关键词过滤精度——当前批次误报率超90%。
 
 ## 候选数据摘要（Top 15）
 
 | # | 类型 | 标题 | Network AI | 分数 |
 |---|------|------|-----------|------|
-| paper | arXiv | Can LLMs Really Recover Microservice Failures? ... | ✅ | 19 |
-| paper | arXiv | GIFT: Geometry-Informed Low-precision Gradient ... | ✅ | 17 |
-| paper | arXiv | Efficient and Privacy Aware Edge Cloud Collabor... | ✅ | 16 |
-| paper | arXiv | Workload-Driven Optimization for On-Device Real... | ✅ | 16 |
-| paper | arXiv | How Far Can Root Cause Analysis Go on Real-Worl... | ✅ | 15 |
-| paper | arXiv | SiFAR: Synchronization-Free All-Reduce for Low-... | ✅ | 14 |
-| paper | arXiv | On the Limitations of Non-GPU AI Accelerators f... | ✅ | 14 |
-| paper | arXiv | ADASCALE: An Adaptive Scaling and Placement Fra... | ❌ | 14 |
-| paper | arXiv | Voltron: Enabling Elastic Multi-Device Executio... | ✅ | 14 |
-| paper | arXiv | BrownoutMoE: Structure-Aware Expert Grouping fo... | ✅ | 14 |
-| paper | arXiv | Agentic Orchestration of HPC Applications in Cloud | ✅ | 14 |
-| paper | SIGMETRICS | Characterizing Performance–Energy Trade-offs of... | ✅ | 14 |
-| paper | arXiv | PHaul: A PPO-based forwarding agent for Sub6 en... | ✅ | 13 |
-| paper | arXiv | [AAFLOW+] Stateful Operator Abstraction with Ze... | ✅ | 13 |
-| paper | arXiv | Understanding Implicit Trust Errors in Core Car... | ✅ | 13 |
+| paper | arXiv | Talaria: Session-Aware Serverless Serving of Hu... | ✅ | 18 |
+| paper | arXiv | SAGA: Synthetic Agentic Graph Architecture for ... | ✅ | 18 |
+| paper | arXiv | Certified-Gap Dual-Price Policies for Real-Time... | ✅ | 17 |
+| paper | arXiv | HyMCache: A KV Cache Framework for Multi-Turn L... | ✅ | 17 |
+| paper | arXiv | LaT: LLM-as-Trainer for Multi-Task Vehicle Rout... | ✅ | 17 |
+| paper | arXiv | Auditing Question-Order Effects in Large Langua... | ✅ | 14 |
+| paper | arXiv | Kernelized Linear Attention: Breaking the Capac... | ✅ | 14 |
+| paper | arXiv | Harness Engineering for LLM-Driven GPU Kernel G... | ✅ | 14 |
+| paper | arXiv | ExpertPlex: A High-Goodput Disaggregated Servin... | ✅ | 14 |
+| paper | arXiv | Reward-Driven LLM Agent Workflows: Synthesizing... | ✅ | 13 |
+| paper | arXiv | TurboVec: A Case Study in Cost-Efficient Privat... | ✅ | 13 |
+| paper | arXiv | Pediatric Bone Age Prediction Using Deep Learning | ✅ | 13 |
+| paper | arXiv | An Explicit World Model Based on Data-First Ont... | ✅ | 13 |
+| news | Ericsson | Ericsson Mobility Report: 5G subscriptions top ... | ❌ | 13 |
+| news | Ericsson | AT&T, Ericsson demo 5G network sensing - teleco... | ❌ | 13 |

@@ -584,5 +584,43 @@
     "evidence_titles": [
       "From Tensor Buffer to Distributed Memory Hierarchy: A Survey of KV Cache Management for LLM Serving"
     ]
+  },
+  {
+    "date": "2026-07-21",
+    "title": "CXL内存互联扩展AI推理集群KV缓存多级存储调度架构",
+    "keywords": [
+      "AI推理集群CXL/PCIe内存互联",
+      "跨节点KV缓存通信",
+      "LLM多轮推理KV缓存复用优化"
+    ],
+    "evidence_titles": [
+      "HyMCache: A KV Cache Framework for Multi-Turn LLM Serving with CXL-Hybrid Memory"
+    ]
+  },
+  {
+    "date": "2026-07-21",
+    "title": "Agentic工作流驱动LLM推理集群从请求级到会话级调度范式迁移",
+    "keywords": [
+      "AI推理集群GPU池间网络",
+      "无服务器推理路由层",
+      "LLM Agent多轮推理",
+      "会话级KV前缀复用调度"
+    ],
+    "evidence_titles": [
+      "Talaria: Session-Aware Serverless Serving of Hundred-Billion-Parameter LLMs"
+    ]
+  },
+  {
+    "date": "2026-07-21",
+    "title": "MoE大模型专家级全分离推理系统自适应持久化内核架构",
+    "keywords": [
+      "AI推理集群GPU间互联网络",
+      "专家级跨节点通信拓扑",
+      "MoE稀疏激活推理",
+      "自适应持久化CUDA内核"
+    ],
+    "evidence_titles": [
+      "ExpertPlex: A High-Goodput Disaggregated Serving System for MoE LLMs with Adaptive Persistent Kernels"
+    ]
   }
 ]
