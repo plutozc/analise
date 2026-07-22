@@ -672,5 +672,44 @@
     "evidence_titles": [
       "FailureAtlas: A Taxonomy of Failure Modes in Multi-Provider LLM Serving Infrastructure"
     ]
+  },
+  {
+    "date": "2026-07-22",
+    "title": "LLM自动生成GPU推理内核的验证工程体系与加速器适配",
+    "keywords": [
+      "AI推理集群GPU/NPU计算层",
+      "LLM代码生成",
+      "约束引导的内核优化"
+    ],
+    "evidence_titles": [
+      "Harness Engineering for LLM-Driven GPU Kernel Generation",
+      "GPU-Tile-Sim: A Tile-Centric GPU Simulation Framework for LLM Hardware-Software Co-Design"
+    ]
+  },
+  {
+    "date": "2026-07-22",
+    "title": "超长上下文RL后训练赋能网络AI智能体长时序决策",
+    "keywords": [
+      "网络AI智能体训练基础设施（xApp/rApp/自治网络控制器）",
+      "GRPO强化学习后训练",
+      "长上下文序列并行",
+      "环形注意力"
+    ],
+    "evidence_titles": [
+      "LongStraw: Long-Context RL Beyond 2M Tokens under a Fixed GPU Budget"
+    ]
+  },
+  {
+    "date": "2026-07-22",
+    "title": "多模型共置推理干扰内核级精确建模与边缘AI密度优化",
+    "keywords": [
+      "边缘AI推理节点（O-RAN RIC平台",
+      "MEC服务器）",
+      "DNN推理干扰建模",
+      "内核级时序重叠分析"
+    ],
+    "evidence_titles": [
+      "Roomie: Interference-Aware Colocation for Efficient Model Serving"
+    ]
   }
 ]
