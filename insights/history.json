@@ -711,5 +711,57 @@
     "evidence_titles": [
       "Roomie: Interference-Aware Colocation for Efficient Model Serving"
     ]
+  },
+  {
+    "date": "2026-07-24",
+    "title": "云原生微服务Agentic安全运维从诊断到风险约束干预",
+    "keywords": [
+      "Kubernetes微服务网络",
+      "云原生网元(5GC NFV)",
+      "遥测管道",
+      "LLM Agent决策规划",
+      "风险约束优化"
+    ],
+    "evidence_titles": [
+      "ARBITER: Guarded Agentic Control for SLO-Oriented Kubernetes Remediation",
+      "Safe Remediation as Risk-Constrained Intervention Decision in Microservice Systems"
+    ]
+  },
+  {
+    "date": "2026-07-24",
+    "title": "MoE推理Tile级信号调度驱动计算通信极致细粒度重叠",
+    "keywords": [
+      "AI推理集群GPU间RoCE/NVLink互联",
+      "AllToAll通信",
+      "MoE稀疏激活推理"
+    ],
+    "evidence_titles": [
+      "Fine-grained Computation-Communication Overlap via Tile-level Signaling and Scheduling for Mixture-of-Experts"
+    ]
+  },
+  {
+    "date": "2026-07-24",
+    "title": "LLM推理服务冷启动通信自动机建模与集群级初始化加速",
+    "keywords": [
+      "GPU推理集群RoCE互联",
+      "存储I/O通道",
+      "LLM推理服务"
+    ],
+    "evidence_titles": [
+      "InstantInfer: Enabling Fast LLM Cold Start with Communicating Finite Automata"
+    ]
+  },
+  {
+    "date": "2026-07-24",
+    "title": "多轮强化学习结构感知奖励驱动GPU推理内核自动优化",
+    "keywords": [
+      "AI推理集群GPU/NPU计算层",
+      "RLVR强化学习",
+      "结构感知奖励设计",
+      "LLM代码生成"
+    ],
+    "evidence_titles": [
+      "Multi-turn RL with Structural and Performance Aware Rewards for CUDA Kernel Generation"
+    ]
   }
 ]
