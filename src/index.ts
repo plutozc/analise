@@ -11,6 +11,7 @@ import { analyzeTechSignals } from "./sync/tech-signals.js";
 import { crawlConferences } from "./sync/conference-crawler.js";
 import { backfillVenues } from "./sync/backfill-venue.js";
 import { discoverInsightDirections } from "./sync/insight-discovery.js";
+import { enrichHighScorePapers } from "./sync/ai-enrich.js";
 import { logTokenUsage } from "./lib/claude.js";
 
 const task = process.argv[2] ?? "all";
@@ -42,6 +43,10 @@ async function main() {
           const cr = batch.length > 0 ? await classifyPapers(30, batch) : { updated: 0, processed: 0 };
           console.log(`[sync-worker] AI classify: ${cr.updated}/${cr.processed}`);
         }
+
+        // AI enrichment for high-score papers
+        const enrichResult = await enrichHighScorePapers(10, 7, 30);
+        console.log(`[sync-worker] AI enrich: ${enrichResult.enriched} enriched, ${enrichResult.skipped} skipped`);
 
         // Backfill arXiv paper venues via arXiv API, then rebuild conferences
         const bfResult = await backfillVenues(100);

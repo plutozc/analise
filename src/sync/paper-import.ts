@@ -46,8 +46,21 @@ function parseArxivXml(xml: string): ImportedPaper[] {
 export const ARXIV_CATEGORIES = ["cs.NI", "cs.AI", "cs.DC", "cs.PF", "cs.LG", "cs.CR"] as const;
 
 async function fetchArxiv(url: string, category: string): Promise<{ papers: ImportedPaper[]; stat: CategoryStat }> {
-  const res = await fetch(url, { redirect: "follow", signal: AbortSignal.timeout(15000) });
-  if (!res.ok) return { papers: [], stat: { category, status: "error", count: 0, error: `HTTP ${res.status}` } };
+  let res: Response | null = null;
+  for (const backoff of [0, 15_000, 45_000, 90_000]) {
+    if (backoff > 0) {
+      console.log(`[arxiv] ${category}: retrying in ${backoff / 1000}s...`);
+      await new Promise((r) => setTimeout(r, backoff));
+    }
+    try {
+      res = await fetch(url, { redirect: "follow", signal: AbortSignal.timeout(60_000) });
+    } catch (err) {
+      if (backoff < 90_000) continue;
+      return { papers: [], stat: { category, status: "error", count: 0, error: err instanceof Error ? err.message : "timeout" } };
+    }
+    if (res.status !== 429) break;
+  }
+  if (!res || !res.ok) return { papers: [], stat: { category, status: "error", count: 0, error: `HTTP ${res?.status ?? "no response"}` } };
   const xml = await res.text();
   const papers = parseArxivXml(xml);
   return { papers, stat: { category, status: "ok", count: papers.length } };
@@ -76,7 +89,7 @@ export async function syncArxivPapers(year: number): Promise<{ stats: CategorySt
     } catch (err) {
       stats.push({ category: cat, status: "error", count: 0, error: err instanceof Error ? err.message : "unknown" });
     }
-    await new Promise((r) => setTimeout(r, 5000));
+    await new Promise((r) => setTimeout(r, 10_000));
   }
   return { stats, inserted };
 }
@@ -202,7 +215,7 @@ export async function syncS2Papers(year: number): Promise<{ stats: CategoryStat[
     } catch (err) {
       stats.push({ category: venue, status: "error", count: 0, error: err instanceof Error ? err.message : "unknown" });
     }
-    await new Promise((r) => setTimeout(r, 5000));
+    await new Promise((r) => setTimeout(r, 10_000));
   }
   return { stats, inserted };
 }
@@ -252,7 +265,7 @@ export async function syncCompanyPapers(year: number): Promise<{ stats: Category
     } catch (err) {
       stats.push({ category: `company:${slug}`, status: "error", count: 0, error: err instanceof Error ? err.message : "unknown" });
     }
-    await new Promise((r) => setTimeout(r, 5000));
+    await new Promise((r) => setTimeout(r, 10_000));
   }
   return { stats, inserted };
 }
@@ -261,6 +274,24 @@ export async function syncCompanyPapers(year: number): Promise<{ stats: Category
 
 function normalizeTitle(title: string): string {
   return title.toLowerCase().replace(/[^\w\s]/g, "").replace(/\s+/g, " ").trim();
+}
+
+function stripVenuePrefix(title: string): string {
+  return title
+    .replace(/^(?:poster|demo|short paper|workshop|tutorial|keynote)\s*[:：]\s*/i, "")
+    .replace(/^\[[^\]]{1,30}\]\s*/, "")
+    .trim();
+}
+
+function titlesMatch(a: string, b: string): boolean {
+  const na = normalizeTitle(stripVenuePrefix(a));
+  const nb = normalizeTitle(stripVenuePrefix(b));
+  if (na === nb) return true;
+  if (na.length > 20 && nb.length > 20) {
+    if (na.endsWith(nb) || nb.endsWith(na)) return true;
+    if (na.startsWith(nb) || nb.startsWith(na)) return true;
+  }
+  return false;
 }
 
 function isRealVenue(v: string | null | undefined): boolean {
@@ -331,10 +362,11 @@ async function upsertPaper(p: ImportedPaper): Promise<InsertedPaper | null> {
 
     if (fuzzy?.length) {
       for (const f of fuzzy) {
-        const fNorm = normalizeTitle(f.title);
-        if (fNorm === norm || fNorm.endsWith(norm) || norm.endsWith(fNorm)) {
-          if (isRealVenue(p.venue) && !isRealVenue(f.venue)) {
-            await supabase.from("papers").update({ venue: p.venue }).eq("id", f.id);
+        if (titlesMatch(p.title, f.title)) {
+          const updates: Record<string, any> = {};
+          if (isRealVenue(p.venue) && !isRealVenue(f.venue)) updates.venue = p.venue;
+          if (Object.keys(updates).length > 0) {
+            await supabase.from("papers").update(updates).eq("id", f.id);
           }
           return null;
         }
@@ -367,9 +399,10 @@ export async function syncAllPapers(year: number): Promise<{ stats: CategoryStat
   allStats.push(...ar.stats);
   allInserted.push(...ar.inserted);
 
-  const s2 = await syncS2Papers(year);
-  allStats.push(...s2.stats);
-  allInserted.push(...s2.inserted);
+  // S2 skipped — IP-level 429 persistent, only contributed 5/1000 papers
+  console.log("[sync] S2 skipped (IP rate-limited)");
+
+  await new Promise((r) => setTimeout(r, 60_000));
 
   const co = await syncCompanyPapers(year);
   allStats.push(...co.stats);

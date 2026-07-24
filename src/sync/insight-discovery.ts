@@ -239,6 +239,99 @@ ${history.map(h => `- [${h.date}] ${h.title}（关键词: ${h.keywords.join(", "
 ${JSON.stringify(items, null, 2)}`;
 }
 
+function str(v: any, fallback = ""): string {
+  return typeof v === "string" ? v : fallback;
+}
+
+function resolveEvidenceLink(e: string, urlMap: Map<number, string | null>): string {
+  const nums: number[] = [];
+  const patterns = [
+    /^#?(Paper|News)?\s*(\d+)\s*[/／]\s*#?(\d+)/i,
+    /^#?(?:Paper|News)?\s*(\d+)[.:\s]/i,
+  ];
+  for (const pat of patterns) {
+    const m = e.match(pat);
+    if (m) {
+      if (m[3]) { nums.push(parseInt(m[2], 10), parseInt(m[3], 10)); }
+      else { nums.push(parseInt(m[1] ?? m[2], 10)); }
+      break;
+    }
+  }
+  if (nums.length > 0) {
+    const url = urlMap.get(nums[0]);
+    if (url) {
+      const titlePart = e.replace(/^[#]?\s*(?:Paper|News)?\s*\d+(?:\s*[/／]\s*#?\d+)?\s*[.:]\s*/i, "").replace(/^["""]|["""]$/g, "").trim();
+      return `[${titlePart || e}](${url})`;
+    }
+  }
+  return e;
+}
+
+function renderDirectionsMarkdown(
+  parsed: any, rawResult: string, dateStr: string,
+  paperCount: number, newsCount: number, candidateCount: number,
+  evidenceUrlMap: Map<number, string | null>, scored: ScoredItem[],
+): string[] {
+  const lines: string[] = [];
+  lines.push(`# 技术洞察方向发掘 — ${dateStr}`);
+  lines.push("");
+  lines.push(`数据范围：最近 14 天 | 论文 ${paperCount} 篇 | 新闻 ${newsCount} 条 | 候选 ${candidateCount} 条`);
+  lines.push("", "---", "");
+
+  if (parsed?.directions?.length) {
+    for (const d of parsed.directions) {
+      const priority = typeof d.priority === "number" ? d.priority : 3;
+      const priorityTag = priority <= 2 ? "\u{1F534}" : priority <= 3 ? "\u{1F7E1}" : "⚪";
+      const updateTag = d.is_update ? " \u{1F504}" : "";
+      lines.push(`## ${priorityTag}${updateTag} ${str(d.title, "Untitled")}`);
+      lines.push("");
+      const meta = [`**优先级:** ${priority}/5`, `**置信度:** ${str(d.confidence, "medium")}`];
+      if (d.is_update) meta.push("**更新**");
+      lines.push(meta.join(" | "), "");
+      lines.push(str(d.summary, "No summary"), "");
+      lines.push(`- **网络对象:** ${str(d.network_object, "N/A")}`);
+      lines.push(`- **AI 方法:** ${str(d.ai_method, "无")}`);
+      if (d.software_stack && d.software_stack !== "无") {
+        lines.push(`- **软件技术栈:** ${str(d.software_stack)}`);
+      }
+      lines.push(`- **欧洲连接:** ${str(d.europe_connection, "无直接连接")}`);
+      lines.push(`- **华为关联:** ${str(d.huawei_relevance, "N/A")}`);
+      if (d.is_update && d.update_reason) {
+        lines.push(`- **\u{1F504} 更新原因:** ${str(d.update_reason)}`);
+      }
+      lines.push("");
+      if (Array.isArray(d.evidence) && d.evidence.length > 0) {
+        lines.push("**支撑证据:**");
+        for (const e of d.evidence) {
+          lines.push(`- ${resolveEvidenceLink(String(e), evidenceUrlMap)}`);
+        }
+        lines.push("");
+      }
+      lines.push("---", "");
+    }
+  } else {
+    lines.push("## Claude 原始输出", "", rawResult, "");
+  }
+
+  if (parsed?.dropped?.length) {
+    lines.push("## 剔除方向", "");
+    for (const d of parsed.dropped) lines.push(`- ${d}`);
+    lines.push("");
+  }
+
+  lines.push("## 候选数据摘要（Top 15）", "");
+  lines.push("| # | 类型 | 标题 | Network AI | 分数 |");
+  lines.push("|---|------|------|-----------|------|");
+  for (const c of scored.slice(0, 15)) {
+    const nai = c.isNetworkAI ? "✅" : "❌";
+    const shortTitle = c.title.length > 50 ? c.title.slice(0, 47) + "..." : c.title;
+    lines.push(`| ${c.type} | ${c.venue ?? c.source ?? "-"} | ${shortTitle} | ${nai} | ${c.score} |`);
+  }
+  lines.push("");
+
+  return lines;
+}
+
 export async function discoverInsightDirections(): Promise<{ directions: number; outputPath: string }> {
   console.log("[insight-discovery] Fetching recent papers and news...");
 
@@ -247,7 +340,7 @@ export async function discoverInsightDirections(): Promise<{ directions: number;
     fetchRecentNews(),
   ]);
 
-  console.log(`[insight-discovery] ${papers.length} papers, ${news.length} news in last 7 days`);
+  console.log(`[insight-discovery] ${papers.length} papers, ${news.length} news in last 14 days`);
 
   const scored: ScoredItem[] = [];
 
@@ -337,6 +430,26 @@ export async function discoverInsightDirections(): Promise<{ directions: number;
     evidenceUrlMap.set(i + 1, itemsForClaude[i].url);
   }
 
+  // Balanced digest: max 2 directions per network_object category
+  if (parsed?.directions?.length) {
+    const MAX_PER_CATEGORY = 2;
+    const categoryCounts = new Map<string, number>();
+    const balanced: any[] = [];
+    for (const d of parsed.directions) {
+      const cat = (d.network_object ?? "other").split(/[,、，]/)[0].trim().slice(0, 20);
+      const count = categoryCounts.get(cat) ?? 0;
+      if (count < MAX_PER_CATEGORY) {
+        balanced.push(d);
+        categoryCounts.set(cat, count + 1);
+      } else {
+        console.log(`[insight-discovery] Balanced digest: dropped "${d.title}" (category "${cat}" already has ${MAX_PER_CATEGORY})`);
+        if (!parsed.dropped) parsed.dropped = [];
+        parsed.dropped.push(`${d.title}: 同类方向已达${MAX_PER_CATEGORY}个上限`);
+      }
+    }
+    parsed.directions = balanced;
+  }
+
   // Save new directions to history for dedup
   if (parsed?.directions?.length) {
     const dateStr = new Date().toISOString().slice(0, 10);
@@ -360,93 +473,9 @@ export async function discoverInsightDirections(): Promise<{ directions: number;
   const filename = `directions-${dateStr}.md`;
   const filepath = join(OUTPUT_DIR, filename);
 
-  const lines: string[] = [];
-  lines.push(`# 技术洞察方向发掘 — ${dateStr}`);
-  lines.push("");
-  lines.push(`数据范围：最近 14 天 | 论文 ${papers.length} 篇 | 新闻 ${news.length} 条 | 候选 ${scored.length} 条`);
-  lines.push("");
-  lines.push("---");
-  lines.push("");
-
-  if (parsed?.directions?.length) {
-    for (const d of parsed.directions) {
-      const priorityTag = d.priority <= 2 ? "🔴" : d.priority <= 3 ? "🟡" : "⚪";
-      const updateTag = d.is_update ? " 🔄" : "";
-      lines.push(`## ${priorityTag}${updateTag} ${d.title}`);
-      lines.push("");
-      const meta = [`**优先级:** ${d.priority}/5`, `**置信度:** ${d.confidence}`];
-      if (d.is_update) meta.push(`**更新**`);
-      lines.push(meta.join(" | "));
-      lines.push("");
-      lines.push(d.summary);
-      lines.push("");
-      lines.push(`- **网络对象:** ${d.network_object}`);
-      lines.push(`- **AI 方法:** ${d.ai_method}`);
-      if (d.software_stack && d.software_stack !== "无") {
-        lines.push(`- **软件技术栈:** ${d.software_stack}`);
-      }
-      lines.push(`- **欧洲连接:** ${d.europe_connection}`);
-      lines.push(`- **华为关联:** ${d.huawei_relevance}`);
-      if (d.is_update && d.update_reason) {
-        lines.push(`- **🔄 更新原因:** ${d.update_reason}`);
-      }
-      lines.push("");
-      if (d.evidence?.length) {
-        lines.push("**支撑证据:**");
-        for (const e of d.evidence) {
-          // Extract idx from various formats: "1.", "#1", "Paper 1:", "#1/#2"
-          const nums: number[] = [];
-          const patterns = [
-            /^#?(Paper|News)?\s*(\d+)\s*[/／]\s*#?(\d+)/i,  // #29/#30 or Paper 29/30
-            /^#?(?:Paper|News)?\s*(\d+)[.:\s]/i,             // Paper 1: or #1. or 1.
-          ];
-          for (const pat of patterns) {
-            const m = e.match(pat);
-            if (m) {
-              if (m[3]) { nums.push(parseInt(m[2], 10), parseInt(m[3], 10)); }
-              else { nums.push(parseInt(m[1] ?? m[2], 10)); }
-              break;
-            }
-          }
-          let linkText = e;
-          if (nums.length > 0) {
-            const url = evidenceUrlMap.get(nums[0]);
-            if (url) {
-              const titlePart = e.replace(/^[#]?\s*(?:Paper|News)?\s*\d+(?:\s*[/／]\s*#?\d+)?\s*[.:]\s*/i, "").replace(/^["""]|["""]$/g, "").trim();
-              linkText = `[${titlePart || e}](${url})`;
-            }
-          }
-          lines.push(`- ${linkText}`);
-        }
-        lines.push("");
-      }
-      lines.push("---");
-      lines.push("");
-    }
-  } else {
-    lines.push("## Claude 原始输出");
-    lines.push("");
-    lines.push(result);
-    lines.push("");
-  }
-
-  if (parsed?.dropped?.length) {
-    lines.push("## 剔除方向");
-    lines.push("");
-    for (const d of parsed.dropped) lines.push(`- ${d}`);
-    lines.push("");
-  }
-
-  lines.push("## 候选数据摘要（Top 15）");
-  lines.push("");
-  lines.push("| # | 类型 | 标题 | Network AI | 分数 |");
-  lines.push("|---|------|------|-----------|------|");
-  for (const c of scored.slice(0, 15)) {
-    const nai = c.isNetworkAI ? "✅" : "❌";
-    const shortTitle = c.title.length > 50 ? c.title.slice(0, 47) + "..." : c.title;
-    lines.push(`| ${c.type} | ${c.venue ?? c.source ?? "-"} | ${shortTitle} | ${nai} | ${c.score} |`);
-  }
-  lines.push("");
+  const lines: string[] = renderDirectionsMarkdown(
+    parsed, result, dateStr, papers.length, news.length, scored.length, evidenceUrlMap, scored,
+  );
 
   writeFileSync(filepath, lines.join("\n"), "utf-8");
   console.log(`[insight-discovery] Written to ${filepath}`);
