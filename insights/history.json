@@ -763,5 +763,44 @@
     "evidence_titles": [
       "Multi-turn RL with Structural and Performance Aware Rewards for CUDA Kernel Generation"
     ]
+  },
+  {
+    "date": "2026-07-28",
+    "title": "LLM Agent驱动生产网络配置到形式化模型的自动翻译验证",
+    "keywords": [
+      "生产网络配置",
+      "路由策略",
+      "网络可达性与故障域验证",
+      "LLM Agent（翻译范式替代推理范式）"
+    ],
+    "evidence_titles": [
+      "Let AI Agents Translate Networks, Not Reason About Them"
+    ]
+  },
+  {
+    "date": "2026-07-28",
+    "title": "ZCube无脊柱拓扑以Braess悖论挑战AI集群多路径范式",
+    "keywords": [
+      "数据中心网络拓扑",
+      "Spine-Leaf交换架构",
+      "AI集群互联fabric",
+      "无（服务AI训练/推理集群工作负载）"
+    ],
+    "evidence_titles": [
+      "Fewer Paths, Better Performance: Understanding the ZCube Topology through Braess's Paradox"
+    ]
+  },
+  {
+    "date": "2026-07-28",
+    "title": "分布式多智能体强化学习驱动UAV-IoT车联网轨迹路由联合优化",
+    "keywords": [
+      "UAV中继网络",
+      "IoT-VANET车联网",
+      "动态路由协议",
+      "分布式多智能体强化学习（MARL）"
+    ],
+    "evidence_titles": [
+      "TRUAV: Distributed Multi-Agent Reinforcement Learning for Trajectory Planning and Routing Enhancement in UAV-Aided IoT-Enabled VANETs"
+    ]
   }
 ]
