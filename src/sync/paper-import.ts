@@ -45,7 +45,53 @@ function parseArxivXml(xml: string): ImportedPaper[] {
 
 export const ARXIV_CATEGORIES = ["cs.NI", "cs.AI", "cs.DC", "cs.PF", "cs.LG", "cs.CR"] as const;
 
-async function fetchArxiv(url: string, category: string): Promise<{ papers: ImportedPaper[]; stat: CategoryStat }> {
+// RSS feed — daily new submissions, no rate limit
+function parseArxivRss(xml: string, category: string): ImportedPaper[] {
+  const papers: ImportedPaper[] = [];
+  const items = xml.split("<item>").slice(1);
+  for (const item of items) {
+    const title = item.match(/<title>([\s\S]*?)<\/title>/)?.[1]?.replace(/\s+/g, " ").trim();
+    if (!title) continue;
+    const url = item.match(/<link>([\s\S]*?)<\/link>/)?.[1]?.trim() ?? null;
+    const rawDesc = item.match(/<description>([\s\S]*?)<\/description>/)?.[1] ?? "";
+    const abstract = rawDesc
+      .replace(/^arXiv:\d+\.\d+v\d+\s+Announce Type:\s*\w+\s*\n?\s*Abstract:\s*/i, "")
+      .replace(/\s+/g, " ").trim() || null;
+    const authors: string[] = [];
+    const creatorBlock = item.match(/<dc:creator>([\s\S]*?)<\/dc:creator>/)?.[1] ?? "";
+    for (const name of creatorBlock.split(",")) {
+      const n = name.trim();
+      if (n) authors.push(n);
+    }
+    const pubDate = item.match(/<pubDate>([\s\S]*?)<\/pubDate>/)?.[1]?.trim() ?? null;
+    const published_date = pubDate ? new Date(pubDate).toISOString().slice(0, 10) : null;
+
+    papers.push({
+      title, authors, venue: null, url, published_date, abstract,
+      topics: [category],
+      companies: inferCompanies(`${title} ${abstract ?? ""}`),
+      citation_count: undefined,
+      source: "arxiv",
+    });
+  }
+  return papers;
+}
+
+async function fetchArxivRss(category: string): Promise<{ papers: ImportedPaper[]; stat: CategoryStat }> {
+  const url = `https://rss.arxiv.org/rss/${category}`;
+  try {
+    const res = await fetch(url, { signal: AbortSignal.timeout(30_000) });
+    if (!res.ok) return { papers: [], stat: { category, status: "error", count: 0, error: `HTTP ${res.status}` } };
+    const xml = await res.text();
+    const papers = parseArxivRss(xml, category);
+    return { papers, stat: { category, status: "ok", count: papers.length } };
+  } catch (err) {
+    return { papers: [], stat: { category, status: "error", count: 0, error: err instanceof Error ? err.message : "unknown" } };
+  }
+}
+
+// Search API fallback for company queries (still needed for author/affiliation search)
+async function fetchArxivSearch(url: string, category: string): Promise<{ papers: ImportedPaper[]; stat: CategoryStat }> {
   let res: Response | null = null;
   for (const backoff of [0, 15_000, 45_000, 90_000]) {
     if (backoff > 0) {
@@ -66,16 +112,14 @@ async function fetchArxiv(url: string, category: string): Promise<{ papers: Impo
   return { papers, stat: { category, status: "ok", count: papers.length } };
 }
 
-export async function syncArxivPapers(year: number): Promise<{ stats: CategoryStat[]; inserted: InsertedPaper[] }> {
+export async function syncArxivPapers(_year: number): Promise<{ stats: CategoryStat[]; inserted: InsertedPaper[] }> {
   const stats: CategoryStat[] = [];
   const inserted: InsertedPaper[] = [];
   const seen = new Set<string>();
 
   for (const cat of ARXIV_CATEGORIES) {
-    const query = `cat:${cat}+AND+submittedDate:[${year}01010000+TO+${year}12312359]`;
-    const url = `https://export.arxiv.org/api/query?search_query=${query}&start=0&max_results=200&sortBy=submittedDate&sortOrder=descending`;
     try {
-      const { papers, stat } = await fetchArxiv(url, cat);
+      const { papers, stat } = await fetchArxivRss(cat);
       stats.push(stat);
       let imported = 0;
       for (const p of papers) {
@@ -86,10 +130,11 @@ export async function syncArxivPapers(year: number): Promise<{ stats: CategorySt
         if (r) { imported++; inserted.push(r); }
       }
       stats.push({ category: `${cat}_imported`, status: "ok", count: imported });
+      console.log(`[arxiv-rss] ${cat}: ${papers.length} items, ${imported} new`);
     } catch (err) {
       stats.push({ category: cat, status: "error", count: 0, error: err instanceof Error ? err.message : "unknown" });
     }
-    await new Promise((r) => setTimeout(r, 10_000));
+    await new Promise((r) => setTimeout(r, 3_000));
   }
   return { stats, inserted };
 }
@@ -251,7 +296,7 @@ export async function syncCompanyPapers(year: number): Promise<{ stats: Category
     const dateFilter = `+AND+submittedDate:[${year}01010000+TO+${year}12312359]`;
     const url = `https://export.arxiv.org/api/query?search_query=${query}${dateFilter}&start=0&max_results=50&sortBy=submittedDate&sortOrder=descending`;
     try {
-      const { papers, stat } = await fetchArxiv(url, `company:${slug}`);
+      const { papers, stat } = await fetchArxivSearch(url, `company:${slug}`);
       stats.push(stat);
       let imported = 0;
       for (const p of papers) {
