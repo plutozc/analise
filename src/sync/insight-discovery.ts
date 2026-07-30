@@ -7,7 +7,8 @@ import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUTPUT_DIR = join(__dirname, "..", "..", "insights");
 const HISTORY_PATH = join(OUTPUT_DIR, "history.json");
-const HISTORY_RETENTION_DAYS = 30;
+const HISTORY_RETENTION_DAYS = 7;
+const MAX_HISTORY_IN_PROMPT = 15;
 
 type HistoryEntry = {
   date: string;
@@ -170,7 +171,7 @@ type ScoredItem = {
 };
 
 function buildDiscoveryPrompt(candidates: ScoredItem[], history: HistoryEntry[]): string {
-  const items = candidates.slice(0, 30).map((c, i) => ({
+  const items = candidates.slice(0, 50).map((c, i) => ({
     idx: i + 1,
     type: c.type,
     title: c.title,
@@ -230,12 +231,15 @@ function buildDiscoveryPrompt(candidates: ScoredItem[], history: HistoryEntry[])
   "dropped": ["被剔除的候选及原因（简述）"]
 }
 
-${history.length > 0 ? `去重要求：以下方向已在近期推荐过，请跳过这些方向，除非本周有重要的新论文/新实验/新标准进展（不是同一批论文的不同组合）。如果某个已推荐方向确实有显著新证据，可以再次推荐，将 is_update 设为 true 并填写 update_reason。
+${(() => {
+    const recent = history.slice(-MAX_HISTORY_IN_PROMPT);
+    return recent.length > 0 ? `去重参考：以下方向近期推荐过。避免完全重复的方向，但如果有新论据、新角度或新实验数据，仍然应该推荐（设 is_update=true）。宁可推荐有部分重叠的方向，也不要输出0个方向。每次至少输出2个方向。
 
-已推荐方向：
-${history.map(h => `- [${h.date}] ${h.title}（关键词: ${h.keywords.join(", ")}）`).join("\n")}
+已推荐方向（仅最近${recent.length}条）：
+${recent.map(h => `- [${h.date}] ${h.title}`).join("\n")}
 
-` : ""}候选数据：
+` : "";
+  })()}候选数据：
 ${JSON.stringify(items, null, 2)}`;
 }
 
