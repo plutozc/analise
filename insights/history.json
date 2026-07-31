@@ -133,5 +133,33 @@
     "evidence_titles": [
       "QuantFlow: A Federated Mamba-Based Post-Transformer Foundation Model for Time-Series Forecasting"
     ]
+  },
+  {
+    "date": "2026-07-31",
+    "title": "AI Agent驱动云原生蜜罐欺骗防御实现入侵自主闭环调查",
+    "keywords": [
+      "云网络遥测",
+      "云原生API安全",
+      "蜜罐/欺骗防御",
+      "IAM身份链路",
+      "AI Agent自主决策与闭环编排"
+    ],
+    "evidence_titles": [
+      "Agentic Cloud Decoys: A Deception-Driven Framework for Autonomous Intrusion Investigation"
+    ]
+  },
+  {
+    "date": "2026-07-31",
+    "title": "可穿戴边缘多模态推理与无线回传的能效Pareto决策框架",
+    "keywords": [
+      "BLE/WiFi无线回传链路",
+      "边缘推理卸载",
+      "MEC分割计算",
+      "多模态深度学习",
+      "模型压缩与量化"
+    ],
+    "evidence_titles": [
+      "On-Device Inference versus Wireless Streaming: Energy-Efficient Multi-Modal Deep Learning for Wearable Cardiovascular Patches"
+    ]
   }
 ]
