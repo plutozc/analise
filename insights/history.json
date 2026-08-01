@@ -1,57 +1,5 @@
 [
   {
-    "date": "2026-07-24",
-    "title": "云原生微服务Agentic安全运维从诊断到风险约束干预",
-    "keywords": [
-      "Kubernetes微服务网络",
-      "云原生网元(5GC NFV)",
-      "遥测管道",
-      "LLM Agent决策规划",
-      "风险约束优化"
-    ],
-    "evidence_titles": [
-      "ARBITER: Guarded Agentic Control for SLO-Oriented Kubernetes Remediation",
-      "Safe Remediation as Risk-Constrained Intervention Decision in Microservice Systems"
-    ]
-  },
-  {
-    "date": "2026-07-24",
-    "title": "MoE推理Tile级信号调度驱动计算通信极致细粒度重叠",
-    "keywords": [
-      "AI推理集群GPU间RoCE/NVLink互联",
-      "AllToAll通信",
-      "MoE稀疏激活推理"
-    ],
-    "evidence_titles": [
-      "Fine-grained Computation-Communication Overlap via Tile-level Signaling and Scheduling for Mixture-of-Experts"
-    ]
-  },
-  {
-    "date": "2026-07-24",
-    "title": "LLM推理服务冷启动通信自动机建模与集群级初始化加速",
-    "keywords": [
-      "GPU推理集群RoCE互联",
-      "存储I/O通道",
-      "LLM推理服务"
-    ],
-    "evidence_titles": [
-      "InstantInfer: Enabling Fast LLM Cold Start with Communicating Finite Automata"
-    ]
-  },
-  {
-    "date": "2026-07-24",
-    "title": "多轮强化学习结构感知奖励驱动GPU推理内核自动优化",
-    "keywords": [
-      "AI推理集群GPU/NPU计算层",
-      "RLVR强化学习",
-      "结构感知奖励设计",
-      "LLM代码生成"
-    ],
-    "evidence_titles": [
-      "Multi-turn RL with Structural and Performance Aware Rewards for CUDA Kernel Generation"
-    ]
-  },
-  {
     "date": "2026-07-28",
     "title": "LLM Agent驱动生产网络配置到形式化模型的自动翻译验证",
     "keywords": [
@@ -160,6 +108,36 @@
     ],
     "evidence_titles": [
       "On-Device Inference versus Wireless Streaming: Energy-Efficient Multi-Modal Deep Learning for Wearable Cardiovascular Patches"
+    ]
+  },
+  {
+    "date": "2026-08-01",
+    "title": "Agent多步规划蒸馏与工作流树搜索加速自动驾驶网络决策",
+    "keywords": [
+      "自动驾驶网络",
+      "网络运维工作流",
+      "Agentic蒸馏",
+      "蒙特卡洛树搜索(MCTS)",
+      "LLM Agent"
+    ],
+    "evidence_titles": [
+      "The Physics of Multi-Turn Long-Horizon Planning: From Pre-training to Post-training via Single- and Multi-Teacher On-Policy Agentic Distillation",
+      "Agent-UCT: Upper Confidence Bounds Applied to Trees for Agentic Workflow Optimization with Cost-Awareness",
+      "Let AI Agents Translate Networks, Not Reason About Them"
+    ]
+  },
+  {
+    "date": "2026-08-01",
+    "title": "Graph Transformer突破GNN瓶颈面向网络拓扑建模与数字孪生",
+    "keywords": [
+      "网络拓扑图",
+      "网络数字孪生",
+      "Graph Transformer",
+      "图注意力机制",
+      "结构位置编码"
+    ],
+    "evidence_titles": [
+      "A Survey of Graph Transformers: Architectures, Theories and Applications"
     ]
   }
 ]
