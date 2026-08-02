@@ -139,5 +139,54 @@
     "evidence_titles": [
       "A Survey of Graph Transformers: Architectures, Theories and Applications"
     ]
+  },
+  {
+    "date": "2026-08-02",
+    "title": "成本感知树搜索优化AI Agent网络运维多步决策工作流",
+    "keywords": [
+      "网络配置验证",
+      "故障定位",
+      "自动驾驶网络决策流",
+      "UCT树搜索",
+      "多教师蒸馏",
+      "Agent多步规划"
+    ],
+    "evidence_titles": [
+      "Agent-UCT: Upper Confidence Bounds Applied to Trees for Agentic Workflow Optimization with Cost-Awareness",
+      "The Physics of Multi-Turn Long-Horizon Planning: From Pre-training to Post-training via Single- and Multi-Teacher On-Policy Agentic Distillation",
+      "Let AI Agents Translate Networks, Not Reason About Them"
+    ]
+  },
+  {
+    "date": "2026-08-02",
+    "title": "朴素Transformer超越图专用架构面向网络拓扑链路预测",
+    "keywords": [
+      "网络拓扑图",
+      "链路状态预测",
+      "数字孪生",
+      "朴素Transformer",
+      "Graph Transformer",
+      "GNN对比分析"
+    ],
+    "evidence_titles": [
+      "Plain Transformers are Surprisingly Powerful Link Predictors",
+      "A Survey of Graph Transformers: Architectures, Theories and Applications"
+    ]
+  },
+  {
+    "date": "2026-08-02",
+    "title": "去中心化共识学习与联邦时序基座面向边缘网络协同推断",
+    "keywords": [
+      "边缘网络节点",
+      "去中心化网络拓扑",
+      "MEC",
+      "去中心化共识优化",
+      "联邦Mamba",
+      "隐私保护分布式学习"
+    ],
+    "evidence_titles": [
+      "Distributed Convolutional Rank Regression over Decentralized Networks",
+      "QuantFlow: A Federated Mamba-Based Post-Transformer Foundation Model for Time-Series Forecasting"
+    ]
   }
 ]
