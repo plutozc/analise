@@ -188,5 +188,50 @@
       "Distributed Convolutional Rank Regression over Decentralized Networks",
       "QuantFlow: A Federated Mamba-Based Post-Transformer Foundation Model for Time-Series Forecasting"
     ]
+  },
+  {
+    "date": "2026-08-03",
+    "title": "Agent蒸馏物理学揭示网络自动驾驶多步规划能力涌现机制",
+    "keywords": [
+      "自动驾驶网络运维决策",
+      "网络故障诊断工作流",
+      "Agent蒸馏",
+      "多教师在策略蒸馏",
+      "树搜索"
+    ],
+    "evidence_titles": [
+      "The Physics of Multi-Turn Long-Horizon Planning: From Pre-training to Post-training via Single- and Multi-Teacher On-Policy Agentic Distillation",
+      "Agent-UCT: Upper Confidence Bounds Applied to Trees for Agentic Workflow Optimization with Cost-Awareness"
+    ]
+  },
+  {
+    "date": "2026-08-03",
+    "title": "稀疏MoE高效专家路由设计对AI集群全互联通信模式优化启示",
+    "keywords": [
+      "AI集群互联网络",
+      "数据中心All-to-All通信",
+      "专家并行流量调度",
+      "稀疏MoE",
+      "专家路由优化"
+    ],
+    "evidence_titles": [
+      "MMOE: Modernizing Diffusion Transformers with Efficient Expert Design"
+    ]
+  },
+  {
+    "date": "2026-08-03",
+    "title": "频域扩散事件驱动缓存加速面向网络时序预测实时化部署",
+    "keywords": [
+      "网络KPI时序监控",
+      "流量预测",
+      "边缘网络协同",
+      "频域扩散模型",
+      "事件驱动缓存推理加速",
+      "联邦学习"
+    ],
+    "evidence_titles": [
+      "Accelerating Frequency Domain Diffusion Models with Error-Feedback Event-Driven Caching",
+      "QuantFlow: A Federated Mamba-Based Post-Transformer Foundation Model for Time-Series Forecasting"
+    ]
   }
 ]
