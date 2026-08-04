@@ -233,5 +233,45 @@
       "Accelerating Frequency Domain Diffusion Models with Error-Feedback Event-Driven Caching",
       "QuantFlow: A Federated Mamba-Based Post-Transformer Foundation Model for Time-Series Forecasting"
     ]
+  },
+  {
+    "date": "2026-08-04",
+    "title": "AI Agent网络配置形式化翻译替代端到端推理验证",
+    "keywords": [
+      "网络配置",
+      "路由策略",
+      "可达性模型",
+      "故障定位",
+      "LLM Agent（配置翻译与形式化建模）"
+    ],
+    "evidence_titles": [
+      "Let AI Agents Translate Networks, Not Reason About Them"
+    ]
+  },
+  {
+    "date": "2026-08-04",
+    "title": "UCT树搜索框架优化AI Agent网络运维成本与决策质量",
+    "keywords": [
+      "网络运维工作流",
+      "多步决策管道",
+      "UCT蒙特卡洛树搜索",
+      "成本感知优化"
+    ],
+    "evidence_titles": [
+      "Agent-UCT: Upper Confidence Bounds Applied to Trees for Agentic Workflow Optimization with Cost-Awareness"
+    ]
+  },
+  {
+    "date": "2026-08-04",
+    "title": "细粒度MoE专家路由架构演进对AI集群通信拓扑设计启示",
+    "keywords": [
+      "AI集群互联网络",
+      "Expert Parallelism通信拓扑",
+      "稀疏MoE",
+      "细粒度专家路由"
+    ],
+    "evidence_titles": [
+      "MMOE: Modernizing Diffusion Transformers with Efficient Expert Design"
+    ]
   }
 ]
