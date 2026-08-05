@@ -1,44 +1,5 @@
 [
   {
-    "date": "2026-07-28",
-    "title": "LLM Agent驱动生产网络配置到形式化模型的自动翻译验证",
-    "keywords": [
-      "生产网络配置",
-      "路由策略",
-      "网络可达性与故障域验证",
-      "LLM Agent（翻译范式替代推理范式）"
-    ],
-    "evidence_titles": [
-      "Let AI Agents Translate Networks, Not Reason About Them"
-    ]
-  },
-  {
-    "date": "2026-07-28",
-    "title": "ZCube无脊柱拓扑以Braess悖论挑战AI集群多路径范式",
-    "keywords": [
-      "数据中心网络拓扑",
-      "Spine-Leaf交换架构",
-      "AI集群互联fabric",
-      "无（服务AI训练/推理集群工作负载）"
-    ],
-    "evidence_titles": [
-      "Fewer Paths, Better Performance: Understanding the ZCube Topology through Braess's Paradox"
-    ]
-  },
-  {
-    "date": "2026-07-28",
-    "title": "分布式多智能体强化学习驱动UAV-IoT车联网轨迹路由联合优化",
-    "keywords": [
-      "UAV中继网络",
-      "IoT-VANET车联网",
-      "动态路由协议",
-      "分布式多智能体强化学习（MARL）"
-    ],
-    "evidence_titles": [
-      "TRUAV: Distributed Multi-Agent Reinforcement Learning for Trajectory Planning and Routing Enhancement in UAV-Aided IoT-Enabled VANETs"
-    ]
-  },
-  {
     "date": "2026-07-30",
     "title": "AI Agent自主网络运维从配置形式化验证到云原生安全诱捕",
     "keywords": [
@@ -272,6 +233,47 @@
     ],
     "evidence_titles": [
       "MMOE: Modernizing Diffusion Transformers with Efficient Expert Design"
+    ]
+  },
+  {
+    "date": "2026-08-05",
+    "title": "ZCube反直觉少路径拓扑对AI集群数据中心网络架构启示",
+    "keywords": [
+      "数据中心网络拓扑",
+      "Spine-Leaf架构",
+      "AI集群互联",
+      "无（面向LLM推理服务工作负载的网络优化）"
+    ],
+    "evidence_titles": [
+      "Fewer Paths, Better Performance: Understanding the ZCube Topology through Braess's Paradox"
+    ]
+  },
+  {
+    "date": "2026-08-05",
+    "title": "AI Agent失控事件催生云原生基础设施韧性防护新范式",
+    "keywords": [
+      "云原生基础设施",
+      "API网关",
+      "遥测管道",
+      "AI Agent自主决策",
+      "Agentic欺骗防御"
+    ],
+    "evidence_titles": [
+      "Hugging Face rebuilt a third of its infrastructure after OpenAI agents ran amok",
+      "Agentic Cloud Decoys: A Deception-Driven Framework for Autonomous Intrusion Investigation"
+    ]
+  },
+  {
+    "date": "2026-08-05",
+    "title": "分布式多智能体强化学习面向UAV物联网动态路由协同优化",
+    "keywords": [
+      "UAV空中中继网络",
+      "VANET车联网路由",
+      "IoT接入网",
+      "分布式多智能体强化学习(MARL)"
+    ],
+    "evidence_titles": [
+      "TRUAV: Distributed Multi-Agent Reinforcement Learning for Trajectory Planning and Routing Enhancement in UAV-Aided IoT-Enabled VANETs"
     ]
   }
 ]
