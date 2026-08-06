@@ -275,5 +275,51 @@
     "evidence_titles": [
       "TRUAV: Distributed Multi-Agent Reinforcement Learning for Trajectory Planning and Routing Enhancement in UAV-Aided IoT-Enabled VANETs"
     ]
+  },
+  {
+    "date": "2026-08-06",
+    "title": "AI Agent自主云原生网络欺骗防御与入侵溯源框架",
+    "keywords": [
+      "云原生网络基础设施",
+      "云遥测数据面",
+      "联邦会话与API调用链",
+      "AI Agent自主决策",
+      "欺骗策略生成",
+      "行为异常检测"
+    ],
+    "evidence_titles": [
+      "Agentic Cloud Decoys: A Deception-Driven Framework for Autonomous Intrusion Investigation"
+    ]
+  },
+  {
+    "date": "2026-08-06",
+    "title": "LLM Agentic图令牌推理增强网络拓扑建模与形式化验证",
+    "keywords": [
+      "网络拓扑图",
+      "路由可达性模型",
+      "网络配置状态空间",
+      "LLM Agent",
+      "图令牌导航推理",
+      "形式化翻译"
+    ],
+    "evidence_titles": [
+      "Agentic Graph Token Reasoning",
+      "Let AI Agents Translate Networks, Not Reason About Them"
+    ]
+  },
+  {
+    "date": "2026-08-06",
+    "title": "MMOE现代化稀疏专家架构设计对AI集群通信拓扑优化启示",
+    "keywords": [
+      "AI集群互联网络",
+      "专家并行通信拓扑",
+      "all-to-all通信模式",
+      "稀疏MoE",
+      "高效专家架构设计",
+      "容量-效率联合优化"
+    ],
+    "evidence_titles": [
+      "MMOE: Modernizing Diffusion Transformers with Efficient Expert Design"
+    ]
   }
 ]
