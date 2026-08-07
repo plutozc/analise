@@ -1,49 +1,5 @@
 [
   {
-    "date": "2026-07-30",
-    "title": "AI Agent自主网络运维从配置形式化验证到云原生安全诱捕",
-    "keywords": [
-      "云原生网络API",
-      "网络遥测数据",
-      "网络配置",
-      "Agentic AI",
-      "LLM Agent",
-      "自主编排"
-    ],
-    "evidence_titles": [
-      "Agentic Cloud Decoys: A Deception-Driven Framework for Autonomous Intrusion Investigation",
-      "Let AI Agents Translate Networks, Not Reason About Them"
-    ]
-  },
-  {
-    "date": "2026-07-30",
-    "title": "边缘设备本地推理与无线回传传输的能效联合权衡建模",
-    "keywords": [
-      "无线链路(BLE/WiFi)",
-      "边缘设备",
-      "MEC推理链路",
-      "多模态深度学习",
-      "端侧推理压缩"
-    ],
-    "evidence_titles": [
-      "On-Device Inference versus Wireless Streaming: Energy-Efficient Multi-Modal Deep Learning for Wearable Cardiovascular Patches"
-    ]
-  },
-  {
-    "date": "2026-07-30",
-    "title": "联邦Mamba状态空间架构面向多域网络时序预测的隐私保护",
-    "keywords": [
-      "网络遥测时序数据",
-      "多域网络KPI指标",
-      "联邦学习",
-      "Mamba状态空间模型",
-      "时序基础模型"
-    ],
-    "evidence_titles": [
-      "QuantFlow: A Federated Mamba-Based Post-Transformer Foundation Model for Time-Series Forecasting"
-    ]
-  },
-  {
     "date": "2026-07-31",
     "title": "AI Agent驱动云原生蜜罐欺骗防御实现入侵自主闭环调查",
     "keywords": [
@@ -320,6 +276,53 @@
     ],
     "evidence_titles": [
       "MMOE: Modernizing Diffusion Transformers with Efficient Expert Design"
+    ]
+  },
+  {
+    "date": "2026-08-07",
+    "title": "LLM嵌套条件规则推理崩溃对网络策略自动化可靠性警示",
+    "keywords": [
+      "网络策略引擎(ACL/防火墙规则/QoS策略/路由策略)",
+      "LLM规则推理/嵌套条件链评估"
+    ],
+    "evidence_titles": [
+      "Confidently Wrong: Exception Chain Collapse in Frontier LLM Rule Evaluation",
+      "Let AI Agents Translate Networks, Not Reason About Them"
+    ]
+  },
+  {
+    "date": "2026-08-07",
+    "title": "上下文自适应推理统一框架对网络AI按需专家路由部署启示",
+    "keywords": [
+      "网络AI推理服务/AI集群网络",
+      "MoE专家路由/上下文自适应推理/基础模型"
+    ],
+    "evidence_titles": [
+      "Context-Adaptive Inference: A Unified Statistical and Foundation-Model View",
+      "MMOE: Modernizing Diffusion Transformers with Efficient Expert Design"
+    ]
+  },
+  {
+    "date": "2026-08-07",
+    "title": "图Transformer架构全景演进对网络拓扑智能建模与数字孪生启示",
+    "keywords": [
+      "网络拓扑/网络数字孪生/跨域路由",
+      "Graph Transformer/GNN/LLM Agent图推理"
+    ],
+    "evidence_titles": [
+      "A Survey of Graph Transformers: Architectures, Theories and Applications",
+      "Agentic Graph Token Reasoning"
+    ]
+  },
+  {
+    "date": "2026-08-07",
+    "title": "循环Transformer运行时自省机制对网络AI闭环控制置信校准启示",
+    "keywords": [
+      "网络闭环控制/自动驾驶网络决策引擎",
+      "循环Transformer/运行时自省探针/置信度校准"
+    ],
+    "evidence_titles": [
+      "Operational Proto-Introspection in Looped Language Models: Process-Quality Taps, Executable Branching, and the Readout-Control Boundary"
     ]
   }
 ]
