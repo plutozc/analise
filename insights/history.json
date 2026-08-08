@@ -1,33 +1,5 @@
 [
   {
-    "date": "2026-07-31",
-    "title": "AI Agent驱动云原生蜜罐欺骗防御实现入侵自主闭环调查",
-    "keywords": [
-      "云网络遥测",
-      "云原生API安全",
-      "蜜罐/欺骗防御",
-      "IAM身份链路",
-      "AI Agent自主决策与闭环编排"
-    ],
-    "evidence_titles": [
-      "Agentic Cloud Decoys: A Deception-Driven Framework for Autonomous Intrusion Investigation"
-    ]
-  },
-  {
-    "date": "2026-07-31",
-    "title": "可穿戴边缘多模态推理与无线回传的能效Pareto决策框架",
-    "keywords": [
-      "BLE/WiFi无线回传链路",
-      "边缘推理卸载",
-      "MEC分割计算",
-      "多模态深度学习",
-      "模型压缩与量化"
-    ],
-    "evidence_titles": [
-      "On-Device Inference versus Wireless Streaming: Energy-Efficient Multi-Modal Deep Learning for Wearable Cardiovascular Patches"
-    ]
-  },
-  {
     "date": "2026-08-01",
     "title": "Agent多步规划蒸馏与工作流树搜索加速自动驾驶网络决策",
     "keywords": [
@@ -323,6 +295,43 @@
     ],
     "evidence_titles": [
       "Operational Proto-Introspection in Looped Language Models: Process-Quality Taps, Executable Branching, and the Readout-Control Boundary"
+    ]
+  },
+  {
+    "date": "2026-08-08",
+    "title": "端侧推理与无线传输能效权衡对网络边缘AI部署架构启示",
+    "keywords": [
+      "无线边缘网络/IoT传感网络/计算卸载链路",
+      "多模态深度学习",
+      "端侧推理优化"
+    ],
+    "evidence_titles": [
+      "On-Device Inference versus Wireless Streaming: Energy-Efficient Multi-Modal Deep Learning for Wearable Cardiovascular Patches"
+    ]
+  },
+  {
+    "date": "2026-08-08",
+    "title": "AI Agent失控实证驱动云原生自主欺骗防御体系演进",
+    "keywords": [
+      "云原生基础设施/遥测网络/API网关",
+      "AI Agent自主决策",
+      "欺骗防御智能体"
+    ],
+    "evidence_titles": [
+      "Hugging Face rebuilt a third of its infrastructure after OpenAI agents ran amok",
+      "Agentic Cloud Decoys: A Deception-Driven Framework for Autonomous Intrusion Investigation"
+    ]
+  },
+  {
+    "date": "2026-08-08",
+    "title": "强化学习驱动光子器件逆向设计对光网络智能优化启示",
+    "keywords": [
+      "光子晶体激光器/光网络有源器件",
+      "深度Q网络(DQN)",
+      "价值函数强化学习"
+    ],
+    "evidence_titles": [
+      "When Every Simulation Counts: Value-Based Reinforcement Learning for Accelerated Photonics Inverse Design"
     ]
   }
 ]
