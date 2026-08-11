@@ -1,99 +1,5 @@
 [
   {
-    "date": "2026-08-02",
-    "title": "成本感知树搜索优化AI Agent网络运维多步决策工作流",
-    "keywords": [
-      "网络配置验证",
-      "故障定位",
-      "自动驾驶网络决策流",
-      "UCT树搜索",
-      "多教师蒸馏",
-      "Agent多步规划"
-    ],
-    "evidence_titles": [
-      "Agent-UCT: Upper Confidence Bounds Applied to Trees for Agentic Workflow Optimization with Cost-Awareness",
-      "The Physics of Multi-Turn Long-Horizon Planning: From Pre-training to Post-training via Single- and Multi-Teacher On-Policy Agentic Distillation",
-      "Let AI Agents Translate Networks, Not Reason About Them"
-    ]
-  },
-  {
-    "date": "2026-08-02",
-    "title": "朴素Transformer超越图专用架构面向网络拓扑链路预测",
-    "keywords": [
-      "网络拓扑图",
-      "链路状态预测",
-      "数字孪生",
-      "朴素Transformer",
-      "Graph Transformer",
-      "GNN对比分析"
-    ],
-    "evidence_titles": [
-      "Plain Transformers are Surprisingly Powerful Link Predictors",
-      "A Survey of Graph Transformers: Architectures, Theories and Applications"
-    ]
-  },
-  {
-    "date": "2026-08-02",
-    "title": "去中心化共识学习与联邦时序基座面向边缘网络协同推断",
-    "keywords": [
-      "边缘网络节点",
-      "去中心化网络拓扑",
-      "MEC",
-      "去中心化共识优化",
-      "联邦Mamba",
-      "隐私保护分布式学习"
-    ],
-    "evidence_titles": [
-      "Distributed Convolutional Rank Regression over Decentralized Networks",
-      "QuantFlow: A Federated Mamba-Based Post-Transformer Foundation Model for Time-Series Forecasting"
-    ]
-  },
-  {
-    "date": "2026-08-03",
-    "title": "Agent蒸馏物理学揭示网络自动驾驶多步规划能力涌现机制",
-    "keywords": [
-      "自动驾驶网络运维决策",
-      "网络故障诊断工作流",
-      "Agent蒸馏",
-      "多教师在策略蒸馏",
-      "树搜索"
-    ],
-    "evidence_titles": [
-      "The Physics of Multi-Turn Long-Horizon Planning: From Pre-training to Post-training via Single- and Multi-Teacher On-Policy Agentic Distillation",
-      "Agent-UCT: Upper Confidence Bounds Applied to Trees for Agentic Workflow Optimization with Cost-Awareness"
-    ]
-  },
-  {
-    "date": "2026-08-03",
-    "title": "稀疏MoE高效专家路由设计对AI集群全互联通信模式优化启示",
-    "keywords": [
-      "AI集群互联网络",
-      "数据中心All-to-All通信",
-      "专家并行流量调度",
-      "稀疏MoE",
-      "专家路由优化"
-    ],
-    "evidence_titles": [
-      "MMOE: Modernizing Diffusion Transformers with Efficient Expert Design"
-    ]
-  },
-  {
-    "date": "2026-08-03",
-    "title": "频域扩散事件驱动缓存加速面向网络时序预测实时化部署",
-    "keywords": [
-      "网络KPI时序监控",
-      "流量预测",
-      "边缘网络协同",
-      "频域扩散模型",
-      "事件驱动缓存推理加速",
-      "联邦学习"
-    ],
-    "evidence_titles": [
-      "Accelerating Frequency Domain Diffusion Models with Error-Feedback Event-Driven Caching",
-      "QuantFlow: A Federated Mamba-Based Post-Transformer Foundation Model for Time-Series Forecasting"
-    ]
-  },
-  {
     "date": "2026-08-04",
     "title": "AI Agent网络配置形式化翻译替代端到端推理验证",
     "keywords": [
@@ -349,6 +255,70 @@
     "evidence_titles": [
       "The Physics of Multi-Turn Long-Horizon Planning: From Pre-training to Post-training via Single- and Multi-Teacher On-Policy Agentic Distillation",
       "Agent-UCT: Upper Confidence Bounds Applied to Trees for Agentic Workflow Optimization with Cost-Awareness"
+    ]
+  },
+  {
+    "date": "2026-08-11",
+    "title": "UCT成本感知树搜索优化Agentic工作流对网络编排管线智能调度启示",
+    "keywords": [
+      "网络编排管线",
+      "自动化配置工作流",
+      "多阶段网络变更序列",
+      "Monte Carlo树搜索(UCT)",
+      "成本感知探索",
+      "Agentic工作流优化"
+    ],
+    "evidence_titles": [
+      "Agent-UCT: Upper Confidence Bounds Applied to Trees for Agentic Workflow Optimization with Cost-Awareness",
+      "The Physics of Multi-Turn Long-Horizon Planning: From Pre-training to Post-training via Single- and Multi-Teacher On-Policy Agentic Distillation",
+      "Hugging Face rebuilt a third of its infrastructure after OpenAI agents ran amok"
+    ]
+  },
+  {
+    "date": "2026-08-11",
+    "title": "注意力图GNN消息传递幻觉检测机制对网络大模型决策可信校验启示",
+    "keywords": [
+      "网络策略生成",
+      "ACL/路由配置自动化",
+      "网络大模型输出",
+      "GNN消息传递",
+      "注意力图分析",
+      "LLM幻觉检测"
+    ],
+    "evidence_titles": [
+      "Neural Message-Passing on Attention Graphs for Hallucination Detection",
+      "Confidently Wrong: Exception Chain Collapse in Frontier LLM Rule Evaluation"
+    ]
+  },
+  {
+    "date": "2026-08-11",
+    "title": "边缘GPU推理基准测试体系对网络设备端侧AI部署质量度量启示",
+    "keywords": [
+      "网络边缘设备",
+      "基站端侧推理",
+      "CPE智能网关",
+      "深度学习推理优化",
+      "模型量化(INT8/FP16)"
+    ],
+    "evidence_titles": [
+      "AgriJetsonBench: External-Power-Referenced TensorRT Benchmarking of Agricultural Vision Models on Jetson Edge Platforms",
+      "On-Device Inference versus Wireless Streaming: Energy-Efficient Multi-Modal Deep Learning for Wearable Cardiovascular Patches"
+    ]
+  },
+  {
+    "date": "2026-08-11",
+    "title": "无梯度持续学习框架对网络边缘AI模型免数据在线自适应演进启示",
+    "keywords": [
+      "边缘网络AI模型",
+      "基站流量预测",
+      "CPE异常检测",
+      "无梯度持续学习",
+      "灾难性遗忘缓解",
+      "在线模型适应"
+    ],
+    "evidence_titles": [
+      "Gradient-Free Continual Learning",
+      "On-Device Inference versus Wireless Streaming: Energy-Efficient Multi-Modal Deep Learning for Wearable Cardiovascular Patches"
     ]
   }
 ]
