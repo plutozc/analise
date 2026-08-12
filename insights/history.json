@@ -1,45 +1,5 @@
 [
   {
-    "date": "2026-08-04",
-    "title": "AI Agent网络配置形式化翻译替代端到端推理验证",
-    "keywords": [
-      "网络配置",
-      "路由策略",
-      "可达性模型",
-      "故障定位",
-      "LLM Agent（配置翻译与形式化建模）"
-    ],
-    "evidence_titles": [
-      "Let AI Agents Translate Networks, Not Reason About Them"
-    ]
-  },
-  {
-    "date": "2026-08-04",
-    "title": "UCT树搜索框架优化AI Agent网络运维成本与决策质量",
-    "keywords": [
-      "网络运维工作流",
-      "多步决策管道",
-      "UCT蒙特卡洛树搜索",
-      "成本感知优化"
-    ],
-    "evidence_titles": [
-      "Agent-UCT: Upper Confidence Bounds Applied to Trees for Agentic Workflow Optimization with Cost-Awareness"
-    ]
-  },
-  {
-    "date": "2026-08-04",
-    "title": "细粒度MoE专家路由架构演进对AI集群通信拓扑设计启示",
-    "keywords": [
-      "AI集群互联网络",
-      "Expert Parallelism通信拓扑",
-      "稀疏MoE",
-      "细粒度专家路由"
-    ],
-    "evidence_titles": [
-      "MMOE: Modernizing Diffusion Transformers with Efficient Expert Design"
-    ]
-  },
-  {
     "date": "2026-08-05",
     "title": "ZCube反直觉少路径拓扑对AI集群数据中心网络架构启示",
     "keywords": [
@@ -319,6 +279,73 @@
     "evidence_titles": [
       "Gradient-Free Continual Learning",
       "On-Device Inference versus Wireless Streaming: Energy-Efficient Multi-Modal Deep Learning for Wearable Cardiovascular Patches"
+    ]
+  },
+  {
+    "date": "2026-08-12",
+    "title": "IoT语义通信双自适应注意力机制对带宽受限无线网络智能传输启示",
+    "keywords": [
+      "IoT无线网络",
+      "语义通信信道",
+      "带宽受限传输链路",
+      "深度神经网络",
+      "通道注意力机制",
+      "空间注意力机制",
+      "端到端语义编解码"
+    ],
+    "evidence_titles": [
+      "Doubly Adaptive Channel and Spatial Attention for Semantic Image Communication by IoT Devices"
+    ]
+  },
+  {
+    "date": "2026-08-12",
+    "title": "LLM Agent单次间接注入攻击新范式对网络运维Agent安全体系警示",
+    "keywords": [
+      "网络运维自动化Agent",
+      "工具调用链",
+      "配置变更工作流",
+      "LLM Agent",
+      "元认知反思",
+      "间接提示注入",
+      "注意力重定向攻击"
+    ],
+    "evidence_titles": [
+      "Toward Metacognitive One-Shot Indirect Prompt Injection: Strategy Abstraction Via Outcome-Conditioned Reflection",
+      "Preference Redirection via Attention Concentration: An Attack on Computer Use Agents"
+    ]
+  },
+  {
+    "date": "2026-08-12",
+    "title": "统计无损量化与结构化剪枝协同对网络设备端侧大模型轻量部署启示",
+    "keywords": [
+      "网络边缘设备",
+      "CPE",
+      "边缘网关",
+      "端侧推理节点",
+      "训练后量化（PTQ）",
+      "统计无损量化",
+      "结构化剪枝",
+      "Kronecker分解"
+    ],
+    "evidence_titles": [
+      "Statistically-Lossless Quantization of Large Language Models",
+      "High-Layer Attention Pruning with Rescaling",
+      "KronQ: LLM Quantization via Kronecker-Factored Hessian"
+    ]
+  },
+  {
+    "date": "2026-08-12",
+    "title": "MoE弹性推理服务专家解耦与动态路由对AI集群网络负载调度启示",
+    "keywords": [
+      "AI集群网络",
+      "推理服务负载均衡",
+      "专家分片跨节点通信",
+      "MoE稀疏激活",
+      "动态专家路由",
+      "模型-系统协同设计"
+    ],
+    "evidence_titles": [
+      "MoE-Prism: Disentangling Monolithic Experts for Elastic MoE Services via Model-System Co-Designs"
     ]
   }
 ]
