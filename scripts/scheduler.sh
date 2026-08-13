@@ -74,6 +74,8 @@ run_weekly_report() {
   done
 }
 
+BULLETIN_AGG_AT="${SYNC_BULLETIN_AGG_AT:-08:00}"
+
 TASKS="papers feeds rfcs signals conf-summaries vendor-intel"
 
 interval_of() {
@@ -84,9 +86,23 @@ interval_of() {
     signals)         echo 43200;;
     conf-summaries)  echo 2592000;;  # monthly
     vendor-intel)       echo 2592000;;  # monthly
+    bulletin-urgent) echo 3600;;     # hourly check
     classify-medium) echo 86400;;    # deprecated, not scheduled
     *)               echo "";;
   esac
+}
+
+run_bulletin_aggregate() {
+  local hhmm=$1
+  while true; do
+    local delay
+    delay=$(seconds_until_hhmm "$hhmm")
+    log "Sleep ${delay}s until next bulletin-aggregate at $hhmm..."
+    sleep "$delay"
+    run_task "bulletin"
+    (cd bulletins && git add -A && git commit -m "bulletin $(date '+%Y-%m-%d %H:%M')" && git push && log "OK: bulletin pushed to bulletins repo") || true
+    sleep 1
+  done
 }
 
 if [ "${1:-}" = "once" ]; then
@@ -119,5 +135,7 @@ for task in $TASKS; do
   fi
 done
 run_weekly_report "$WEEKLY_REPORT_AT" "$WEEKLY_REPORT_DAY" &
-log "All workers launched. papers_at=$PAPERS_AT weekly_report=day${WEEKLY_REPORT_DAY}@${WEEKLY_REPORT_AT}"
+run_bulletin_aggregate "$BULLETIN_AGG_AT" &
+run_loop "bulletin-urgent" "$(interval_of "bulletin-urgent")" &
+log "All workers launched. papers_at=$PAPERS_AT weekly_report=day${WEEKLY_REPORT_DAY}@${WEEKLY_REPORT_AT} bulletin_agg=daily@${BULLETIN_AGG_AT} bulletin_urgent=hourly"
 wait
