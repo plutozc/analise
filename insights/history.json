@@ -1,46 +1,5 @@
 [
   {
-    "date": "2026-08-05",
-    "title": "ZCube反直觉少路径拓扑对AI集群数据中心网络架构启示",
-    "keywords": [
-      "数据中心网络拓扑",
-      "Spine-Leaf架构",
-      "AI集群互联",
-      "无（面向LLM推理服务工作负载的网络优化）"
-    ],
-    "evidence_titles": [
-      "Fewer Paths, Better Performance: Understanding the ZCube Topology through Braess's Paradox"
-    ]
-  },
-  {
-    "date": "2026-08-05",
-    "title": "AI Agent失控事件催生云原生基础设施韧性防护新范式",
-    "keywords": [
-      "云原生基础设施",
-      "API网关",
-      "遥测管道",
-      "AI Agent自主决策",
-      "Agentic欺骗防御"
-    ],
-    "evidence_titles": [
-      "Hugging Face rebuilt a third of its infrastructure after OpenAI agents ran amok",
-      "Agentic Cloud Decoys: A Deception-Driven Framework for Autonomous Intrusion Investigation"
-    ]
-  },
-  {
-    "date": "2026-08-05",
-    "title": "分布式多智能体强化学习面向UAV物联网动态路由协同优化",
-    "keywords": [
-      "UAV空中中继网络",
-      "VANET车联网路由",
-      "IoT接入网",
-      "分布式多智能体强化学习(MARL)"
-    ],
-    "evidence_titles": [
-      "TRUAV: Distributed Multi-Agent Reinforcement Learning for Trajectory Planning and Routing Enhancement in UAV-Aided IoT-Enabled VANETs"
-    ]
-  },
-  {
     "date": "2026-08-06",
     "title": "AI Agent自主云原生网络欺骗防御与入侵溯源框架",
     "keywords": [
@@ -346,6 +305,68 @@
     ],
     "evidence_titles": [
       "MoE-Prism: Disentangling Monolithic Experts for Elastic MoE Services via Model-System Co-Designs"
+    ]
+  },
+  {
+    "date": "2026-08-13",
+    "title": "元认知间接注入攻击策略抽象对网络运维Agent安全防御启示",
+    "keywords": [
+      "网络运维LLM Agent",
+      "配置管理Agent",
+      "故障诊断Agent",
+      "LLM Agent",
+      "元认知反思",
+      "outcome-conditioned reflection",
+      "间接提示注入"
+    ],
+    "evidence_titles": [
+      "Toward Metacognitive One-Shot Indirect Prompt Injection: Strategy Abstraction Via Outcome-Conditioned Reflection"
+    ]
+  },
+  {
+    "date": "2026-08-13",
+    "title": "视觉注意力重定向攻击自主GUI Agent对网络管控安全启示",
+    "keywords": [
+      "网络管理GUI",
+      "SDN控制器界面",
+      "NCE管控面板",
+      "多模态基础模型",
+      "视觉注意力操控",
+      "Computer Use Agent"
+    ],
+    "evidence_titles": [
+      "Preference Redirection via Attention Concentration: An Attack on Computer Use Agents"
+    ]
+  },
+  {
+    "date": "2026-08-13",
+    "title": "Kronecker因子化二阶量化与无损压缩对端侧网络模型部署启示",
+    "keywords": [
+      "网络设备端侧AI推理",
+      "边缘节点",
+      "基站侧模型",
+      "LLM后训练量化",
+      "Kronecker因子化Hessian",
+      "统计无损压缩"
+    ],
+    "evidence_titles": [
+      "KronQ: LLM Quantization via Kronecker-Factored Hessian",
+      "Statistically-Lossless Quantization of Large Language Models"
+    ]
+  },
+  {
+    "date": "2026-08-13",
+    "title": "世界模型潜空间动态缓存加速对网络数字孪生高效推理启示",
+    "keywords": [
+      "网络数字孪生",
+      "网络状态预测",
+      "拓扑与流量仿真",
+      "扩散世界模型",
+      "潜空间动态近似",
+      "风险可控缓存"
+    ],
+    "evidence_titles": [
+      "WorldDynCache: Risk-Controlled Latent Dynamics Approximation for Diffusion World Model"
     ]
   }
 ]
