@@ -1,51 +1,5 @@
 [
   {
-    "date": "2026-08-06",
-    "title": "AI Agent自主云原生网络欺骗防御与入侵溯源框架",
-    "keywords": [
-      "云原生网络基础设施",
-      "云遥测数据面",
-      "联邦会话与API调用链",
-      "AI Agent自主决策",
-      "欺骗策略生成",
-      "行为异常检测"
-    ],
-    "evidence_titles": [
-      "Agentic Cloud Decoys: A Deception-Driven Framework for Autonomous Intrusion Investigation"
-    ]
-  },
-  {
-    "date": "2026-08-06",
-    "title": "LLM Agentic图令牌推理增强网络拓扑建模与形式化验证",
-    "keywords": [
-      "网络拓扑图",
-      "路由可达性模型",
-      "网络配置状态空间",
-      "LLM Agent",
-      "图令牌导航推理",
-      "形式化翻译"
-    ],
-    "evidence_titles": [
-      "Agentic Graph Token Reasoning",
-      "Let AI Agents Translate Networks, Not Reason About Them"
-    ]
-  },
-  {
-    "date": "2026-08-06",
-    "title": "MMOE现代化稀疏专家架构设计对AI集群通信拓扑优化启示",
-    "keywords": [
-      "AI集群互联网络",
-      "专家并行通信拓扑",
-      "all-to-all通信模式",
-      "稀疏MoE",
-      "高效专家架构设计",
-      "容量-效率联合优化"
-    ],
-    "evidence_titles": [
-      "MMOE: Modernizing Diffusion Transformers with Efficient Expert Design"
-    ]
-  },
-  {
     "date": "2026-08-07",
     "title": "LLM嵌套条件规则推理崩溃对网络策略自动化可靠性警示",
     "keywords": [
@@ -367,6 +321,50 @@
     ],
     "evidence_titles": [
       "WorldDynCache: Risk-Controlled Latent Dynamics Approximation for Diffusion World Model"
+    ]
+  },
+  {
+    "date": "2026-08-14",
+    "title": "超越SNMP的AgenticOps网络遥测智能化演进对自动驾驶网络启示",
+    "keywords": [
+      "网络遥测(telemetry)",
+      "SNMP",
+      "网络运维平台",
+      "AI Agent",
+      "AI-driven assurance",
+      "AgenticOps"
+    ],
+    "evidence_titles": [
+      "Monitoring beyond SNMP: Turning your network into a sensor"
+    ]
+  },
+  {
+    "date": "2026-08-14",
+    "title": "多路径LLM压缩技术收敛趋势对端侧网络AI模型部署路线启示",
+    "keywords": [
+      "网络设备端侧AI推理",
+      "边缘网络节点",
+      "LLM量化(PTQ)",
+      "结构化剪枝",
+      "统计检验"
+    ],
+    "evidence_titles": [
+      "Statistically-Lossless Quantization of Large Language Models",
+      "KronQ: LLM Quantization via Kronecker-Factored Hessian",
+      "High-Layer Attention Pruning with Rescaling"
+    ]
+  },
+  {
+    "date": "2026-08-14",
+    "title": "安全关键系统神经网络软件级形式化验证对网络AI可信部署启示",
+    "keywords": [
+      "网络AI模型部署",
+      "安全关键网络功能(流量分类/异常检测)",
+      "神经网络形式化验证",
+      "浮点精度验证"
+    ],
+    "evidence_titles": [
+      "Floating-Point Neural Network Verification at the Software Level"
     ]
   }
 ]
