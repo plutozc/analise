@@ -1,52 +1,5 @@
 [
   {
-    "date": "2026-08-07",
-    "title": "LLM嵌套条件规则推理崩溃对网络策略自动化可靠性警示",
-    "keywords": [
-      "网络策略引擎(ACL/防火墙规则/QoS策略/路由策略)",
-      "LLM规则推理/嵌套条件链评估"
-    ],
-    "evidence_titles": [
-      "Confidently Wrong: Exception Chain Collapse in Frontier LLM Rule Evaluation",
-      "Let AI Agents Translate Networks, Not Reason About Them"
-    ]
-  },
-  {
-    "date": "2026-08-07",
-    "title": "上下文自适应推理统一框架对网络AI按需专家路由部署启示",
-    "keywords": [
-      "网络AI推理服务/AI集群网络",
-      "MoE专家路由/上下文自适应推理/基础模型"
-    ],
-    "evidence_titles": [
-      "Context-Adaptive Inference: A Unified Statistical and Foundation-Model View",
-      "MMOE: Modernizing Diffusion Transformers with Efficient Expert Design"
-    ]
-  },
-  {
-    "date": "2026-08-07",
-    "title": "图Transformer架构全景演进对网络拓扑智能建模与数字孪生启示",
-    "keywords": [
-      "网络拓扑/网络数字孪生/跨域路由",
-      "Graph Transformer/GNN/LLM Agent图推理"
-    ],
-    "evidence_titles": [
-      "A Survey of Graph Transformers: Architectures, Theories and Applications",
-      "Agentic Graph Token Reasoning"
-    ]
-  },
-  {
-    "date": "2026-08-07",
-    "title": "循环Transformer运行时自省机制对网络AI闭环控制置信校准启示",
-    "keywords": [
-      "网络闭环控制/自动驾驶网络决策引擎",
-      "循环Transformer/运行时自省探针/置信度校准"
-    ],
-    "evidence_titles": [
-      "Operational Proto-Introspection in Looped Language Models: Process-Quality Taps, Executable Branching, and the Readout-Control Boundary"
-    ]
-  },
-  {
     "date": "2026-08-08",
     "title": "端侧推理与无线传输能效权衡对网络边缘AI部署架构启示",
     "keywords": [
@@ -365,6 +318,47 @@
     ],
     "evidence_titles": [
       "Floating-Point Neural Network Verification at the Software Level"
+    ]
+  },
+  {
+    "date": "2026-08-15",
+    "title": "统计无损量化与注意力剪枝对端侧网络AI压缩路线启示",
+    "keywords": [
+      "端侧网络设备AI推理引擎",
+      "统计无损量化",
+      "结构化注意力剪枝",
+      "二阶Kronecker量化"
+    ],
+    "evidence_titles": [
+      "Statistically-Lossless Quantization of Large Language Models",
+      "High-Layer Attention Pruning with Rescaling",
+      "KronQ: LLM Quantization via Kronecker-Factored Hessian"
+    ]
+  },
+  {
+    "date": "2026-08-15",
+    "title": "QKD经典控制面形式化安全分析对光网络协议验证启示",
+    "keywords": [
+      "QKD光通信安全协议",
+      "经典后处理控制面",
+      "形式化验证"
+    ],
+    "evidence_titles": [
+      "Beyond the Quantum Promise: A Security Analysis of Classical Control in Quantum Key Distribution"
+    ]
+  },
+  {
+    "date": "2026-08-15",
+    "title": "概率安全滤波器约束RL探索对自动驾驶网络控制启示",
+    "keywords": [
+      "自动驾驶网络控制面",
+      "网络RL闭环控制器",
+      "深度强化学习",
+      "概率神经网络",
+      "预测安全滤波"
+    ],
+    "evidence_titles": [
+      "Uncertainty-Aware Predictive Safety Filters for Probabilistic Neural Network Dynamics"
     ]
   }
 ]
