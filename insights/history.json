@@ -1,42 +1,5 @@
 [
   {
-    "date": "2026-08-08",
-    "title": "端侧推理与无线传输能效权衡对网络边缘AI部署架构启示",
-    "keywords": [
-      "无线边缘网络/IoT传感网络/计算卸载链路",
-      "多模态深度学习",
-      "端侧推理优化"
-    ],
-    "evidence_titles": [
-      "On-Device Inference versus Wireless Streaming: Energy-Efficient Multi-Modal Deep Learning for Wearable Cardiovascular Patches"
-    ]
-  },
-  {
-    "date": "2026-08-08",
-    "title": "AI Agent失控实证驱动云原生自主欺骗防御体系演进",
-    "keywords": [
-      "云原生基础设施/遥测网络/API网关",
-      "AI Agent自主决策",
-      "欺骗防御智能体"
-    ],
-    "evidence_titles": [
-      "Hugging Face rebuilt a third of its infrastructure after OpenAI agents ran amok",
-      "Agentic Cloud Decoys: A Deception-Driven Framework for Autonomous Intrusion Investigation"
-    ]
-  },
-  {
-    "date": "2026-08-08",
-    "title": "强化学习驱动光子器件逆向设计对光网络智能优化启示",
-    "keywords": [
-      "光子晶体激光器/光网络有源器件",
-      "深度Q网络(DQN)",
-      "价值函数强化学习"
-    ],
-    "evidence_titles": [
-      "When Every Simulation Counts: Value-Based Reinforcement Learning for Accelerated Photonics Inverse Design"
-    ]
-  },
-  {
     "date": "2026-08-09",
     "title": "LLM Agent翻译式网络形式化建模替代开放推理新范式",
     "keywords": [
@@ -359,6 +322,48 @@
     ],
     "evidence_titles": [
       "Uncertainty-Aware Predictive Safety Filters for Probabilistic Neural Network Dynamics"
+    ]
+  },
+  {
+    "date": "2026-08-16",
+    "title": "Kronecker因子化二阶Hessian量化对端侧网络AI压缩路线新突破",
+    "keywords": [
+      "网络设备端侧AI推理引擎",
+      "二阶优化量化",
+      "Kronecker因子化",
+      "结构化剪枝"
+    ],
+    "evidence_titles": [
+      "KronQ: LLM Quantization via Kronecker-Factored Hessian",
+      "Statistically-Lossless Quantization of Large Language Models",
+      "High-Layer Attention Pruning with Rescaling"
+    ]
+  },
+  {
+    "date": "2026-08-16",
+    "title": "LLM驱动安全分析误报记忆演化学习对网络软件可信开发启示",
+    "keywords": [
+      "网络OS/SDN控制器/eBPF数据面软件代码",
+      "LLM",
+      "GNN"
+    ],
+    "evidence_titles": [
+      "Memoir: Learning, Verifying, and Evolving False-Positive Memories for SAST Tools",
+      "CognixShield: PoV-Guided Vulnerable API Usage Detection in Large Codebases via LLMs",
+      "Learning to Triage Vulnerability Reports from Program Analysis"
+    ]
+  },
+  {
+    "date": "2026-08-16",
+    "title": "因果引导GNN分布外泛化对网络拓扑异构场景AI鲁棒适配启示",
+    "keywords": [
+      "网络拓扑图建模/流量预测/异常检测",
+      "GNN",
+      "因果表示学习",
+      "分布外泛化"
+    ],
+    "evidence_titles": [
+      "CGRL: Causal-Guided Representation Learning for Node-Level Out-of-Distribution Generalization"
     ]
   }
 ]
