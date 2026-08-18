@@ -366,5 +366,45 @@
     "evidence_titles": [
       "MoE-Prism: Disentangling Monolithic Experts for Elastic MoE Services via Model-System Co-Designs"
     ]
+  },
+  {
+    "date": "2026-08-18",
+    "title": "LLM与GNN驱动漏洞智能分诊对网络软件可信开发启示",
+    "keywords": [
+      "网络OS/SDN控制器/云原生网络软件供应链",
+      "LLM + GNN联合分析",
+      "演化学习"
+    ],
+    "evidence_titles": [
+      "Learning to Triage Vulnerability Reports from Program Analysis: An Empirical Study in Node.js",
+      "CognixShield: PoV-Guided Vulnerable API Usage Detection in Large Codebases via LLMs",
+      "Memoir: Learning, Verifying, and Evolving False-Positive Memories for SAST Tools"
+    ]
+  },
+  {
+    "date": "2026-08-18",
+    "title": "元认知单次提示注入攻击对网络AI Agent安全新威胁",
+    "keywords": [
+      "网络管控AI Agent/遥测Agent/配置Agent",
+      "LLM Agent安全",
+      "间接提示注入",
+      "元认知反射"
+    ],
+    "evidence_titles": [
+      "Toward Metacognitive One-Shot Indirect Prompt Injection: Strategy Abstraction Via Outcome-Conditioned Reflection",
+      "Monitoring beyond SNMP: Turning your network into a sensor"
+    ]
+  },
+  {
+    "date": "2026-08-18",
+    "title": "概率NN动力学安全滤波对自动驾驶网络RL控制约束深化",
+    "keywords": [
+      "自动驾驶网络RL控制器/网络闭环控制",
+      "概率神经网络动力学",
+      "模型预测控制约束RL"
+    ],
+    "evidence_titles": [
+      "Uncertainty-Aware Predictive Safety Filters for Probabilistic Neural Network Dynamics"
+    ]
   }
 ]
