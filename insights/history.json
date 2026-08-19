@@ -1,69 +1,5 @@
 [
   {
-    "date": "2026-08-11",
-    "title": "UCT成本感知树搜索优化Agentic工作流对网络编排管线智能调度启示",
-    "keywords": [
-      "网络编排管线",
-      "自动化配置工作流",
-      "多阶段网络变更序列",
-      "Monte Carlo树搜索(UCT)",
-      "成本感知探索",
-      "Agentic工作流优化"
-    ],
-    "evidence_titles": [
-      "Agent-UCT: Upper Confidence Bounds Applied to Trees for Agentic Workflow Optimization with Cost-Awareness",
-      "The Physics of Multi-Turn Long-Horizon Planning: From Pre-training to Post-training via Single- and Multi-Teacher On-Policy Agentic Distillation",
-      "Hugging Face rebuilt a third of its infrastructure after OpenAI agents ran amok"
-    ]
-  },
-  {
-    "date": "2026-08-11",
-    "title": "注意力图GNN消息传递幻觉检测机制对网络大模型决策可信校验启示",
-    "keywords": [
-      "网络策略生成",
-      "ACL/路由配置自动化",
-      "网络大模型输出",
-      "GNN消息传递",
-      "注意力图分析",
-      "LLM幻觉检测"
-    ],
-    "evidence_titles": [
-      "Neural Message-Passing on Attention Graphs for Hallucination Detection",
-      "Confidently Wrong: Exception Chain Collapse in Frontier LLM Rule Evaluation"
-    ]
-  },
-  {
-    "date": "2026-08-11",
-    "title": "边缘GPU推理基准测试体系对网络设备端侧AI部署质量度量启示",
-    "keywords": [
-      "网络边缘设备",
-      "基站端侧推理",
-      "CPE智能网关",
-      "深度学习推理优化",
-      "模型量化(INT8/FP16)"
-    ],
-    "evidence_titles": [
-      "AgriJetsonBench: External-Power-Referenced TensorRT Benchmarking of Agricultural Vision Models on Jetson Edge Platforms",
-      "On-Device Inference versus Wireless Streaming: Energy-Efficient Multi-Modal Deep Learning for Wearable Cardiovascular Patches"
-    ]
-  },
-  {
-    "date": "2026-08-11",
-    "title": "无梯度持续学习框架对网络边缘AI模型免数据在线自适应演进启示",
-    "keywords": [
-      "边缘网络AI模型",
-      "基站流量预测",
-      "CPE异常检测",
-      "无梯度持续学习",
-      "灾难性遗忘缓解",
-      "在线模型适应"
-    ],
-    "evidence_titles": [
-      "Gradient-Free Continual Learning",
-      "On-Device Inference versus Wireless Streaming: Energy-Efficient Multi-Modal Deep Learning for Wearable Cardiovascular Patches"
-    ]
-  },
-  {
     "date": "2026-08-12",
     "title": "IoT语义通信双自适应注意力机制对带宽受限无线网络智能传输启示",
     "keywords": [
@@ -405,6 +341,53 @@
     ],
     "evidence_titles": [
       "Uncertainty-Aware Predictive Safety Filters for Probabilistic Neural Network Dynamics"
+    ]
+  },
+  {
+    "date": "2026-08-19",
+    "title": "LLM跨过程漏洞检测与误报记忆学习对网络软件安全深化",
+    "keywords": [
+      "网络OS/控制器软件代码库安全",
+      "LLM + GNN + 演化学习"
+    ],
+    "evidence_titles": [
+      "CognixShield: PoV-Guided Vulnerable API Usage Detection in Large Codebases via LLMs",
+      "Memoir: Learning, Verifying, and Evolving False-Positive Memories for SAST Tools",
+      "Learning to Triage Vulnerability Reports from Program Analysis"
+    ]
+  },
+  {
+    "date": "2026-08-19",
+    "title": "时序逻辑编码零样本RL策略泛化对意图驱动网络自动化启示",
+    "keywords": [
+      "网络意图策略执行/自动驾驶网络控制",
+      "强化学习 + 线性时序逻辑(LTL)结构化表示"
+    ],
+    "evidence_titles": [
+      "Zero-Shot Instruction Following in RL via Structured LTL Representations"
+    ]
+  },
+  {
+    "date": "2026-08-19",
+    "title": "GNN度信号归一化保持改进对网络拓扑感知AI任务增强",
+    "keywords": [
+      "网络拓扑图分析/关键节点识别",
+      "GNN + 度感知归一化修正"
+    ],
+    "evidence_titles": [
+      "Placing Degree Scales After LayerNorm"
+    ]
+  },
+  {
+    "date": "2026-08-19",
+    "title": "GUI视觉注意力劫持攻击对网络运维AI Agent安全威胁深化",
+    "keywords": [
+      "网络管理AI Agent/运维自动化",
+      "多模态Agent + 视觉注意力攻击"
+    ],
+    "evidence_titles": [
+      "Preference Redirection via Attention Concentration: An Attack on Computer Use Agents",
+      "Toward Metacognitive One-Shot Indirect Prompt Injection"
     ]
   }
 ]
