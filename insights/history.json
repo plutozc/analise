@@ -1,72 +1,5 @@
 [
   {
-    "date": "2026-08-12",
-    "title": "IoT语义通信双自适应注意力机制对带宽受限无线网络智能传输启示",
-    "keywords": [
-      "IoT无线网络",
-      "语义通信信道",
-      "带宽受限传输链路",
-      "深度神经网络",
-      "通道注意力机制",
-      "空间注意力机制",
-      "端到端语义编解码"
-    ],
-    "evidence_titles": [
-      "Doubly Adaptive Channel and Spatial Attention for Semantic Image Communication by IoT Devices"
-    ]
-  },
-  {
-    "date": "2026-08-12",
-    "title": "LLM Agent单次间接注入攻击新范式对网络运维Agent安全体系警示",
-    "keywords": [
-      "网络运维自动化Agent",
-      "工具调用链",
-      "配置变更工作流",
-      "LLM Agent",
-      "元认知反思",
-      "间接提示注入",
-      "注意力重定向攻击"
-    ],
-    "evidence_titles": [
-      "Toward Metacognitive One-Shot Indirect Prompt Injection: Strategy Abstraction Via Outcome-Conditioned Reflection",
-      "Preference Redirection via Attention Concentration: An Attack on Computer Use Agents"
-    ]
-  },
-  {
-    "date": "2026-08-12",
-    "title": "统计无损量化与结构化剪枝协同对网络设备端侧大模型轻量部署启示",
-    "keywords": [
-      "网络边缘设备",
-      "CPE",
-      "边缘网关",
-      "端侧推理节点",
-      "训练后量化（PTQ）",
-      "统计无损量化",
-      "结构化剪枝",
-      "Kronecker分解"
-    ],
-    "evidence_titles": [
-      "Statistically-Lossless Quantization of Large Language Models",
-      "High-Layer Attention Pruning with Rescaling",
-      "KronQ: LLM Quantization via Kronecker-Factored Hessian"
-    ]
-  },
-  {
-    "date": "2026-08-12",
-    "title": "MoE弹性推理服务专家解耦与动态路由对AI集群网络负载调度启示",
-    "keywords": [
-      "AI集群网络",
-      "推理服务负载均衡",
-      "专家分片跨节点通信",
-      "MoE稀疏激活",
-      "动态专家路由",
-      "模型-系统协同设计"
-    ],
-    "evidence_titles": [
-      "MoE-Prism: Disentangling Monolithic Experts for Elastic MoE Services via Model-System Co-Designs"
-    ]
-  },
-  {
     "date": "2026-08-13",
     "title": "元认知间接注入攻击策略抽象对网络运维Agent安全防御启示",
     "keywords": [
@@ -388,6 +321,63 @@
     "evidence_titles": [
       "Preference Redirection via Attention Concentration: An Attack on Computer Use Agents",
       "Toward Metacognitive One-Shot Indirect Prompt Injection"
+    ]
+  },
+  {
+    "date": "2026-08-20",
+    "title": "SNMP后网络遥测与AI Agent驱动自治运维范式演进",
+    "keywords": [
+      "网络遥测（SNMP/gRPC/streaming telemetry）",
+      "网络保障平台",
+      "AI Agent",
+      "Agentic Operations",
+      "AI驱动保障"
+    ],
+    "evidence_titles": [
+      "Monitoring beyond SNMP: Turning your network into a sensor (Cisco Blogs)"
+    ]
+  },
+  {
+    "date": "2026-08-20",
+    "title": "边缘云端协同LLM推理子任务路由与资源自适应调度",
+    "keywords": [
+      "边缘-云端网络链路",
+      "MEC节点",
+      "推理路由路径",
+      "LLM子任务分解",
+      "资源自适应路由策略"
+    ],
+    "evidence_titles": [
+      "HybridFlow: Resource-Adaptive Subtask Routing for Efficient Edge-Cloud LLM Inference"
+    ]
+  },
+  {
+    "date": "2026-08-20",
+    "title": "MoE推理服务专家解耦与弹性调度模型系统协同深化",
+    "keywords": [
+      "AI集群网络",
+      "专家间通信拓扑",
+      "RDMA/RoCE数据面",
+      "MoE稀疏激活",
+      "动态专家路由",
+      "模型-系统协同优化"
+    ],
+    "evidence_titles": [
+      "MoE-Prism: Disentangling Monolithic Experts for Elastic MoE Services via Model-System Co-Designs"
+    ]
+  },
+  {
+    "date": "2026-08-20",
+    "title": "IoT语义通信双自适应注意力对带宽受限无线网络深化",
+    "keywords": [
+      "IoT无线网络",
+      "带宽受限信道",
+      "语义通信链路",
+      "双注意力机制（通道+空间）",
+      "端到端语义编码DNN"
+    ],
+    "evidence_titles": [
+      "Doubly Adaptive Channel and Spatial Attention for Semantic Image Communication by IoT Devices"
     ]
   }
 ]
