@@ -1,67 +1,5 @@
 [
   {
-    "date": "2026-08-13",
-    "title": "元认知间接注入攻击策略抽象对网络运维Agent安全防御启示",
-    "keywords": [
-      "网络运维LLM Agent",
-      "配置管理Agent",
-      "故障诊断Agent",
-      "LLM Agent",
-      "元认知反思",
-      "outcome-conditioned reflection",
-      "间接提示注入"
-    ],
-    "evidence_titles": [
-      "Toward Metacognitive One-Shot Indirect Prompt Injection: Strategy Abstraction Via Outcome-Conditioned Reflection"
-    ]
-  },
-  {
-    "date": "2026-08-13",
-    "title": "视觉注意力重定向攻击自主GUI Agent对网络管控安全启示",
-    "keywords": [
-      "网络管理GUI",
-      "SDN控制器界面",
-      "NCE管控面板",
-      "多模态基础模型",
-      "视觉注意力操控",
-      "Computer Use Agent"
-    ],
-    "evidence_titles": [
-      "Preference Redirection via Attention Concentration: An Attack on Computer Use Agents"
-    ]
-  },
-  {
-    "date": "2026-08-13",
-    "title": "Kronecker因子化二阶量化与无损压缩对端侧网络模型部署启示",
-    "keywords": [
-      "网络设备端侧AI推理",
-      "边缘节点",
-      "基站侧模型",
-      "LLM后训练量化",
-      "Kronecker因子化Hessian",
-      "统计无损压缩"
-    ],
-    "evidence_titles": [
-      "KronQ: LLM Quantization via Kronecker-Factored Hessian",
-      "Statistically-Lossless Quantization of Large Language Models"
-    ]
-  },
-  {
-    "date": "2026-08-13",
-    "title": "世界模型潜空间动态缓存加速对网络数字孪生高效推理启示",
-    "keywords": [
-      "网络数字孪生",
-      "网络状态预测",
-      "拓扑与流量仿真",
-      "扩散世界模型",
-      "潜空间动态近似",
-      "风险可控缓存"
-    ],
-    "evidence_titles": [
-      "WorldDynCache: Risk-Controlled Latent Dynamics Approximation for Diffusion World Model"
-    ]
-  },
-  {
     "date": "2026-08-14",
     "title": "超越SNMP的AgenticOps网络遥测智能化演进对自动驾驶网络启示",
     "keywords": [
@@ -378,6 +316,59 @@
     ],
     "evidence_titles": [
       "Doubly Adaptive Channel and Spatial Attention for Semantic Image Communication by IoT Devices"
+    ]
+  },
+  {
+    "date": "2026-08-21",
+    "title": "LLM Agent轨迹类型化编译对网络自动化知识沉淀机制启示",
+    "keywords": [
+      "网络自动化Agent/自治运维系统",
+      "LLM Agent",
+      "轨迹学习",
+      "结果条件反思",
+      "类型化制品编译"
+    ],
+    "evidence_titles": [
+      "AutoRefine: Compiling Trajectories into Validated Typed Agent Artifacts",
+      "Monitoring beyond SNMP: Turning your network into a sensor"
+    ]
+  },
+  {
+    "date": "2026-08-21",
+    "title": "多时间尺度安全约束干预学习对RAN分层智控环路优化启示",
+    "keywords": [
+      "RAN智能控制环路(近实时RIC/非实时RIC分层架构)",
+      "约束强化学习",
+      "多时间尺度序贯决策",
+      "安全约束优化"
+    ],
+    "evidence_titles": [
+      "Learning Multi-Timescale Interventions under Safety and Resource Constraints"
+    ]
+  },
+  {
+    "date": "2026-08-21",
+    "title": "二阶Hessian量化与统计无损压缩对网络侧AI模型部署深化",
+    "keywords": [
+      "边缘/端侧网络AI推理模型",
+      "二阶后训练量化(PTQ)",
+      "Kronecker分解Hessian",
+      "统计假设检验验证"
+    ],
+    "evidence_titles": [
+      "KronQ: LLM Quantization via Kronecker-Factored Hessian",
+      "Statistically-Lossless Quantization of Large Language Models"
+    ]
+  },
+  {
+    "date": "2026-08-21",
+    "title": "QKD经典控制层形式化安全分析与ETSI标准对光网协议验证启示",
+    "keywords": [
+      "量子密钥分发/光网络安全协议",
+      "形式化验证(非AI方法但属安全分析方法论)"
+    ],
+    "evidence_titles": [
+      "Beyond the Quantum Promise: A Security Analysis of Classical Control in Quantum Key Distribution"
     ]
   }
 ]
