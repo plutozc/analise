@@ -1,49 +1,5 @@
 [
   {
-    "date": "2026-08-14",
-    "title": "超越SNMP的AgenticOps网络遥测智能化演进对自动驾驶网络启示",
-    "keywords": [
-      "网络遥测(telemetry)",
-      "SNMP",
-      "网络运维平台",
-      "AI Agent",
-      "AI-driven assurance",
-      "AgenticOps"
-    ],
-    "evidence_titles": [
-      "Monitoring beyond SNMP: Turning your network into a sensor"
-    ]
-  },
-  {
-    "date": "2026-08-14",
-    "title": "多路径LLM压缩技术收敛趋势对端侧网络AI模型部署路线启示",
-    "keywords": [
-      "网络设备端侧AI推理",
-      "边缘网络节点",
-      "LLM量化(PTQ)",
-      "结构化剪枝",
-      "统计检验"
-    ],
-    "evidence_titles": [
-      "Statistically-Lossless Quantization of Large Language Models",
-      "KronQ: LLM Quantization via Kronecker-Factored Hessian",
-      "High-Layer Attention Pruning with Rescaling"
-    ]
-  },
-  {
-    "date": "2026-08-14",
-    "title": "安全关键系统神经网络软件级形式化验证对网络AI可信部署启示",
-    "keywords": [
-      "网络AI模型部署",
-      "安全关键网络功能(流量分类/异常检测)",
-      "神经网络形式化验证",
-      "浮点精度验证"
-    ],
-    "evidence_titles": [
-      "Floating-Point Neural Network Verification at the Software Level"
-    ]
-  },
-  {
     "date": "2026-08-15",
     "title": "统计无损量化与注意力剪枝对端侧网络AI压缩路线启示",
     "keywords": [
@@ -369,6 +325,57 @@
     ],
     "evidence_titles": [
       "Beyond the Quantum Promise: A Security Analysis of Classical Control in Quantum Key Distribution"
+    ]
+  },
+  {
+    "date": "2026-08-22",
+    "title": "爱立信联合软银5G实网AI调度器验证推动RAN智控闭环落地",
+    "keywords": [
+      "5G RAN无线资源调度器",
+      "O-RAN RIC",
+      "AI驱动无线资源调度优化"
+    ],
+    "evidence_titles": [
+      "SoftBank and Ericsson test AI scheduler on live Japan 5G network"
+    ]
+  },
+  {
+    "date": "2026-08-22",
+    "title": "LLM注意力剪枝与Kronecker Hessian量化对网络侧模型部署深化",
+    "keywords": [
+      "网络设备侧AI推理引擎",
+      "后训练量化（Kronecker Hessian PTQ）",
+      "结构化注意力剪枝"
+    ],
+    "evidence_titles": [
+      "KronQ - LLM Quantization via Kronecker-Factored Hessian",
+      "High-Layer Attention Pruning with Rescaling"
+    ]
+  },
+  {
+    "date": "2026-08-22",
+    "title": "神经网络浮点软件级形式化验证对网络AI可信部署约束启示",
+    "keywords": [
+      "安全关键网络AI控制组件",
+      "神经网络形式化验证",
+      "浮点语义分析"
+    ],
+    "evidence_titles": [
+      "Floating-Point Neural Network Verification at the Software Level"
+    ]
+  },
+  {
+    "date": "2026-08-22",
+    "title": "GNN因果引导OOD泛化对网络拓扑AI跨域鲁棒性增强启示",
+    "keywords": [
+      "网络拓扑图结构（流量预测",
+      "故障定位场景）",
+      "GNN",
+      "因果表征学习",
+      "OOD泛化"
+    ],
+    "evidence_titles": [
+      "CGRL - Causal-Guided Representation Learning for Node-Level Out-of-Distribution Generalization"
     ]
   }
 ]
