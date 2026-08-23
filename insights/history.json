@@ -1,46 +1,5 @@
 [
   {
-    "date": "2026-08-15",
-    "title": "统计无损量化与注意力剪枝对端侧网络AI压缩路线启示",
-    "keywords": [
-      "端侧网络设备AI推理引擎",
-      "统计无损量化",
-      "结构化注意力剪枝",
-      "二阶Kronecker量化"
-    ],
-    "evidence_titles": [
-      "Statistically-Lossless Quantization of Large Language Models",
-      "High-Layer Attention Pruning with Rescaling",
-      "KronQ: LLM Quantization via Kronecker-Factored Hessian"
-    ]
-  },
-  {
-    "date": "2026-08-15",
-    "title": "QKD经典控制面形式化安全分析对光网络协议验证启示",
-    "keywords": [
-      "QKD光通信安全协议",
-      "经典后处理控制面",
-      "形式化验证"
-    ],
-    "evidence_titles": [
-      "Beyond the Quantum Promise: A Security Analysis of Classical Control in Quantum Key Distribution"
-    ]
-  },
-  {
-    "date": "2026-08-15",
-    "title": "概率安全滤波器约束RL探索对自动驾驶网络控制启示",
-    "keywords": [
-      "自动驾驶网络控制面",
-      "网络RL闭环控制器",
-      "深度强化学习",
-      "概率神经网络",
-      "预测安全滤波"
-    ],
-    "evidence_titles": [
-      "Uncertainty-Aware Predictive Safety Filters for Probabilistic Neural Network Dynamics"
-    ]
-  },
-  {
     "date": "2026-08-16",
     "title": "Kronecker因子化二阶Hessian量化对端侧网络AI压缩路线新突破",
     "keywords": [
@@ -376,6 +335,42 @@
     ],
     "evidence_titles": [
       "CGRL - Causal-Guided Representation Learning for Node-Level Out-of-Distribution Generalization"
+    ]
+  },
+  {
+    "date": "2026-08-23",
+    "title": "LLM Agent元认知提示注入与注意力劫持对网络运维Agent纵深防御",
+    "keywords": [
+      "网络运维AI Agent/工具调用Agent",
+      "LLM Agent/间接提示注入/注意力机制攻击"
+    ],
+    "evidence_titles": [
+      "Toward Metacognitive One-Shot Indirect Prompt Injection: Strategy Abstraction Via Outcome-Conditioned Reflection",
+      "Preference Redirection via Attention Concentration: An Attack on Computer Use Agents"
+    ]
+  },
+  {
+    "date": "2026-08-23",
+    "title": "概率神经网络不确定性安全滤波对网络自治闭环安全探索约束",
+    "keywords": [
+      "RAN智能控制器/自动驾驶网络闭环",
+      "深度强化学习/概率神经网络/模型预测控制"
+    ],
+    "evidence_titles": [
+      "Uncertainty-Aware Predictive Safety Filters for Probabilistic Neural Network Dynamics"
+    ]
+  },
+  {
+    "date": "2026-08-23",
+    "title": "MoE弹性专家解耦与统计无损量化协同推进网络侧大模型部署",
+    "keywords": [
+      "网络边缘侧AI推理服务/网络侧大模型部署",
+      "MoE弹性调度/后训练量化/Kronecker Hessian优化"
+    ],
+    "evidence_titles": [
+      "MoE-Prism: Disentangling Monolithic Experts for Elastic MoE Services via Model-System Co-Designs",
+      "Statistically-Lossless Quantization of Large Language Models",
+      "KronQ: LLM Quantization via Kronecker-Factored Hessian"
     ]
   }
 ]
