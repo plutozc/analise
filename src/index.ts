@@ -13,6 +13,7 @@ import { backfillVenues } from "./sync/backfill-venue.js";
 import { discoverInsightDirections } from "./sync/insight-discovery.js";
 import { enrichHighScorePapers } from "./sync/ai-enrich.js";
 import { generateAggregateBulletin, checkUrgentBulletin, generateFallbackBulletin } from "./sync/news-bulletin.js";
+import { runCleanup } from "./sync/cleanup.js";
 import { logTokenUsage } from "./lib/claude.js";
 
 const task = process.argv[2] ?? "all";
@@ -166,6 +167,11 @@ async function main() {
         console.log(`[sync-worker] Urgent bulletin: ${result.generated ? result.title : "no urgent events"}`);
         break;
       }
+      case "cleanup": {
+        const cr = await runCleanup();
+        console.log(`[sync-worker] Cleanup: news=${cr.newsDeleted} signals=${cr.signalsDeleted} logs=${cr.logsCleared}`);
+        break;
+      }
       case "all": {
         const year = parseInt(process.env.SYNC_YEAR ?? String(new Date().getFullYear()), 10);
 
@@ -219,7 +225,7 @@ async function main() {
       default:
         console.error(`[sync-worker] Unknown task: ${task}`);
         console.log(`Usage: npx tsx src/index.ts <task>`);
-        console.log(`Tasks: papers, arxiv, s2, company-papers, feeds, rfcs, conferences, backfill-venue, conf-summary, conf-summaries, bulletin, bulletin-urgent, all`);
+        console.log(`Tasks: papers, arxiv, s2, company-papers, feeds, rfcs, conferences, backfill-venue, conf-summary, conf-summaries, bulletin, bulletin-urgent, cleanup, all`);
         process.exit(1);
     }
   } catch (err) {

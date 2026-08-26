@@ -22,7 +22,7 @@ Commands:
   logs [task]        Tail logs (scheduler.log by default, or <task>.log)
   once               Run all tasks once (blocking, shows output)
 
-Tasks: papers, feeds, github, rfcs, signals, conf-summaries, vendor-intel, bulletin, bulletin-urgent
+Tasks: papers, feeds, github, rfcs, signals, conf-summaries, vendor-intel, bulletin, bulletin-urgent, cleanup
 EOF
   exit 1
 }

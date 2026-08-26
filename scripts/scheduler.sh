@@ -75,6 +75,8 @@ run_weekly_report() {
 }
 
 BULLETIN_AGG_AT="${SYNC_BULLETIN_AGG_AT:-08:00}"
+CLEANUP_AT="${SYNC_CLEANUP_AT:-03:30}"
+CLEANUP_DAY="${SYNC_CLEANUP_DAY:-7}"  # 7=Sunday
 
 TASKS="papers feeds rfcs signals conf-summaries vendor-intel"
 
@@ -90,6 +92,27 @@ interval_of() {
     classify-medium) echo 86400;;    # deprecated, not scheduled
     *)               echo "";;
   esac
+}
+
+run_weekly_cleanup() {
+  local hhmm=$1 dow=$2
+  while true; do
+    local now_secs delay current_dow
+    now_secs=$(date '+%H * 3600 + %M * 60 + %S' | bc)
+    current_dow=$(date '+%u')
+    local target_secs=$((10#${hhmm%:*} * 3600 + 10#${hhmm#*:} * 60))
+    if [ "$current_dow" -eq "$dow" ] && [ "$now_secs" -lt "$target_secs" ]; then
+      delay=$((target_secs - now_secs))
+    else
+      local days_until=$(( (dow - current_dow + 7) % 7 ))
+      if [ "$days_until" -eq 0 ]; then days_until=7; fi
+      delay=$(( days_until * 86400 - now_secs + target_secs ))
+    fi
+    log "Sleep ${delay}s until next cleanup (day=$dow at $hhmm)..."
+    sleep "$delay"
+    run_task "cleanup"
+    sleep 1
+  done
 }
 
 run_bulletin_aggregate() {
@@ -137,5 +160,6 @@ done
 run_weekly_report "$WEEKLY_REPORT_AT" "$WEEKLY_REPORT_DAY" &
 run_bulletin_aggregate "$BULLETIN_AGG_AT" &
 run_loop "bulletin-urgent" "$(interval_of "bulletin-urgent")" &
-log "All workers launched. papers_at=$PAPERS_AT weekly_report=day${WEEKLY_REPORT_DAY}@${WEEKLY_REPORT_AT} bulletin_agg=daily@${BULLETIN_AGG_AT} bulletin_urgent=hourly"
+run_weekly_cleanup "$CLEANUP_AT" "$CLEANUP_DAY" &
+log "All workers launched. papers_at=$PAPERS_AT weekly_report=day${WEEKLY_REPORT_DAY}@${WEEKLY_REPORT_AT} bulletin_agg=daily@${BULLETIN_AGG_AT} bulletin_urgent=hourly cleanup=day${CLEANUP_DAY}@${CLEANUP_AT}"
 wait
