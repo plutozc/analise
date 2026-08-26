@@ -1,93 +1,5 @@
 [
   {
-    "date": "2026-08-17",
-    "title": "IoT语义通信自适应双注意力机制对带宽受限无线网络AI编码启示",
-    "keywords": [
-      "IoT无线网络",
-      "语义通信",
-      "联合信源-信道编码",
-      "信道自适应",
-      "DNN",
-      "信道注意力机制",
-      "空间注意力机制",
-      "联合编解码网络"
-    ],
-    "evidence_titles": [
-      "Doubly Adaptive Channel and Spatial Attention for Semantic Image Communication by IoT Devices"
-    ]
-  },
-  {
-    "date": "2026-08-17",
-    "title": "高层注意力剪枝重缩放与统计无损验证对端侧网络AI压缩新路径",
-    "keywords": [
-      "端侧网络设备",
-      "边缘AI推理节点",
-      "层感知结构化剪枝",
-      "注意力头冗余分析",
-      "输出重缩放",
-      "统计假设检验量化"
-    ],
-    "evidence_titles": [
-      "High-Layer Attention Pruning with Rescaling",
-      "Statistically-Lossless Quantization of Large Language Models"
-    ]
-  },
-  {
-    "date": "2026-08-17",
-    "title": "MoE推理服务专家解耦系统协同设计对AI集群网络弹性调度深化",
-    "keywords": [
-      "AI集群网络",
-      "RoCE/InfiniBand互联",
-      "推理服务流量调度",
-      "MoE稀疏激活",
-      "动态专家路由",
-      "弹性推理服务"
-    ],
-    "evidence_titles": [
-      "MoE-Prism: Disentangling Monolithic Experts for Elastic MoE Services via Model-System Co-Designs"
-    ]
-  },
-  {
-    "date": "2026-08-18",
-    "title": "LLM与GNN驱动漏洞智能分诊对网络软件可信开发启示",
-    "keywords": [
-      "网络OS/SDN控制器/云原生网络软件供应链",
-      "LLM + GNN联合分析",
-      "演化学习"
-    ],
-    "evidence_titles": [
-      "Learning to Triage Vulnerability Reports from Program Analysis: An Empirical Study in Node.js",
-      "CognixShield: PoV-Guided Vulnerable API Usage Detection in Large Codebases via LLMs",
-      "Memoir: Learning, Verifying, and Evolving False-Positive Memories for SAST Tools"
-    ]
-  },
-  {
-    "date": "2026-08-18",
-    "title": "元认知单次提示注入攻击对网络AI Agent安全新威胁",
-    "keywords": [
-      "网络管控AI Agent/遥测Agent/配置Agent",
-      "LLM Agent安全",
-      "间接提示注入",
-      "元认知反射"
-    ],
-    "evidence_titles": [
-      "Toward Metacognitive One-Shot Indirect Prompt Injection: Strategy Abstraction Via Outcome-Conditioned Reflection",
-      "Monitoring beyond SNMP: Turning your network into a sensor"
-    ]
-  },
-  {
-    "date": "2026-08-18",
-    "title": "概率NN动力学安全滤波对自动驾驶网络RL控制约束深化",
-    "keywords": [
-      "自动驾驶网络RL控制器/网络闭环控制",
-      "概率神经网络动力学",
-      "模型预测控制约束RL"
-    ],
-    "evidence_titles": [
-      "Uncertainty-Aware Predictive Safety Filters for Probabilistic Neural Network Dynamics"
-    ]
-  },
-  {
     "date": "2026-08-19",
     "title": "LLM跨过程漏洞检测与误报记忆学习对网络软件安全深化",
     "keywords": [
@@ -375,6 +287,61 @@
     ],
     "evidence_titles": [
       "Memoir: Learning, Verifying, and Evolving False-Positive Memories for Static Application Security Testing Tools"
+    ]
+  },
+  {
+    "date": "2026-08-26",
+    "title": "LLM推理分解式架构调度演进对AI集群网络编排启示",
+    "keywords": [
+      "AI推理集群RoCE/RDMA互联网络",
+      "存算分离数据面",
+      "LLM推理调度",
+      "反馈控制",
+      "解析容量规划"
+    ],
+    "evidence_titles": [
+      "P-PAS: Prefill-Pressure Adaptive Scheduling for Long-Context LLM Serving",
+      "Q-First: Attention and Feed-Forward Concurrency at the Smallest Change to the Block",
+      "Analytical Provisioning for Attention-FFN Disaggregated LLM Serving under Stochastic Workloads",
+      "A Biophysically-Inspired Feedback Controller for Multi-Class Cache Fairness"
+    ]
+  },
+  {
+    "date": "2026-08-26",
+    "title": "有状态Agentic RL训练容错快照对AI集群弹性网络启示",
+    "keywords": [
+      "AI训练集群网络",
+      "GPU-环境容器间通信链路",
+      "Agentic RL",
+      "有状态容错快照回滚"
+    ],
+    "evidence_titles": [
+      "Belayer: Efficient Fault Tolerance for LLM Agentic RL Training"
+    ]
+  },
+  {
+    "date": "2026-08-26",
+    "title": "Cisco富遥测传感化网络驱动AgenticOps范式持续深化",
+    "keywords": [
+      "网络遥测数据面",
+      "SNMP替代协议栈",
+      "AI驱动网络保障",
+      "Agent自治决策"
+    ],
+    "evidence_titles": [
+      "Monitoring beyond SNMP: Turning your network into a sensor"
+    ]
+  },
+  {
+    "date": "2026-08-26",
+    "title": "稀疏稠密融合离群值感知量化对网络侧推理部署深化",
+    "keywords": [
+      "网络设备侧AI推理引擎",
+      "离群值感知混合精度量化",
+      "稀疏稠密融合推理"
+    ],
+    "evidence_titles": [
+      "FlashQuant: Sparse-Dense Fusion for Memory-Efficient Outlier-Aware LLM Inference"
     ]
   }
 ]
