@@ -22,6 +22,9 @@ const EVENT_KEYWORDS =
 const SOFTWARE_KEYWORDS =
   /大模型|llm|glm|gpt|claude|开源模型|sdk|api|ai\s*agent|推理引擎|inference|训练框架|training|自动化|automat|编排|orchestrat|ansible|terraform|kubernetes|k8s|平台|platform|发布.*版本|release.*version/i;
 
+const CLOUD_CAPEX_KEYWORDS =
+  /云.*营收|cloud.*revenue|季度.*财报|quarterly.*earning|capex.*增长|capex.*grow|资本支出.*增|capital.*expend|云.*市场份额|cloud.*market\s*share/i;
+
 // Score whether a news item is in scope (data-comm + AI infra)
 function isInScope(title: string, snippet: string | null, companies: string[]): boolean {
   const text = `${title} ${snippet ?? ""}`.toLowerCase();
@@ -82,19 +85,38 @@ function isDup(a: Set<string>, b: Set<string>): boolean {
   const smaller = a.size <= b.size ? a : b;
   const larger = a.size <= b.size ? b : a;
   const contained = [...smaller].filter(w => larger.has(w));
-  return contained.length >= 2 && contained.length / smaller.size >= 0.55;
+  return contained.length >= 2 && contained.length / smaller.size >= 0.4;
+}
+
+function itemWords(item: NewsRow): Set<string> {
+  const titleWords = coreWords(item.title);
+  const snippetWords = coreWords((item.snippet ?? "").slice(0, 200));
+  return new Set([...titleWords, ...snippetWords]);
+}
+
+function shouldMerge(itemW: Set<string>, clusterW: Set<string>, item: NewsRow, cluster: EventCluster): boolean {
+  if (isDup(itemW, clusterW)) return true;
+  const sharedCompanies = item.companies.filter(c => cluster.representative.companies.includes(c));
+  if (sharedCompanies.length > 0) {
+    const smaller = itemW.size <= clusterW.size ? itemW : clusterW;
+    const larger = itemW.size <= clusterW.size ? clusterW : itemW;
+    const overlap = [...smaller].filter(w => larger.has(w)).length;
+    if (overlap >= 2 && overlap / smaller.size >= 0.3) return true;
+  }
+  return false;
 }
 
 function clusterEvents(items: NewsRow[]): EventCluster[] {
   const clusters: EventCluster[] = [];
   for (const item of items) {
-    const words = coreWords(item.title);
+    const words = itemWords(item);
     let matched = false;
     for (const c of clusters) {
-      if (isDup(words, c.words)) {
+      if (shouldMerge(words, c.words, item, c)) {
         c.items.push(item);
         c.coverageTotal += item.coverage_count ?? 1;
         c.maxScore = Math.max(c.maxScore, item.relevance_score ?? 0);
+        for (const w of words) c.words.add(w);
         if ((item.relevance_score ?? 0) > (c.representative.relevance_score ?? 0)) {
           c.representative = item;
         }
@@ -136,7 +158,12 @@ function isAggregateWorthy(cluster: EventCluster): boolean {
   const hasKeyVendor = r.companies.some(c => KEY_VENDORS.has(c));
   const hasKeyword = EVENT_KEYWORDS.test(text);
   const hasSoftware = SOFTWARE_KEYWORDS.test(text);
+  const isCloudCapex = CLOUD_CAPEX_KEYWORDS.test(text);
 
+  // Cloud capex/revenue: raise threshold — needs score>=9 AND cov>=5
+  if (isCloudCapex && !hasSoftware) {
+    return maxScore >= 9 && coverageTotal >= 5;
+  }
   // Software/AI model: lower threshold — score>=6 AND (cov>=2 OR key vendor)
   if (hasSoftware && maxScore >= 6 && (coverageTotal >= 2 || hasKeyVendor)) return true;
   // score>=8 AND (cov>=2 OR key vendor)
@@ -175,7 +202,7 @@ function buildBulletinPrompt(
 1. 标题格式："快讯：XXX"，概括此单一事件（15-30字）
 2. 【快讯内容】：此事件的事实信息，包含关键数据（营收/订单量/投资额/技术参数等），150字以内
 3. 【内容分析】：此事件对数通产业链的具体影响分析，要有专家判断，不是新闻复制粘贴，150字以内
-4. 【应对策略/华为建议】：必须关联华为具体产品线或业务方向，如CloudEngine交换机、NetEngine路由器、HiSecEngine防火墙、iMaster NCE智能管控、昇腾AI算力、鲲鹏服务器、星河AI Fabric、数据中心网络解决方案等。说清楚华为哪个产品/方案可以如何切入。80字以内。
+4. 【应对策略/华为建议】：从战略方向层面给出华为的应对思路，点明该事件对华为意味着什么机会或威胁，以及华为应在哪个方向发力。不需要罗列具体产品型号，聚焦战略判断和竞争卡位。50字以内。
 5. 总字数控制在400字以内
 6. 分析内容（【内容分析】+【应对策略/华为建议】）占比必须>30%
 ${dedupBlock}
@@ -396,7 +423,15 @@ export async function generateAggregateBulletin(): Promise<{ generated: boolean;
   for (const cluster of uncovered.slice(0, MAX_BULLETINS_PER_RUN)) {
     console.log(`[bulletin] Processing: ${cluster.representative.title.slice(0, 60)} (cov=${cluster.coverageTotal}, score=${cluster.maxScore})`);
     const result = await generateForCluster(cluster, [...recentTitles, ...results.map(r => r.parsed.title)]);
-    if (result) results.push(result);
+    if (result) {
+      const newWords = coreWords(result.parsed.title);
+      const dupWithExisting = results.some(r => isDup(newWords, coreWords(r.parsed.title)));
+      if (dupWithExisting) {
+        console.log(`[bulletin] Dedup skip (similar to existing): ${result.parsed.title.slice(0, 60)}`);
+      } else {
+        results.push(result);
+      }
+    }
   }
 
   if (results.length > 0) {
