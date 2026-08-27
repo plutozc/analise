@@ -12,11 +12,15 @@ const KEY_VENDORS = new Set([
   "huawei", "cisco", "nokia", "ericsson", "broadcom", "nvidia", "intel", "amd",
   "marvell", "microsoft", "aws", "google", "meta", "alibaba", "tencent",
   "bytedance", "ibm", "oracle", "qualcomm",
+  "zhipu", "baichuan", "moonshot", "deepseek", "minimax", "openai", "anthropic",
 ]);
 
 // Urgent event keywords
 const EVENT_KEYWORDS =
-  /财报|earnings|revenue|收购|acqui|merger|发布|launch|release|投资|capex|capital\s*expend|破纪录|record|数据中心|data\s*center|交换机|switch|路由器|router|芯片|chip|asic|gpu|rdma|roce|5g|6g|ran\b|oran|ai\s*infra|算力|hbm|液冷|cooling|dpu|smartnic/i;
+  /财报|earnings|revenue|收购|acqui|merger|发布|launch|release|投资|capex|capital\s*expend|破纪录|record|数据中心|data\s*center|交换机|switch|路由器|router|芯片|chip|asic|gpu|rdma|roce|5g|6g|ran\b|oran|ai\s*infra|算力|hbm|液冷|cooling|dpu|smartnic|大模型|llm|glm|gpt|claude|开源模型|open.?source.*model|ai\s*agent|推理引擎|inference|训练框架|training|sdk|api|平台|platform|自动化|automat|编排|orchestrat|ansible|terraform|kubernetes|k8s/i;
+
+const SOFTWARE_KEYWORDS =
+  /大模型|llm|glm|gpt|claude|开源模型|sdk|api|ai\s*agent|推理引擎|inference|训练框架|training|自动化|automat|编排|orchestrat|ansible|terraform|kubernetes|k8s|平台|platform|发布.*版本|release.*version/i;
 
 // Score whether a news item is in scope (data-comm + AI infra)
 function isInScope(title: string, snippet: string | null, companies: string[]): boolean {
@@ -131,7 +135,10 @@ function isAggregateWorthy(cluster: EventCluster): boolean {
   const text = `${r.title} ${r.snippet ?? ""}`;
   const hasKeyVendor = r.companies.some(c => KEY_VENDORS.has(c));
   const hasKeyword = EVENT_KEYWORDS.test(text);
+  const hasSoftware = SOFTWARE_KEYWORDS.test(text);
 
+  // Software/AI model: lower threshold — score>=6 AND (cov>=2 OR key vendor)
+  if (hasSoftware && maxScore >= 6 && (coverageTotal >= 2 || hasKeyVendor)) return true;
   // score>=8 AND (cov>=2 OR key vendor)
   if (maxScore >= 8 && (coverageTotal >= 2 || hasKeyVendor)) return true;
   // cov>=3 AND (keyword OR key vendor)
@@ -184,9 +191,7 @@ ${dedupBlock}
 ${eventBlock}`;
 }
 
-function parseBulletinResponse(raw: string): {
-  title: string; content: string; analysis: string; recommendation: string;
-} | null {
+function parseBulletinResponse(raw: string): ParsedBulletin | null {
   const titleMatch = raw.match(/快讯[：:]\s*(.+)/);
   const contentMatch = raw.match(/【快讯内容】([\s\S]*?)(?=【内容分析】)/);
   const analysisMatch = raw.match(/【内容分析】([\s\S]*?)(?=【应对策略[/／]华为建议】)/);
@@ -199,6 +204,7 @@ function parseBulletinResponse(raw: string): {
     content: contentMatch[1].trim(),
     analysis: (analysisMatch?.[1] ?? "").trim(),
     recommendation: (recMatch?.[1] ?? "").trim(),
+    sources: [],
   };
 }
 
@@ -238,7 +244,7 @@ async function fetchCandidateNews(days: number): Promise<NewsRow[]> {
 
 // ─── Save bulletin ────────────────────────────────────────────────
 
-type ParsedBulletin = { title: string; content: string; analysis: string; recommendation: string };
+type ParsedBulletin = { title: string; content: string; analysis: string; recommendation: string; sources: { title: string; link: string }[] };
 
 function bulletinWordCount(p: ParsedBulletin): number {
   return (p.content + p.analysis + p.recommendation).replace(/\s/g, "").length;
@@ -262,6 +268,12 @@ function formatBulletinMd(p: ParsedBulletin, dateStr: string, type: string): str
     "",
     p.recommendation,
     "",
+    ...(p.sources.length > 0 ? [
+      "## 来源",
+      "",
+      ...p.sources.map(s => `- [${s.title}](${s.link})`),
+      "",
+    ] : []),
   ].join("\n");
 }
 
@@ -337,6 +349,10 @@ async function generateForCluster(
     return null;
   }
 
+  parsed.sources = cluster.items
+    .filter(it => it.link)
+    .map(it => ({ title: it.title.slice(0, 80), link: it.link! }));
+
   console.log(`[bulletin] Generated: ${parsed.title}`);
   return { parsed, sourceIds: cluster.items.map(it => it.id) };
 }
@@ -344,7 +360,7 @@ async function generateForCluster(
 export async function generateAggregateBulletin(): Promise<{ generated: boolean; count: number; titles: string[] }> {
   console.log("[bulletin] Checking for aggregate bulletins...");
 
-  const news = await fetchCandidateNews(1);
+  const news = await fetchCandidateNews(2);
   const inScope = news.filter(n => isInScope(n.title, n.snippet, n.companies));
   console.log(`[bulletin] ${news.length} candidates → ${inScope.length} in scope`);
 
