@@ -1,52 +1,5 @@
 [
   {
-    "date": "2026-08-19",
-    "title": "LLM跨过程漏洞检测与误报记忆学习对网络软件安全深化",
-    "keywords": [
-      "网络OS/控制器软件代码库安全",
-      "LLM + GNN + 演化学习"
-    ],
-    "evidence_titles": [
-      "CognixShield: PoV-Guided Vulnerable API Usage Detection in Large Codebases via LLMs",
-      "Memoir: Learning, Verifying, and Evolving False-Positive Memories for SAST Tools",
-      "Learning to Triage Vulnerability Reports from Program Analysis"
-    ]
-  },
-  {
-    "date": "2026-08-19",
-    "title": "时序逻辑编码零样本RL策略泛化对意图驱动网络自动化启示",
-    "keywords": [
-      "网络意图策略执行/自动驾驶网络控制",
-      "强化学习 + 线性时序逻辑(LTL)结构化表示"
-    ],
-    "evidence_titles": [
-      "Zero-Shot Instruction Following in RL via Structured LTL Representations"
-    ]
-  },
-  {
-    "date": "2026-08-19",
-    "title": "GNN度信号归一化保持改进对网络拓扑感知AI任务增强",
-    "keywords": [
-      "网络拓扑图分析/关键节点识别",
-      "GNN + 度感知归一化修正"
-    ],
-    "evidence_titles": [
-      "Placing Degree Scales After LayerNorm"
-    ]
-  },
-  {
-    "date": "2026-08-19",
-    "title": "GUI视觉注意力劫持攻击对网络运维AI Agent安全威胁深化",
-    "keywords": [
-      "网络管理AI Agent/运维自动化",
-      "多模态Agent + 视觉注意力攻击"
-    ],
-    "evidence_titles": [
-      "Preference Redirection via Attention Concentration: An Attack on Computer Use Agents",
-      "Toward Metacognitive One-Shot Indirect Prompt Injection"
-    ]
-  },
-  {
     "date": "2026-08-20",
     "title": "SNMP后网络遥测与AI Agent驱动自治运维范式演进",
     "keywords": [
@@ -342,6 +295,51 @@
     ],
     "evidence_titles": [
       "FlashQuant: Sparse-Dense Fusion for Memory-Efficient Outlier-Aware LLM Inference"
+    ]
+  },
+  {
+    "date": "2026-08-27",
+    "title": "Nokia Agentic运维向光网络延伸推动自动驾驶光网范式演进",
+    "keywords": [
+      "光传输网络",
+      "DWDM光路径",
+      "光网络控制面",
+      "Agentic AI",
+      "闭环自治决策"
+    ],
+    "evidence_titles": [
+      "Bringing agentic operations to optical networks - Nokia"
+    ]
+  },
+  {
+    "date": "2026-08-27",
+    "title": "LLM推理Attention-FFN并行解耦与Prefill压力调度协同演进",
+    "keywords": [
+      "AI集群互联网络",
+      "RoCE/RDMA通信",
+      "解耦推理节点间数据面",
+      "LLM推理架构优化",
+      "解耦式serving"
+    ],
+    "evidence_titles": [
+      "Q-First: Attention and Feed-Forward Concurrency at the Smallest Change to the Block",
+      "P-PAS: Prefill-Pressure Adaptive Scheduling for Long-Context LLM Serving",
+      "Analytical Provisioning for Attention-FFN Disaggregated LLM Serving under Stochastic Workloads"
+    ]
+  },
+  {
+    "date": "2026-08-27",
+    "title": "LLM引导KV Cache策略自动进化与多类缓存公平反馈控制",
+    "keywords": [
+      "推理服务集群内存资源",
+      "多租户推理服务数据面",
+      "LLM引导程序进化",
+      "生物启发反馈控制",
+      "自适应淘汰策略"
+    ],
+    "evidence_titles": [
+      "Discovering KV Cache Eviction Policies via LLM-Guided Program Evolution",
+      "A Biophysically-Inspired Feedback Controller for Multi-Class Cache Fairness"
     ]
   }
 ]
