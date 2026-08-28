@@ -1,62 +1,5 @@
 [
   {
-    "date": "2026-08-20",
-    "title": "SNMP后网络遥测与AI Agent驱动自治运维范式演进",
-    "keywords": [
-      "网络遥测（SNMP/gRPC/streaming telemetry）",
-      "网络保障平台",
-      "AI Agent",
-      "Agentic Operations",
-      "AI驱动保障"
-    ],
-    "evidence_titles": [
-      "Monitoring beyond SNMP: Turning your network into a sensor (Cisco Blogs)"
-    ]
-  },
-  {
-    "date": "2026-08-20",
-    "title": "边缘云端协同LLM推理子任务路由与资源自适应调度",
-    "keywords": [
-      "边缘-云端网络链路",
-      "MEC节点",
-      "推理路由路径",
-      "LLM子任务分解",
-      "资源自适应路由策略"
-    ],
-    "evidence_titles": [
-      "HybridFlow: Resource-Adaptive Subtask Routing for Efficient Edge-Cloud LLM Inference"
-    ]
-  },
-  {
-    "date": "2026-08-20",
-    "title": "MoE推理服务专家解耦与弹性调度模型系统协同深化",
-    "keywords": [
-      "AI集群网络",
-      "专家间通信拓扑",
-      "RDMA/RoCE数据面",
-      "MoE稀疏激活",
-      "动态专家路由",
-      "模型-系统协同优化"
-    ],
-    "evidence_titles": [
-      "MoE-Prism: Disentangling Monolithic Experts for Elastic MoE Services via Model-System Co-Designs"
-    ]
-  },
-  {
-    "date": "2026-08-20",
-    "title": "IoT语义通信双自适应注意力对带宽受限无线网络深化",
-    "keywords": [
-      "IoT无线网络",
-      "带宽受限信道",
-      "语义通信链路",
-      "双注意力机制（通道+空间）",
-      "端到端语义编码DNN"
-    ],
-    "evidence_titles": [
-      "Doubly Adaptive Channel and Spatial Attention for Semantic Image Communication by IoT Devices"
-    ]
-  },
-  {
     "date": "2026-08-21",
     "title": "LLM Agent轨迹类型化编译对网络自动化知识沉淀机制启示",
     "keywords": [
@@ -336,6 +279,59 @@
       "LLM引导程序进化",
       "生物启发反馈控制",
       "自适应淘汰策略"
+    ],
+    "evidence_titles": [
+      "Discovering KV Cache Eviction Policies via LLM-Guided Program Evolution",
+      "A Biophysically-Inspired Feedback Controller for Multi-Class Cache Fairness"
+    ]
+  },
+  {
+    "date": "2026-08-28",
+    "title": "Ericsson AI调度器5G实网验证加速RAN智能控制产业收敛",
+    "keywords": [
+      "5G RAN无线调度器",
+      "AI调度优化（具体算法待公开）"
+    ],
+    "evidence_titles": [
+      "SoftBank and Ericsson test AI scheduler on live Japan 5G network"
+    ]
+  },
+  {
+    "date": "2026-08-28",
+    "title": "LLM推理解耦架构从并行设计走向随机负载自适应调度",
+    "keywords": [
+      "AI集群网络",
+      "RoCE/IB互联fabric",
+      "LLM推理服务调度",
+      "排队论建模"
+    ],
+    "evidence_titles": [
+      "P-PAS: Prefill-Pressure Adaptive Scheduling for Long-Context LLM Serving",
+      "Q-First: Attention and Feed-Forward Concurrency at the Smallest Change to the Block",
+      "Analytical Provisioning for Attention-FFN Disaggregated LLM Serving under Stochastic Workloads"
+    ]
+  },
+  {
+    "date": "2026-08-28",
+    "title": "Agentic算子自动生成范式对网络可编程数据面合成启示",
+    "keywords": [
+      "可编程数据面（P4交换机",
+      "eBPF/XDP）",
+      "AI Agent代码生成",
+      "搜索式程序合成"
+    ],
+    "evidence_titles": [
+      "Agentic Kernel Optimization: Generating State-of-the-Art GPU Kernels Without Hand-Written CUDA"
+    ]
+  },
+  {
+    "date": "2026-08-28",
+    "title": "KV Cache进化搜索与多类公平反馈控制协同深化演进",
+    "keywords": [
+      "AI推理服务集群",
+      "网络QoS队列调度（类比）",
+      "LLM引导程序进化搜索",
+      "生物启发反馈控制"
     ],
     "evidence_titles": [
       "Discovering KV Cache Eviction Policies via LLM-Guided Program Evolution",
