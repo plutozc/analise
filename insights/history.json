@@ -1,58 +1,5 @@
 [
   {
-    "date": "2026-08-21",
-    "title": "LLM Agent轨迹类型化编译对网络自动化知识沉淀机制启示",
-    "keywords": [
-      "网络自动化Agent/自治运维系统",
-      "LLM Agent",
-      "轨迹学习",
-      "结果条件反思",
-      "类型化制品编译"
-    ],
-    "evidence_titles": [
-      "AutoRefine: Compiling Trajectories into Validated Typed Agent Artifacts",
-      "Monitoring beyond SNMP: Turning your network into a sensor"
-    ]
-  },
-  {
-    "date": "2026-08-21",
-    "title": "多时间尺度安全约束干预学习对RAN分层智控环路优化启示",
-    "keywords": [
-      "RAN智能控制环路(近实时RIC/非实时RIC分层架构)",
-      "约束强化学习",
-      "多时间尺度序贯决策",
-      "安全约束优化"
-    ],
-    "evidence_titles": [
-      "Learning Multi-Timescale Interventions under Safety and Resource Constraints"
-    ]
-  },
-  {
-    "date": "2026-08-21",
-    "title": "二阶Hessian量化与统计无损压缩对网络侧AI模型部署深化",
-    "keywords": [
-      "边缘/端侧网络AI推理模型",
-      "二阶后训练量化(PTQ)",
-      "Kronecker分解Hessian",
-      "统计假设检验验证"
-    ],
-    "evidence_titles": [
-      "KronQ: LLM Quantization via Kronecker-Factored Hessian",
-      "Statistically-Lossless Quantization of Large Language Models"
-    ]
-  },
-  {
-    "date": "2026-08-21",
-    "title": "QKD经典控制层形式化安全分析与ETSI标准对光网协议验证启示",
-    "keywords": [
-      "量子密钥分发/光网络安全协议",
-      "形式化验证(非AI方法但属安全分析方法论)"
-    ],
-    "evidence_titles": [
-      "Beyond the Quantum Promise: A Security Analysis of Classical Control in Quantum Key Distribution"
-    ]
-  },
-  {
     "date": "2026-08-22",
     "title": "爱立信联合软银5G实网AI调度器验证推动RAN智控闭环落地",
     "keywords": [
@@ -336,6 +283,53 @@
     "evidence_titles": [
       "Discovering KV Cache Eviction Policies via LLM-Guided Program Evolution",
       "A Biophysically-Inspired Feedback Controller for Multi-Class Cache Fairness"
+    ]
+  },
+  {
+    "date": "2026-08-29",
+    "title": "LLM长上下文Prefill压力感知调度对AI集群网络流量整形启示",
+    "keywords": [
+      "AI集群RoCE网络",
+      "KV Cache传输链路",
+      "推理服务间通信",
+      "LLM推理调度",
+      "Prefill压力建模",
+      "自适应批处理策略"
+    ],
+    "evidence_titles": [
+      "P-PAS: Prefill-Pressure Adaptive Scheduling for Long-Context LLM Serving",
+      "Analytical Provisioning for Attention-FFN Disaggregated LLM Serving under Stochastic Workloads",
+      "Q-First: Attention and Feed-Forward Concurrency at the Smallest Change to the Block"
+    ]
+  },
+  {
+    "date": "2026-08-29",
+    "title": "Agentic AI链式推理驱动边缘计算网络联合资源调度新范式",
+    "keywords": [
+      "移动边缘计算(MEC)",
+      "UAV通信网络",
+      "计算卸载路由",
+      "LLM Agent",
+      "链式推理(CoT)",
+      "强化学习"
+    ],
+    "evidence_titles": [
+      "An Agentic AI Framework with Large Language Models and Chain-of-Thought for UAV-Assisted Logistics Scheduling with Mobile Edge Computing"
+    ]
+  },
+  {
+    "date": "2026-08-29",
+    "title": "开源安全大模型规模化生产对网络威胁检测自动化体系启示",
+    "keywords": [
+      "网络入侵检测",
+      "流量异常分析",
+      "网络漏洞扫描",
+      "安全领域LLM",
+      "大规模合成数据生成",
+      "能力蒸馏"
+    ],
+    "evidence_titles": [
+      "CyberFactory: Scaling Cyber Security Capabilities with Instances from the Wild"
     ]
   }
 ]
