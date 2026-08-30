@@ -1,56 +1,5 @@
 [
   {
-    "date": "2026-08-22",
-    "title": "爱立信联合软银5G实网AI调度器验证推动RAN智控闭环落地",
-    "keywords": [
-      "5G RAN无线资源调度器",
-      "O-RAN RIC",
-      "AI驱动无线资源调度优化"
-    ],
-    "evidence_titles": [
-      "SoftBank and Ericsson test AI scheduler on live Japan 5G network"
-    ]
-  },
-  {
-    "date": "2026-08-22",
-    "title": "LLM注意力剪枝与Kronecker Hessian量化对网络侧模型部署深化",
-    "keywords": [
-      "网络设备侧AI推理引擎",
-      "后训练量化（Kronecker Hessian PTQ）",
-      "结构化注意力剪枝"
-    ],
-    "evidence_titles": [
-      "KronQ - LLM Quantization via Kronecker-Factored Hessian",
-      "High-Layer Attention Pruning with Rescaling"
-    ]
-  },
-  {
-    "date": "2026-08-22",
-    "title": "神经网络浮点软件级形式化验证对网络AI可信部署约束启示",
-    "keywords": [
-      "安全关键网络AI控制组件",
-      "神经网络形式化验证",
-      "浮点语义分析"
-    ],
-    "evidence_titles": [
-      "Floating-Point Neural Network Verification at the Software Level"
-    ]
-  },
-  {
-    "date": "2026-08-22",
-    "title": "GNN因果引导OOD泛化对网络拓扑AI跨域鲁棒性增强启示",
-    "keywords": [
-      "网络拓扑图结构（流量预测",
-      "故障定位场景）",
-      "GNN",
-      "因果表征学习",
-      "OOD泛化"
-    ],
-    "evidence_titles": [
-      "CGRL - Causal-Guided Representation Learning for Node-Level Out-of-Distribution Generalization"
-    ]
-  },
-  {
     "date": "2026-08-23",
     "title": "LLM Agent元认知提示注入与注意力劫持对网络运维Agent纵深防御",
     "keywords": [
@@ -330,6 +279,66 @@
     ],
     "evidence_titles": [
       "CyberFactory: Scaling Cyber Security Capabilities with Instances from the Wild"
+    ]
+  },
+  {
+    "date": "2026-08-30",
+    "title": "欧洲电信Agentic运维双线深化：RAN调度与光网自治并进",
+    "keywords": [
+      "5G RAN",
+      "光传送网络",
+      "网络运维系统",
+      "AI调度器",
+      "Agentic AI运维闭环"
+    ],
+    "evidence_titles": [
+      "SoftBank and Ericsson test AI scheduler on live Japan 5G network",
+      "Bringing agentic operations to optical networks - Nokia"
+    ]
+  },
+  {
+    "date": "2026-08-30",
+    "title": "LLM推理解耦全栈协同：量化×并行×调度三层联动设计",
+    "keywords": [
+      "AI集群网络拓扑",
+      "节点间RoCE/RDMA互联",
+      "流量调度",
+      "LLM推理量化",
+      "注意力-FFN解耦并行",
+      "负载建模"
+    ],
+    "evidence_titles": [
+      "Q-First: Attention and Feed-Forward Concurrency at the Smallest Change to the Block",
+      "FlashQuant: Sparse-Dense Fusion for Memory-Efficient Outlier-Aware LLM Inference",
+      "Analytical Provisioning for Attention-FFN Disaggregated LLM Serving under Stochastic Workloads",
+      "P-PAS: Prefill-Pressure Adaptive Scheduling for Long-Context LLM Serving"
+    ]
+  },
+  {
+    "date": "2026-08-30",
+    "title": "LLM缓存自动演化搜索与多租户公平控制闭环新证据",
+    "keywords": [
+      "AI推理服务缓存系统",
+      "多租户服务质量保障",
+      "LLM引导程序演化搜索",
+      "生物物理反馈控制建模"
+    ],
+    "evidence_titles": [
+      "Discovering KV Cache Eviction Policies via LLM-Guided Program Evolution",
+      "A Biophysically-Inspired Feedback Controller for Multi-Class Cache Fairness"
+    ]
+  },
+  {
+    "date": "2026-08-30",
+    "title": "Agentic代码合成突破GPU算子SOTA对网络可编程面启示",
+    "keywords": [
+      "可编程数据面(eBPF/XDP/P4)",
+      "网络功能代码自动合成",
+      "Agentic AI",
+      "LLM代码生成Agent"
+    ],
+    "evidence_titles": [
+      "Agentic Kernel Optimization: Generating State-of-the-Art GPU Kernels Without Hand-Written CUDA"
     ]
   }
 ]
