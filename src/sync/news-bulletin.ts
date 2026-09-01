@@ -1,5 +1,6 @@
 import { supabase } from "../lib/supabase.js";
 import { callClaude } from "../lib/claude.js";
+import { isAcademicBulletinCandidate } from "../lib/bulletin-academic-scope.js";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
@@ -44,7 +45,19 @@ type NewsRow = {
   companies: string[];
   created_at: string;
   ai_topics: string[] | null;
+  kind: "news" | "academic-paper";
+  venue: string | null;
 };
+
+function isAcademicRow(item: NewsRow): boolean {
+  return item.kind === "academic-paper" && isAcademicBulletinCandidate({
+    title: item.title,
+    text: item.snippet ?? "",
+    source: item.source,
+    topics: item.ai_topics ?? [],
+    venue: item.venue,
+  });
+}
 
 type EventCluster = {
   representative: NewsRow;
@@ -160,6 +173,9 @@ function isAggregateWorthy(cluster: EventCluster): boolean {
   const hasSoftware = SOFTWARE_KEYWORDS.test(text);
   const isCloudCapex = CLOUD_CAPEX_KEYWORDS.test(text);
 
+  // Track high-relevance university, lab, conference, and paper advances too.
+  if (cluster.items.some(isAcademicRow) && maxScore >= 8) return true;
+
   // Cloud capex/revenue: raise threshold — needs score>=9 AND cov>=5
   if (isCloudCapex && !hasSoftware) {
     return maxScore >= 9 && coverageTotal >= 5;
@@ -194,7 +210,7 @@ function buildBulletinPrompt(
 
   return `你是数通产业和AI基础设施领域的资深分析师。请基于以下单一事件生成一篇产业快讯。
 
-领域范围：数据通信（路由器/交换机/DPU/SmartNIC/防火墙/SD-WAN）+ AI基础设施（GPU/ASIC/数据中心/算力集群/液冷）+ AI芯片 + 云厂商Capex
+领域范围：数据通信（路由器/交换机/DPU/SmartNIC/防火墙/SD-WAN）+ AI基础设施（GPU/ASIC/数据中心/算力集群/液冷）+ AI芯片 + 云厂商Capex，以及高校、科研院所、顶级学术会议和高相关论文的研究进展。
 不包含：光模块、CPO/NPO、光互联、光纤等光通信领域。如事件主要涉及光通信则返回"SKIP"。
 目标读者：华为数通产业相关决策者
 
@@ -205,6 +221,7 @@ function buildBulletinPrompt(
 4. 【应对策略/华为建议】：从战略方向层面给出华为的应对思路，点明该事件对华为意味着什么机会或威胁，以及华为应在哪个方向发力。不需要罗列具体产品型号，聚焦战略判断和竞争卡位。50字以内。
 5. 总字数控制在400字以内
 6. 分析内容（【内容分析】+【应对策略/华为建议】）占比必须>30%
+7. 若事件来自高校、研究机构、学术会议或论文：明确它是论文/预印本/会议成果还是已验证部署；只基于来源给出的证据说明技术意义，不把研究结论表述为已商业落地。
 ${dedupBlock}
 请直接输出，不要用markdown代码块。格式：
 快讯：XXX
@@ -260,13 +277,42 @@ async function countTodayBulletins(type: string): Promise<number> {
 
 async function fetchCandidateNews(days: number): Promise<NewsRow[]> {
   const since = new Date(Date.now() - days * 86400_000).toISOString();
-  const { data } = await supabase.from("news_items")
-    .select("id, title, snippet, source, link, relevance_score, coverage_count, companies, created_at, ai_topics")
-    .gte("created_at", since)
-    .gte("relevance_score", 6)
-    .order("created_at", { ascending: false })
-    .limit(500);
-  return (data ?? []) as NewsRow[];
+  const [{ data: news }, { data: papers }] = await Promise.all([
+    supabase.from("news_items")
+      .select("id, title, snippet, source, link, relevance_score, coverage_count, companies, created_at, ai_topics")
+      .gte("created_at", since)
+      .gte("relevance_score", 6)
+      .order("created_at", { ascending: false })
+      .limit(500),
+    supabase.from("papers")
+      .select("id, title, abstract, source, url, relevance_score, companies, created_at, venue, paper_topics(topic_slug)")
+      .gte("created_at", since)
+      .eq("ai_classified", true)
+      .gte("relevance_score", 8)
+      .order("created_at", { ascending: false })
+      .limit(100),
+  ]);
+
+  const newsRows: NewsRow[] = (news ?? []).map((item: any) => ({
+    ...item,
+    kind: "news",
+    venue: null,
+  }));
+  const paperRows: NewsRow[] = (papers ?? []).map((paper: any) => ({
+    id: paper.id,
+    title: paper.title,
+    snippet: paper.abstract,
+    source: `Academic paper: ${paper.source ?? "unknown"}`,
+    link: paper.url,
+    relevance_score: paper.relevance_score,
+    coverage_count: 1,
+    companies: paper.companies ?? [],
+    created_at: paper.created_at,
+    ai_topics: (paper.paper_topics ?? []).map((topic: { topic_slug: string }) => topic.topic_slug),
+    kind: "academic-paper",
+    venue: paper.venue,
+  }));
+  return [...newsRows, ...paperRows];
 }
 
 // ─── Save bulletin ────────────────────────────────────────────────
@@ -388,8 +434,11 @@ export async function generateAggregateBulletin(): Promise<{ generated: boolean;
   console.log("[bulletin] Checking for aggregate bulletins...");
 
   const news = await fetchCandidateNews(2);
-  const inScope = news.filter(n => isInScope(n.title, n.snippet, n.companies));
-  console.log(`[bulletin] ${news.length} candidates → ${inScope.length} in scope`);
+  const inScope = news.filter(n =>
+    isInScope(n.title, n.snippet, n.companies) || isAcademicRow(n),
+  );
+  const academicCount = inScope.filter(isAcademicRow).length;
+  console.log(`[bulletin] ${news.length} candidates → ${inScope.length} in scope (${academicCount} academic)`);
 
   if (inScope.length === 0) {
     console.log("[bulletin] No in-scope news, skipping");
@@ -419,8 +468,13 @@ export async function generateAggregateBulletin(): Promise<{ generated: boolean;
 
   const recentTitles = recentBulletins.map(b => b.title);
   const results: { parsed: ParsedBulletin; sourceIds: string[] }[] = [];
+  // Reserve one slot for a qualifying academic development when present; the
+  // other slots retain the normal industry/news priority ordering.
+  const academicFirst = uncovered.filter(c => c.items.some(isAcademicRow)).slice(0, 1);
+  const selected = [...academicFirst, ...uncovered.filter(c => !academicFirst.includes(c))]
+    .slice(0, MAX_BULLETINS_PER_RUN);
 
-  for (const cluster of uncovered.slice(0, MAX_BULLETINS_PER_RUN)) {
+  for (const cluster of selected) {
     console.log(`[bulletin] Processing: ${cluster.representative.title.slice(0, 60)} (cov=${cluster.coverageTotal}, score=${cluster.maxScore})`);
     const result = await generateForCluster(cluster, [...recentTitles, ...results.map(r => r.parsed.title)]);
     if (result) {
