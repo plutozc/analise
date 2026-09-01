@@ -1,51 +1,5 @@
 [
   {
-    "date": "2026-08-24",
-    "title": "网络运维Agent多向量对抗攻击面扩展与纵深防御体系深化",
-    "keywords": [
-      "网络运维AI Agent/自治运维系统",
-      "LLM Agent攻击: 间接提示注入 + 注意力偏好重定向"
-    ],
-    "evidence_titles": [
-      "Toward Metacognitive One-Shot Indirect Prompt Injection: Strategy Abstraction Via Outcome-Conditioned Reflection",
-      "Preference Redirection via Attention Concentration: An Attack on Computer Use Agents"
-    ]
-  },
-  {
-    "date": "2026-08-24",
-    "title": "LTL时序逻辑结构化RL零样本指令泛化对网络意图编排启示",
-    "keywords": [
-      "SDN控制器/意图驱动网络(IBN)/网络策略编排",
-      "强化学习 + 线性时序逻辑(LTL)形式化规约"
-    ],
-    "evidence_titles": [
-      "Zero-Shot Instruction Following in RL via Structured LTL Representations"
-    ]
-  },
-  {
-    "date": "2026-08-24",
-    "title": "Cisco AgenticOps富遥测驱动网络自治运维范式收敛信号",
-    "keywords": [
-      "网络遥测/网络可观测性/运维自动化",
-      "AI Agent",
-      "Agentic AI驱动保障"
-    ],
-    "evidence_titles": [
-      "Monitoring beyond SNMP: Turning your network into a sensor (Cisco Blogs)"
-    ]
-  },
-  {
-    "date": "2026-08-24",
-    "title": "LLM驱动安全测试误报记忆演化学习对网络告警降噪启示",
-    "keywords": [
-      "网络入侵检测(IDS/IPS)/安全运维中心(SOC)",
-      "LLM驱动误报模式学习与形式化验证"
-    ],
-    "evidence_titles": [
-      "Memoir: Learning, Verifying, and Evolving False-Positive Memories for Static Application Security Testing Tools"
-    ]
-  },
-  {
     "date": "2026-08-26",
     "title": "LLM推理分解式架构调度演进对AI集群网络编排启示",
     "keywords": [
@@ -363,6 +317,63 @@
     ],
     "evidence_titles": [
       "CyberFactory: Scaling Cyber Security Capabilities with Instances from the Wild"
+    ]
+  },
+  {
+    "date": "2026-09-01",
+    "title": "欧洲电信Agentic运维三巨头格局初现加速自治网络标准收敛",
+    "keywords": [
+      "光网络",
+      "自治网络",
+      "电信运维编排",
+      "Agentic AI",
+      "自主决策Agent链"
+    ],
+    "evidence_titles": [
+      "Bringing agentic operations to optical networks - Nokia",
+      "The Power of Co-Innovation for AgenticOps and Autonomous Networks - Cisco"
+    ]
+  },
+  {
+    "date": "2026-09-01",
+    "title": "LLM推理解耦从系统级走向Block级注意力前馈并发新架构",
+    "keywords": [
+      "AI集群互联网络",
+      "解耦推理节点间通信",
+      "LLM推理架构优化",
+      "Attention-FFN解耦并发"
+    ],
+    "evidence_titles": [
+      "Q-First: Attention and Feed-Forward Concurrency at the Smallest Change to the Block",
+      "Analytical Provisioning for Attention-FFN Disaggregated LLM Serving under Stochastic Workloads"
+    ]
+  },
+  {
+    "date": "2026-09-01",
+    "title": "LLM程序进化自动发现缓存策略对网络策略自动合成启示",
+    "keywords": [
+      "网络策略合成",
+      "可编程数据面",
+      "LLM引导程序进化",
+      "生物反馈控制"
+    ],
+    "evidence_titles": [
+      "Discovering KV Cache Eviction Policies via LLM-Guided Program Evolution",
+      "A Biophysically-Inspired Feedback Controller for Multi-Class Cache Fairness"
+    ]
+  },
+  {
+    "date": "2026-09-01",
+    "title": "Prefill压力调度与稀疏量化协同优化长上下文推理服务效率",
+    "keywords": [
+      "AI推理集群",
+      "RoCE网络流量",
+      "LLM推理调度",
+      "稀疏-稠密融合量化"
+    ],
+    "evidence_titles": [
+      "P-PAS: Prefill-Pressure Adaptive Scheduling for Long-Context LLM Serving",
+      "FlashQuant: Sparse-Dense Fusion for Memory-Efficient Outlier-Aware LLM Inference"
     ]
   }
 ]
