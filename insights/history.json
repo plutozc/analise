@@ -375,5 +375,59 @@
       "P-PAS: Prefill-Pressure Adaptive Scheduling for Long-Context LLM Serving",
       "FlashQuant: Sparse-Dense Fusion for Memory-Efficient Outlier-Aware LLM Inference"
     ]
+  },
+  {
+    "date": "2026-09-02",
+    "title": "欧洲电信三巨头Agentic运维竞合加速自治网络标准收敛",
+    "keywords": [
+      "光网络",
+      "5G RAN",
+      "自治网络",
+      "Agentic AI",
+      "AI调度"
+    ],
+    "evidence_titles": [
+      "Nokia Bringing agentic operations to optical networks",
+      "Cisco AgenticOps and Autonomous Networks获TM Forum Moonshot Catalyst大奖",
+      "SoftBank and Ericsson test AI scheduler on live Japan 5G network"
+    ]
+  },
+  {
+    "date": "2026-09-02",
+    "title": "GPU Scale-Up域同步开销量化揭示AI集群互联带宽与规模张力",
+    "keywords": [
+      "GPU集群互联网络",
+      "collective communication",
+      "无（网络系统×AI基础设施交叉）"
+    ],
+    "evidence_titles": [
+      "Understanding the Synchronization Tax in GPU Scale-Up Domains"
+    ]
+  },
+  {
+    "date": "2026-09-02",
+    "title": "神经组合求解器突破5G密集组网大规模PCI分配优化瓶颈",
+    "keywords": [
+      "5G RAN",
+      "PCI物理小区标识分配",
+      "干扰管理",
+      "神经组合优化",
+      "分解-求解架构"
+    ],
+    "evidence_titles": [
+      "Congruence Decomposition with Neural Block Solvers for Large-Scale PCI Assignment"
+    ]
+  },
+  {
+    "date": "2026-09-02",
+    "title": "可编程交换机网内计算形式化验证填补数据面正确性保障空白",
+    "keywords": [
+      "可编程交换机",
+      "网内计算数据面",
+      "无"
+    ],
+    "evidence_titles": [
+      "VeriNC: Finding Design Risks of In-Network Computing Systems"
+    ]
   }
 ]
