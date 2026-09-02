@@ -9,7 +9,8 @@ const ROOT = join(__dirname, "..", "..");
 const NEWS_RETAIN_DAYS = 60;
 const SIGNALS_RETAIN_DAYS = 90;
 const LOG_RETAIN_DAYS = 7;
-const BULLETIN_LOCAL_RETAIN_DAYS = 90;
+const BULLETIN_LOCAL_RETAIN_DAYS = 7;
+const BULLETIN_DB_RETAIN_DAYS = 7;
 
 export async function runCleanup(): Promise<{ newsDeleted: number; signalsDeleted: number; logsCleared: boolean }> {
   const result = { newsDeleted: 0, signalsDeleted: 0, logsCleared: false };
@@ -48,10 +49,22 @@ export async function runCleanup(): Promise<{ newsDeleted: number; signalsDelete
     console.warn("[cleanup] log cleanup failed:", e instanceof Error ? e.message : e);
   }
 
+  const bulletinCutoff = new Date(Date.now() - BULLETIN_DB_RETAIN_DAYS * 86400_000).toISOString();
+  const { count: bulCount, error: bulErr } = await supabase
+    .from("news_bulletins")
+    .delete({ count: "exact" })
+    .lt("created_at", bulletinCutoff);
+  if (bulErr) {
+    console.error("[cleanup] news_bulletins delete failed:", bulErr.message);
+  } else {
+    console.log(`[cleanup] news_bulletins: deleted ${bulCount ?? 0} rows older than ${BULLETIN_DB_RETAIN_DAYS}d`);
+  }
+
   try {
     const bulletinsDir = join(ROOT, "bulletins");
     execSync(`find "${bulletinsDir}" -name "*.md" -mtime +${BULLETIN_LOCAL_RETAIN_DAYS} -delete 2>/dev/null || true`, { encoding: "utf-8" });
-    console.log(`[cleanup] bulletins local: cleared files older than ${BULLETIN_LOCAL_RETAIN_DAYS}d`);
+    execSync(`cd "${bulletinsDir}" && git add -A && git diff --cached --quiet || git commit -m "cleanup: remove bulletins older than ${BULLETIN_LOCAL_RETAIN_DAYS}d" && git push`, { encoding: "utf-8" });
+    console.log(`[cleanup] bulletins: cleared files older than ${BULLETIN_LOCAL_RETAIN_DAYS}d (local + remote)`);
   } catch (e) {
     console.warn("[cleanup] bulletin cleanup failed:", e instanceof Error ? e.message : e);
   }
