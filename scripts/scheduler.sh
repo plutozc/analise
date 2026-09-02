@@ -123,7 +123,7 @@ run_bulletin_aggregate() {
     log "Sleep ${delay}s until next bulletin-aggregate at $hhmm..."
     sleep "$delay"
     run_task "bulletin"
-    (cd bulletins && git add -A && git commit -m "bulletin $(date '+%Y-%m-%d %H:%M')" && git push && log "OK: bulletin pushed to bulletins repo") || true
+    (cd bulletins && git pull --rebase 2>/dev/null; git add -A && git commit -m "bulletin $(date '+%Y-%m-%d %H:%M')" && git push && log "OK: bulletin pushed to bulletins repo") || true
     sleep 1
   done
 }
