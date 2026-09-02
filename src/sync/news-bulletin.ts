@@ -18,13 +18,16 @@ const KEY_VENDORS = new Set([
 
 // Urgent event keywords
 const EVENT_KEYWORDS =
-  /财报|earnings|revenue|收购|acqui|merger|发布|launch|release|投资|capex|capital\s*expend|破纪录|record|数据中心|data\s*center|交换机|switch|路由器|router|芯片|chip|asic|gpu|rdma|roce|5g|6g|ran\b|oran|ai\s*infra|算力|hbm|液冷|cooling|dpu|smartnic|大模型|llm|glm|gpt|claude|开源模型|open.?source.*model|ai\s*agent|推理引擎|inference|训练框架|training|sdk|api|平台|platform|自动化|automat|编排|orchestrat|ansible|terraform|kubernetes|k8s/i;
+  /财报|earnings|revenue|收购|acqui|merger|发布|launch|release|投资|capex|capital\s*expend|破纪录|record|数据中心|data\s*center|交换机|switch|路由器|router|芯片|chip|asic|gpu|rdma|roce|5g|6g|ran\b|oran|ai\s*infra|算力|hbm|液冷|cooling|dpu|smartnic|大模型|llm|glm|gpt|claude|开源模型|open.?source.*model|ai\s*agent|推理引擎|inference|训练框架|training|sdk|api|平台|platform|自动化|automat|编排|orchestrat|ansible|terraform|kubernetes|k8s|hot\s*chips|sigcomm|nsdi|ofc|mwc|computex|cebit|interop|ecoc|isca|micro|hpca|asplos|sosp|osdi|infocom|conext|imc|summit|keynote|峰会|大会|conference|研讨会|symposium/i;
 
 const SOFTWARE_KEYWORDS =
   /大模型|llm|glm|gpt|claude|开源模型|sdk|api|ai\s*agent|推理引擎|inference|训练框架|training|自动化|automat|编排|orchestrat|ansible|terraform|kubernetes|k8s|平台|platform|发布.*版本|release.*version/i;
 
 const CLOUD_CAPEX_KEYWORDS =
   /云.*营收|cloud.*revenue|季度.*财报|quarterly.*earning|capex.*增长|capex.*grow|资本支出.*增|capital.*expend|云.*市场份额|cloud.*market\s*share/i;
+
+const CONFERENCE_KEYWORDS =
+  /hot\s*chips|sigcomm|nsdi|ofc|mwc|computex|cebit|interop|ecoc|isca|micro|hpca|asplos|sosp|osdi|infocom|conext|imc|summit|keynote|峰会|大会|conference|研讨会|symposium/i;
 
 // Score whether a news item is in scope (data-comm + AI infra)
 function isInScope(title: string, snippet: string | null, companies: string[]): boolean {
@@ -172,9 +175,13 @@ function isAggregateWorthy(cluster: EventCluster): boolean {
   const hasKeyword = EVENT_KEYWORDS.test(text);
   const hasSoftware = SOFTWARE_KEYWORDS.test(text);
   const isCloudCapex = CLOUD_CAPEX_KEYWORDS.test(text);
+  const isConference = CONFERENCE_KEYWORDS.test(text);
 
   // Track high-relevance university, lab, conference, and paper advances too.
   if (cluster.items.some(isAcademicRow) && maxScore >= 8) return true;
+
+  // Conference results: lower threshold — score>=6 AND (cov>=2 OR key vendor)
+  if (isConference && maxScore >= 6 && (coverageTotal >= 2 || hasKeyVendor)) return true;
 
   // Cloud capex/revenue: raise threshold — needs score>=9 AND cov>=5
   if (isCloudCapex && !hasSoftware) {
@@ -210,7 +217,7 @@ function buildBulletinPrompt(
 
   return `你是数通产业和AI基础设施领域的资深分析师。请基于以下单一事件生成一篇产业快讯。
 
-领域范围：数据通信（路由器/交换机/DPU/SmartNIC/防火墙/SD-WAN）+ AI基础设施（GPU/ASIC/数据中心/算力集群/液冷）+ AI芯片 + 云厂商Capex，以及高校、科研院所、顶级学术会议和高相关论文的研究进展。
+领域范围：数据通信（路由器/交换机/DPU/SmartNIC/防火墙/SD-WAN）+ AI基础设施（GPU/ASIC/数据中心/算力集群/液冷）+ AI芯片 + 云厂商Capex，以及行业峰会/技术大会（Hot Chips、SIGCOMM、OFC、MWC、Computex等）成果发布、高校科研院所和高相关论文的研究进展。
 不包含：光模块、CPO/NPO、光互联、光纤等光通信领域。如事件主要涉及光通信则返回"SKIP"。
 目标读者：华为数通产业相关决策者
 
@@ -400,7 +407,7 @@ async function saveBulletinToDB(
 
 // ─── Public API ───────────────────────────────────────────────────
 
-const MAX_BULLETINS_PER_RUN = 5;
+const MAX_BULLETINS_PER_RUN = 10;
 
 async function generateForCluster(
   cluster: EventCluster,
@@ -503,12 +510,6 @@ export async function generateAggregateBulletin(): Promise<{ generated: boolean;
 export async function checkUrgentBulletin(): Promise<{ generated: boolean; title: string }> {
   console.log("[bulletin] Checking for urgent events...");
 
-  const todayCount = await countTodayBulletins("urgent");
-  if (todayCount >= 1) {
-    console.log("[bulletin] Already generated 1 urgent bulletin today, skipping");
-    return { generated: false, title: "" };
-  }
-
   const news = await fetchCandidateNews(1);
   const inScope = news.filter(n => isInScope(n.title, n.snippet, n.companies));
 
@@ -536,16 +537,19 @@ export async function checkUrgentBulletin(): Promise<{ generated: boolean; title
     return { generated: false, title: "" };
   }
 
-  const top = uncovered[0];
-  console.log(`[bulletin] Urgent event: ${top.representative.title} (cov=${top.coverageTotal}, score=${top.maxScore})`);
+  const titles = recentBulletins.map(b => b.title);
+  let lastTitle = "";
+  for (const cluster of uncovered) {
+    console.log(`[bulletin] Urgent event: ${cluster.representative.title} (cov=${cluster.coverageTotal}, score=${cluster.maxScore})`);
+    const result = await generateForCluster(cluster, titles);
+    if (!result) continue;
+    writeUrgentBulletinFile(result.parsed);
+    await saveBulletinToDB(result.parsed, result.sourceIds, "urgent");
+    titles.push(result.parsed.title);
+    lastTitle = result.parsed.title;
+  }
 
-  const result = await generateForCluster(top, recentBulletins.map(b => b.title));
-  if (!result) return { generated: false, title: "" };
-
-  writeUrgentBulletinFile(result.parsed);
-  await saveBulletinToDB(result.parsed, result.sourceIds, "urgent");
-
-  return { generated: true, title: result.parsed.title };
+  return { generated: lastTitle !== "", title: lastTitle };
 }
 
 export async function generateFallbackBulletin(): Promise<{ generated: boolean; title: string }> {
