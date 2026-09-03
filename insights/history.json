@@ -1,60 +1,5 @@
 [
   {
-    "date": "2026-08-26",
-    "title": "LLM推理分解式架构调度演进对AI集群网络编排启示",
-    "keywords": [
-      "AI推理集群RoCE/RDMA互联网络",
-      "存算分离数据面",
-      "LLM推理调度",
-      "反馈控制",
-      "解析容量规划"
-    ],
-    "evidence_titles": [
-      "P-PAS: Prefill-Pressure Adaptive Scheduling for Long-Context LLM Serving",
-      "Q-First: Attention and Feed-Forward Concurrency at the Smallest Change to the Block",
-      "Analytical Provisioning for Attention-FFN Disaggregated LLM Serving under Stochastic Workloads",
-      "A Biophysically-Inspired Feedback Controller for Multi-Class Cache Fairness"
-    ]
-  },
-  {
-    "date": "2026-08-26",
-    "title": "有状态Agentic RL训练容错快照对AI集群弹性网络启示",
-    "keywords": [
-      "AI训练集群网络",
-      "GPU-环境容器间通信链路",
-      "Agentic RL",
-      "有状态容错快照回滚"
-    ],
-    "evidence_titles": [
-      "Belayer: Efficient Fault Tolerance for LLM Agentic RL Training"
-    ]
-  },
-  {
-    "date": "2026-08-26",
-    "title": "Cisco富遥测传感化网络驱动AgenticOps范式持续深化",
-    "keywords": [
-      "网络遥测数据面",
-      "SNMP替代协议栈",
-      "AI驱动网络保障",
-      "Agent自治决策"
-    ],
-    "evidence_titles": [
-      "Monitoring beyond SNMP: Turning your network into a sensor"
-    ]
-  },
-  {
-    "date": "2026-08-26",
-    "title": "稀疏稠密融合离群值感知量化对网络侧推理部署深化",
-    "keywords": [
-      "网络设备侧AI推理引擎",
-      "离群值感知混合精度量化",
-      "稀疏稠密融合推理"
-    ],
-    "evidence_titles": [
-      "FlashQuant: Sparse-Dense Fusion for Memory-Efficient Outlier-Aware LLM Inference"
-    ]
-  },
-  {
     "date": "2026-08-27",
     "title": "Nokia Agentic运维向光网络延伸推动自动驾驶光网范式演进",
     "keywords": [
@@ -428,6 +373,65 @@
     ],
     "evidence_titles": [
       "VeriNC: Finding Design Risks of In-Network Computing Systems"
+    ]
+  },
+  {
+    "date": "2026-09-03",
+    "title": "Nokia光网络Agentic运维与Cisco治理架构双线扩展自治网络版图",
+    "keywords": [
+      "光网络",
+      "自治网络",
+      "运维编排",
+      "AI Agent",
+      "Agentic运维"
+    ],
+    "evidence_titles": [
+      "Bringing agentic operations to optical networks - Nokia",
+      "The Power of Co-Innovation for AgenticOps and Autonomous Networks - Cisco Blogs"
+    ]
+  },
+  {
+    "date": "2026-09-03",
+    "title": "Ericsson联合SoftBank 5G实网AI调度器验证推动RAN智能闭环产业化",
+    "keywords": [
+      "RAN",
+      "5G",
+      "RIC",
+      "PCI分配",
+      "AI调度",
+      "神经组合优化求解器"
+    ],
+    "evidence_titles": [
+      "SoftBank and Ericsson test AI scheduler on live Japan 5G network",
+      "Congruence Decomposition with Neural Block Solvers for Large-Scale PCI Assignment"
+    ]
+  },
+  {
+    "date": "2026-09-03",
+    "title": "图增强多Agent强化学习突破Kubernetes多目标调度对云原生网络启示",
+    "keywords": [
+      "云原生网络",
+      "容器编排",
+      "集群拓扑",
+      "多Agent强化学习",
+      "图神经网络"
+    ],
+    "evidence_titles": [
+      "Agentic-Kube: A Graph-Enhanced Multi-Agent Reinforcement Learning Framework for Multi-Objective Kubernetes Scheduling"
+    ]
+  },
+  {
+    "date": "2026-09-03",
+    "title": "LLM推理集群功率弹性调度应对数据中心需求响应能源新约束",
+    "keywords": [
+      "AI推理集群",
+      "DPU",
+      "数据中心网络",
+      "LLM推理优化",
+      "阶段感知调度"
+    ],
+    "evidence_titles": [
+      "PowerSlider: Exploiting Phase Asymmetry for LLM Serving under Demand Response"
     ]
   }
 ]
