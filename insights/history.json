@@ -1,50 +1,5 @@
 [
   {
-    "date": "2026-08-27",
-    "title": "Nokia Agentic运维向光网络延伸推动自动驾驶光网范式演进",
-    "keywords": [
-      "光传输网络",
-      "DWDM光路径",
-      "光网络控制面",
-      "Agentic AI",
-      "闭环自治决策"
-    ],
-    "evidence_titles": [
-      "Bringing agentic operations to optical networks - Nokia"
-    ]
-  },
-  {
-    "date": "2026-08-27",
-    "title": "LLM推理Attention-FFN并行解耦与Prefill压力调度协同演进",
-    "keywords": [
-      "AI集群互联网络",
-      "RoCE/RDMA通信",
-      "解耦推理节点间数据面",
-      "LLM推理架构优化",
-      "解耦式serving"
-    ],
-    "evidence_titles": [
-      "Q-First: Attention and Feed-Forward Concurrency at the Smallest Change to the Block",
-      "P-PAS: Prefill-Pressure Adaptive Scheduling for Long-Context LLM Serving",
-      "Analytical Provisioning for Attention-FFN Disaggregated LLM Serving under Stochastic Workloads"
-    ]
-  },
-  {
-    "date": "2026-08-27",
-    "title": "LLM引导KV Cache策略自动进化与多类缓存公平反馈控制",
-    "keywords": [
-      "推理服务集群内存资源",
-      "多租户推理服务数据面",
-      "LLM引导程序进化",
-      "生物启发反馈控制",
-      "自适应淘汰策略"
-    ],
-    "evidence_titles": [
-      "Discovering KV Cache Eviction Policies via LLM-Guided Program Evolution",
-      "A Biophysically-Inspired Feedback Controller for Multi-Class Cache Fairness"
-    ]
-  },
-  {
     "date": "2026-08-28",
     "title": "Ericsson AI调度器5G实网验证加速RAN智能控制产业收敛",
     "keywords": [
@@ -432,6 +387,58 @@
     ],
     "evidence_titles": [
       "PowerSlider: Exploiting Phase Asymmetry for LLM Serving under Demand Response"
+    ]
+  },
+  {
+    "date": "2026-09-04",
+    "title": "零知识证明赋能网络多智能体跨协议可验证信任机制",
+    "keywords": [
+      "跨协议网关",
+      "QUIC",
+      "RAN/RIC接口",
+      "多智能体系统",
+      "零知识证明"
+    ],
+    "evidence_titles": [
+      "Zero-Knowledge Predicate Proofs Between AI Agents: A Measured, Cross-Protocol Gateway and the Source-Integrity Gap"
+    ]
+  },
+  {
+    "date": "2026-09-04",
+    "title": "分割联邦大模型微调揭示端云协同深度与性能核心张力",
+    "keywords": [
+      "端云协同通信链路",
+      "边缘网络节点",
+      "联邦学习",
+      "LLM微调",
+      "模型深度分割"
+    ],
+    "evidence_titles": [
+      "Unveiling the Depth-Performance Dilemma in Split-Federated Fine-tuning of LLMs"
+    ]
+  },
+  {
+    "date": "2026-09-04",
+    "title": "JIT编译LLM推理故障注入攻击暴露AI服务安全盲区",
+    "keywords": [
+      "云端AI推理服务集群",
+      "LLM推理优化"
+    ],
+    "evidence_titles": [
+      "JITterFlip: Uncovering Fault Attack Surfaces in JIT-Compiled LLM Serving"
+    ]
+  },
+  {
+    "date": "2026-09-04",
+    "title": "边缘AI微服务预测式弹性伸缩与模型热切换联合优化",
+    "keywords": [
+      "边缘计算节点",
+      "微服务网络",
+      "预测式资源调度",
+      "多模型动态选择"
+    ],
+    "evidence_titles": [
+      "PRISM: Predictive Runtime In-place Scaling and Model Selection for Edge Microservices"
     ]
   }
 ]
