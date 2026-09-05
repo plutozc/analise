@@ -1,58 +1,5 @@
 [
   {
-    "date": "2026-08-28",
-    "title": "Ericsson AI调度器5G实网验证加速RAN智能控制产业收敛",
-    "keywords": [
-      "5G RAN无线调度器",
-      "AI调度优化（具体算法待公开）"
-    ],
-    "evidence_titles": [
-      "SoftBank and Ericsson test AI scheduler on live Japan 5G network"
-    ]
-  },
-  {
-    "date": "2026-08-28",
-    "title": "LLM推理解耦架构从并行设计走向随机负载自适应调度",
-    "keywords": [
-      "AI集群网络",
-      "RoCE/IB互联fabric",
-      "LLM推理服务调度",
-      "排队论建模"
-    ],
-    "evidence_titles": [
-      "P-PAS: Prefill-Pressure Adaptive Scheduling for Long-Context LLM Serving",
-      "Q-First: Attention and Feed-Forward Concurrency at the Smallest Change to the Block",
-      "Analytical Provisioning for Attention-FFN Disaggregated LLM Serving under Stochastic Workloads"
-    ]
-  },
-  {
-    "date": "2026-08-28",
-    "title": "Agentic算子自动生成范式对网络可编程数据面合成启示",
-    "keywords": [
-      "可编程数据面（P4交换机",
-      "eBPF/XDP）",
-      "AI Agent代码生成",
-      "搜索式程序合成"
-    ],
-    "evidence_titles": [
-      "Agentic Kernel Optimization: Generating State-of-the-Art GPU Kernels Without Hand-Written CUDA"
-    ]
-  },
-  {
-    "date": "2026-08-28",
-    "title": "KV Cache进化搜索与多类公平反馈控制协同深化演进",
-    "keywords": [
-      "AI推理服务集群",
-      "网络QoS队列调度（类比）",
-      "LLM引导程序进化搜索",
-      "生物启发反馈控制"
-    ],
-    "evidence_titles": [
-      "Discovering KV Cache Eviction Policies via LLM-Guided Program Evolution",
-      "A Biophysically-Inspired Feedback Controller for Multi-Class Cache Fairness"
-    ]
-  },
-  {
     "date": "2026-08-29",
     "title": "LLM长上下文Prefill压力感知调度对AI集群网络流量整形启示",
     "keywords": [
@@ -439,6 +386,49 @@
     ],
     "evidence_titles": [
       "PRISM: Predictive Runtime In-place Scaling and Model Selection for Edge Microservices"
+    ]
+  },
+  {
+    "date": "2026-09-05",
+    "title": "TM Forum催化奖推动Agentic网络运维标准产业共识",
+    "keywords": [
+      "自治网络运维",
+      "光网络",
+      "跨厂商网络编排",
+      "Agentic AI",
+      "多Agent协作"
+    ],
+    "evidence_titles": [
+      "The Power of Co-Innovation for AgenticOps and Autonomous Networks",
+      "Bringing agentic operations to optical networks - Nokia"
+    ]
+  },
+  {
+    "date": "2026-09-05",
+    "title": "隐私保护端云LLM推理嵌入传输揭示网络效率与隐私张力",
+    "keywords": [
+      "端云网络通信",
+      "边缘-云数据传输链路",
+      "LLM",
+      "RAG",
+      "嵌入向量隐私保护"
+    ],
+    "evidence_titles": [
+      "Privacy-Preserving LLM Embedding Transmission for End-Cloud Collaboration"
+    ]
+  },
+  {
+    "date": "2026-09-05",
+    "title": "跨组织多Agent可审计治理框架对电信多域自治网络启示",
+    "keywords": [
+      "多域自治网络",
+      "跨运营商Agent互操作",
+      "多Agent系统",
+      "Agent行为审计"
+    ],
+    "evidence_titles": [
+      "JustAct: A Framework for Auditable Multi-Agent Systems Regulated by Inter-Organisational Policies",
+      "CatchBench: When Can an Agent Failure Be Caught?"
     ]
   }
 ]
