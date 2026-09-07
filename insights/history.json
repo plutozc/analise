@@ -1,65 +1,5 @@
 [
   {
-    "date": "2026-08-30",
-    "title": "欧洲电信Agentic运维双线深化：RAN调度与光网自治并进",
-    "keywords": [
-      "5G RAN",
-      "光传送网络",
-      "网络运维系统",
-      "AI调度器",
-      "Agentic AI运维闭环"
-    ],
-    "evidence_titles": [
-      "SoftBank and Ericsson test AI scheduler on live Japan 5G network",
-      "Bringing agentic operations to optical networks - Nokia"
-    ]
-  },
-  {
-    "date": "2026-08-30",
-    "title": "LLM推理解耦全栈协同：量化×并行×调度三层联动设计",
-    "keywords": [
-      "AI集群网络拓扑",
-      "节点间RoCE/RDMA互联",
-      "流量调度",
-      "LLM推理量化",
-      "注意力-FFN解耦并行",
-      "负载建模"
-    ],
-    "evidence_titles": [
-      "Q-First: Attention and Feed-Forward Concurrency at the Smallest Change to the Block",
-      "FlashQuant: Sparse-Dense Fusion for Memory-Efficient Outlier-Aware LLM Inference",
-      "Analytical Provisioning for Attention-FFN Disaggregated LLM Serving under Stochastic Workloads",
-      "P-PAS: Prefill-Pressure Adaptive Scheduling for Long-Context LLM Serving"
-    ]
-  },
-  {
-    "date": "2026-08-30",
-    "title": "LLM缓存自动演化搜索与多租户公平控制闭环新证据",
-    "keywords": [
-      "AI推理服务缓存系统",
-      "多租户服务质量保障",
-      "LLM引导程序演化搜索",
-      "生物物理反馈控制建模"
-    ],
-    "evidence_titles": [
-      "Discovering KV Cache Eviction Policies via LLM-Guided Program Evolution",
-      "A Biophysically-Inspired Feedback Controller for Multi-Class Cache Fairness"
-    ]
-  },
-  {
-    "date": "2026-08-30",
-    "title": "Agentic代码合成突破GPU算子SOTA对网络可编程面启示",
-    "keywords": [
-      "可编程数据面(eBPF/XDP/P4)",
-      "网络功能代码自动合成",
-      "Agentic AI",
-      "LLM代码生成Agent"
-    ],
-    "evidence_titles": [
-      "Agentic Kernel Optimization: Generating State-of-the-Art GPU Kernels Without Hand-Written CUDA"
-    ]
-  },
-  {
     "date": "2026-08-31",
     "title": "LLM推理解耦全栈走向解析建模：排队论与自适应调度新证据",
     "keywords": [
@@ -435,6 +375,58 @@
     "evidence_titles": [
       "JustAct: A Framework for Auditable Multi-Agent Systems Regulated by Inter-Organisational Policies (v4)",
       "CatchBench: When Can an Agent Failure Be Caught?"
+    ]
+  },
+  {
+    "date": "2026-09-07",
+    "title": "神经组合优化求解器突破大规模5G PCI分配计算瓶颈",
+    "keywords": [
+      "5G RAN物理小区标识(PCI)分配",
+      "神经组合优化求解器",
+      "分解式神经块求解"
+    ],
+    "evidence_titles": [
+      "Congruence Decomposition with Neural Block Solvers for Large-Scale PCI Assignment"
+    ]
+  },
+  {
+    "date": "2026-09-07",
+    "title": "GPU扩展域同步开销揭示AI集群互联规模核心张力",
+    "keywords": [
+      "AI集群GPU互联网络",
+      "集合通信",
+      "分布式训练基础设施优化"
+    ],
+    "evidence_titles": [
+      "Understanding the Synchronization Tax in GPU Scale-Up Domains"
+    ]
+  },
+  {
+    "date": "2026-09-07",
+    "title": "网内计算系统形式化验证保障可编程数据面设计正确性",
+    "keywords": [
+      "可编程交换机",
+      "网内计算(INC)数据面",
+      "无"
+    ],
+    "evidence_titles": [
+      "VeriNC: Finding Design Risks of In-Network Computing Systems"
+    ]
+  },
+  {
+    "date": "2026-09-07",
+    "title": "Agent记忆阶段风险分析深化长程智能体纵深安全体系",
+    "keywords": [
+      "网络管理Agent",
+      "自治网络智能体",
+      "LLM Agent长期记忆",
+      "提示注入防御",
+      "能力图可达性分析"
+    ],
+    "evidence_titles": [
+      "Understanding Stage-Wise Utility-Risk Trade-offs in LLM Agent Memory",
+      "ECLIPSE: Self-Evolving Stealthy Prompt Injection Attack against Long-Horizon Agentic Systems",
+      "Reachability-Based Capability Confinement for LLM Agents under Indirect Prompt Injection"
     ]
   }
 ]
