@@ -1,65 +1,5 @@
 [
   {
-    "date": "2026-08-31",
-    "title": "LLM推理解耦全栈走向解析建模：排队论与自适应调度新证据",
-    "keywords": [
-      "AI集群互联网络（RoCE/RDMA）",
-      "Attention-FFN节点间通信链路",
-      "LLM推理优化",
-      "排队论建模",
-      "自适应调度"
-    ],
-    "evidence_titles": [
-      "P-PAS: Prefill-Pressure Adaptive Scheduling for Long-Context LLM Serving",
-      "Q-First: Attention and Feed-Forward Concurrency at the Smallest Change to the Block",
-      "Analytical Provisioning for Attention-FFN Disaggregated LLM Serving under Stochastic Workloads"
-    ]
-  },
-  {
-    "date": "2026-08-31",
-    "title": "生物启发反馈控制论引入多租户KV Cache公平调度新范式",
-    "keywords": [
-      "LLM推理服务集群",
-      "多租户推理资源池",
-      "反馈控制论",
-      "LLM引导进化搜索",
-      "缓存替换策略自动合成"
-    ],
-    "evidence_titles": [
-      "A Biophysically-Inspired Feedback Controller for Multi-Class Cache Fairness",
-      "Discovering KV Cache Eviction Policies via LLM-Guided Program Evolution"
-    ]
-  },
-  {
-    "date": "2026-08-31",
-    "title": "Agentic RL训练有状态容错机制对AI集群网络弹性设计启示",
-    "keywords": [
-      "AI训练集群网络",
-      "GPU-容器互联",
-      "checkpoint存储网络",
-      "Agentic RL",
-      "容错训练",
-      "状态回滚与恢复"
-    ],
-    "evidence_titles": [
-      "Belayer: Efficient Fault Tolerance for LLM Agentic RL Training"
-    ]
-  },
-  {
-    "date": "2026-08-31",
-    "title": "开源安全大模型工厂化训练范式深化网络威胁自动检测体系",
-    "keywords": [
-      "网络安全检测系统",
-      "入侵检测与防御系统（IDS/IPS）",
-      "LLM",
-      "Agentic AI",
-      "安全能力自动合成"
-    ],
-    "evidence_titles": [
-      "CyberFactory: Scaling Cyber Security Capabilities with Instances from the Wild"
-    ]
-  },
-  {
     "date": "2026-09-01",
     "title": "欧洲电信Agentic运维三巨头格局初现加速自治网络标准收敛",
     "keywords": [
@@ -427,6 +367,52 @@
       "Understanding Stage-Wise Utility-Risk Trade-offs in LLM Agent Memory",
       "ECLIPSE: Self-Evolving Stealthy Prompt Injection Attack against Long-Horizon Agentic Systems",
       "Reachability-Based Capability Confinement for LLM Agents under Indirect Prompt Injection"
+    ]
+  },
+  {
+    "date": "2026-09-08",
+    "title": "欧洲厂商竞推光网络智能体运维加速光域自治架构落地",
+    "keywords": [
+      "光传输网络/DWDM/OTN",
+      "AI Agent/Agentic运维/自治闭环"
+    ],
+    "evidence_titles": [
+      "Bringing agentic operations to optical networks - Nokia",
+      "The Power of Co-Innovation for AgenticOps and Autonomous Networks - Cisco"
+    ]
+  },
+  {
+    "date": "2026-09-08",
+    "title": "图增强多智能体强化学习突破云原生网络调度多目标瓶颈",
+    "keywords": [
+      "云原生容器网络/Kubernetes集群/CNF编排",
+      "多智能体强化学习（MARL）/图神经网络（GNN）"
+    ],
+    "evidence_titles": [
+      "Agentic-Kube: A Graph-Enhanced Multi-Agent Reinforcement Learning Framework for Multi-Objective Kubernetes Scheduling"
+    ]
+  },
+  {
+    "date": "2026-09-08",
+    "title": "自演化隐蔽注入与可达性能力约束推动网络Agent安全代际跃迁",
+    "keywords": [
+      "自治网络Agent/网络运维智能体",
+      "LLM Agent/提示注入攻防/可达性分析"
+    ],
+    "evidence_titles": [
+      "ECLIPSE: Self-Evolving Stealthy Prompt Injection Attack against Long-Horizon Agentic Systems",
+      "Reachability-Based Capability Confinement for LLM Agents under Indirect Prompt Injection"
+    ]
+  },
+  {
+    "date": "2026-09-08",
+    "title": "边缘AI推理服务运行时原位伸缩与模型动态选择联合决策",
+    "keywords": [
+      "边缘计算网络/MEC/边缘AI服务",
+      "预测式控制/模型选择优化"
+    ],
+    "evidence_titles": [
+      "PRISM: Predictive Runtime In-place Scaling and Model Selection for Edge Microservices"
     ]
   }
 ]
