@@ -1,62 +1,5 @@
 [
   {
-    "date": "2026-09-01",
-    "title": "欧洲电信Agentic运维三巨头格局初现加速自治网络标准收敛",
-    "keywords": [
-      "光网络",
-      "自治网络",
-      "电信运维编排",
-      "Agentic AI",
-      "自主决策Agent链"
-    ],
-    "evidence_titles": [
-      "Bringing agentic operations to optical networks - Nokia",
-      "The Power of Co-Innovation for AgenticOps and Autonomous Networks - Cisco"
-    ]
-  },
-  {
-    "date": "2026-09-01",
-    "title": "LLM推理解耦从系统级走向Block级注意力前馈并发新架构",
-    "keywords": [
-      "AI集群互联网络",
-      "解耦推理节点间通信",
-      "LLM推理架构优化",
-      "Attention-FFN解耦并发"
-    ],
-    "evidence_titles": [
-      "Q-First: Attention and Feed-Forward Concurrency at the Smallest Change to the Block",
-      "Analytical Provisioning for Attention-FFN Disaggregated LLM Serving under Stochastic Workloads"
-    ]
-  },
-  {
-    "date": "2026-09-01",
-    "title": "LLM程序进化自动发现缓存策略对网络策略自动合成启示",
-    "keywords": [
-      "网络策略合成",
-      "可编程数据面",
-      "LLM引导程序进化",
-      "生物反馈控制"
-    ],
-    "evidence_titles": [
-      "Discovering KV Cache Eviction Policies via LLM-Guided Program Evolution",
-      "A Biophysically-Inspired Feedback Controller for Multi-Class Cache Fairness"
-    ]
-  },
-  {
-    "date": "2026-09-01",
-    "title": "Prefill压力调度与稀疏量化协同优化长上下文推理服务效率",
-    "keywords": [
-      "AI推理集群",
-      "RoCE网络流量",
-      "LLM推理调度",
-      "稀疏-稠密融合量化"
-    ],
-    "evidence_titles": [
-      "P-PAS: Prefill-Pressure Adaptive Scheduling for Long-Context LLM Serving",
-      "FlashQuant: Sparse-Dense Fusion for Memory-Efficient Outlier-Aware LLM Inference"
-    ]
-  },
-  {
     "date": "2026-09-02",
     "title": "欧洲电信三巨头Agentic运维竞合加速自治网络标准收敛",
     "keywords": [
@@ -413,6 +356,55 @@
     ],
     "evidence_titles": [
       "PRISM: Predictive Runtime In-place Scaling and Model Selection for Edge Microservices"
+    ]
+  },
+  {
+    "date": "2026-09-09",
+    "title": "eBPF程序形式化验证自动迁移Rust推动网络数据面安全演进",
+    "keywords": [
+      "eBPF/XDP可编程网络数据面",
+      "无"
+    ],
+    "evidence_titles": [
+      "Heimdall: Formally Verified Automated Migration of Legacy eBPF Programs to Rust"
+    ]
+  },
+  {
+    "date": "2026-09-09",
+    "title": "零知识证明构建网络多Agent跨域可验证信任验证机制",
+    "keywords": [
+      "RIC/RAN多Agent自治网络",
+      "QUIC跨协议网关",
+      "AI Agent信任验证"
+    ],
+    "evidence_titles": [
+      "Zero-Knowledge Predicate Proofs Between AI Agents: A Measured, Cross-Protocol Gateway and the Source-Integrity Gap"
+    ]
+  },
+  {
+    "date": "2026-09-09",
+    "title": "脉冲神经网络重塑网络入侵检测能效与精度设计范式",
+    "keywords": [
+      "网络入侵检测系统(NIDS)",
+      "网络流量分析",
+      "脉冲神经网络(SNN)",
+      "脉冲编码",
+      "事件驱动推理"
+    ],
+    "evidence_titles": [
+      "The Value of Spike Timing: A Leakage-Resistant Benchmark of SNN Design Choices for Network Intrusion Detection"
+    ]
+  },
+  {
+    "date": "2026-09-09",
+    "title": "近数据处理动态调度突破MoE大模型推理集群数据搬移瓶颈",
+    "keywords": [
+      "AI集群RoCE/RDMA互联网络",
+      "MoE大模型推理",
+      "动态Expert调度"
+    ],
+    "evidence_titles": [
+      "DynaNDE: Dynamic Near-Data Expert Scheduling for Batched MoE Inference"
     ]
   }
 ]
