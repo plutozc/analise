@@ -1,59 +1,5 @@
 [
   {
-    "date": "2026-09-02",
-    "title": "欧洲电信三巨头Agentic运维竞合加速自治网络标准收敛",
-    "keywords": [
-      "光网络",
-      "5G RAN",
-      "自治网络",
-      "Agentic AI",
-      "AI调度"
-    ],
-    "evidence_titles": [
-      "Nokia Bringing agentic operations to optical networks",
-      "Cisco AgenticOps and Autonomous Networks获TM Forum Moonshot Catalyst大奖",
-      "SoftBank and Ericsson test AI scheduler on live Japan 5G network"
-    ]
-  },
-  {
-    "date": "2026-09-02",
-    "title": "GPU Scale-Up域同步开销量化揭示AI集群互联带宽与规模张力",
-    "keywords": [
-      "GPU集群互联网络",
-      "collective communication",
-      "无（网络系统×AI基础设施交叉）"
-    ],
-    "evidence_titles": [
-      "Understanding the Synchronization Tax in GPU Scale-Up Domains"
-    ]
-  },
-  {
-    "date": "2026-09-02",
-    "title": "神经组合求解器突破5G密集组网大规模PCI分配优化瓶颈",
-    "keywords": [
-      "5G RAN",
-      "PCI物理小区标识分配",
-      "干扰管理",
-      "神经组合优化",
-      "分解-求解架构"
-    ],
-    "evidence_titles": [
-      "Congruence Decomposition with Neural Block Solvers for Large-Scale PCI Assignment"
-    ]
-  },
-  {
-    "date": "2026-09-02",
-    "title": "可编程交换机网内计算形式化验证填补数据面正确性保障空白",
-    "keywords": [
-      "可编程交换机",
-      "网内计算数据面",
-      "无"
-    ],
-    "evidence_titles": [
-      "VeriNC: Finding Design Risks of In-Network Computing Systems"
-    ]
-  },
-  {
     "date": "2026-09-03",
     "title": "Nokia光网络Agentic运维与Cisco治理架构双线扩展自治网络版图",
     "keywords": [
@@ -405,6 +351,60 @@
     ],
     "evidence_titles": [
       "DynaNDE: Dynamic Near-Data Expert Scheduling for Batched MoE Inference"
+    ]
+  },
+  {
+    "date": "2026-09-10",
+    "title": "智能体运维驱动电信自治网络从架构愿景走向产业闭环",
+    "keywords": [
+      "自治网络",
+      "网络编排",
+      "跨域运维闭环",
+      "AI Agent",
+      "多智能体协同决策"
+    ],
+    "evidence_titles": [
+      "The Power of Co-Innovation for AgenticOps and Autonomous Networks"
+    ]
+  },
+  {
+    "date": "2026-09-10",
+    "title": "零知识跨协议网关闭合网络多Agent源完整性信任缺口",
+    "keywords": [
+      "QUIC协议",
+      "RAN",
+      "跨域网络网关",
+      "AI Agent",
+      "零知识证明"
+    ],
+    "evidence_titles": [
+      "Zero-Knowledge Predicate Proofs Between AI Agents: A Measured, Cross-Protocol Gateway and the Source-Integrity Gap"
+    ]
+  },
+  {
+    "date": "2026-09-10",
+    "title": "端云协同推理中LLM嵌入向量网络传输隐私保护机制",
+    "keywords": [
+      "端云网络传输链路",
+      "边缘推理节点",
+      "LLM",
+      "RAG检索增强生成",
+      "差分隐私"
+    ],
+    "evidence_titles": [
+      "Privacy-Preserving LLM Embedding Transmission for End-Cloud Collaboration"
+    ]
+  },
+  {
+    "date": "2026-09-10",
+    "title": "JIT编译推理服务故障注入攻击揭示AI部署硬件层安全盲区",
+    "keywords": [
+      "推理服务基础设施",
+      "GPU集群",
+      "LLM推理优化"
+    ],
+    "evidence_titles": [
+      "JITterFlip: Uncovering Fault Attack Surfaces in JIT-Compiled LLM Serving"
     ]
   }
 ]
