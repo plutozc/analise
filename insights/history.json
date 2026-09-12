@@ -1,116 +1,5 @@
 [
   {
-    "date": "2026-09-03",
-    "title": "Nokia光网络Agentic运维与Cisco治理架构双线扩展自治网络版图",
-    "keywords": [
-      "光网络",
-      "自治网络",
-      "运维编排",
-      "AI Agent",
-      "Agentic运维"
-    ],
-    "evidence_titles": [
-      "Bringing agentic operations to optical networks - Nokia",
-      "The Power of Co-Innovation for AgenticOps and Autonomous Networks - Cisco Blogs"
-    ]
-  },
-  {
-    "date": "2026-09-03",
-    "title": "Ericsson联合SoftBank 5G实网AI调度器验证推动RAN智能闭环产业化",
-    "keywords": [
-      "RAN",
-      "5G",
-      "RIC",
-      "PCI分配",
-      "AI调度",
-      "神经组合优化求解器"
-    ],
-    "evidence_titles": [
-      "SoftBank and Ericsson test AI scheduler on live Japan 5G network",
-      "Congruence Decomposition with Neural Block Solvers for Large-Scale PCI Assignment"
-    ]
-  },
-  {
-    "date": "2026-09-03",
-    "title": "图增强多Agent强化学习突破Kubernetes多目标调度对云原生网络启示",
-    "keywords": [
-      "云原生网络",
-      "容器编排",
-      "集群拓扑",
-      "多Agent强化学习",
-      "图神经网络"
-    ],
-    "evidence_titles": [
-      "Agentic-Kube: A Graph-Enhanced Multi-Agent Reinforcement Learning Framework for Multi-Objective Kubernetes Scheduling"
-    ]
-  },
-  {
-    "date": "2026-09-03",
-    "title": "LLM推理集群功率弹性调度应对数据中心需求响应能源新约束",
-    "keywords": [
-      "AI推理集群",
-      "DPU",
-      "数据中心网络",
-      "LLM推理优化",
-      "阶段感知调度"
-    ],
-    "evidence_titles": [
-      "PowerSlider: Exploiting Phase Asymmetry for LLM Serving under Demand Response"
-    ]
-  },
-  {
-    "date": "2026-09-04",
-    "title": "零知识证明赋能网络多智能体跨协议可验证信任机制",
-    "keywords": [
-      "跨协议网关",
-      "QUIC",
-      "RAN/RIC接口",
-      "多智能体系统",
-      "零知识证明"
-    ],
-    "evidence_titles": [
-      "Zero-Knowledge Predicate Proofs Between AI Agents: A Measured, Cross-Protocol Gateway and the Source-Integrity Gap"
-    ]
-  },
-  {
-    "date": "2026-09-04",
-    "title": "分割联邦大模型微调揭示端云协同深度与性能核心张力",
-    "keywords": [
-      "端云协同通信链路",
-      "边缘网络节点",
-      "联邦学习",
-      "LLM微调",
-      "模型深度分割"
-    ],
-    "evidence_titles": [
-      "Unveiling the Depth-Performance Dilemma in Split-Federated Fine-tuning of LLMs"
-    ]
-  },
-  {
-    "date": "2026-09-04",
-    "title": "JIT编译LLM推理故障注入攻击暴露AI服务安全盲区",
-    "keywords": [
-      "云端AI推理服务集群",
-      "LLM推理优化"
-    ],
-    "evidence_titles": [
-      "JITterFlip: Uncovering Fault Attack Surfaces in JIT-Compiled LLM Serving"
-    ]
-  },
-  {
-    "date": "2026-09-04",
-    "title": "边缘AI微服务预测式弹性伸缩与模型热切换联合优化",
-    "keywords": [
-      "边缘计算节点",
-      "微服务网络",
-      "预测式资源调度",
-      "多模型动态选择"
-    ],
-    "evidence_titles": [
-      "PRISM: Predictive Runtime In-place Scaling and Model Selection for Edge Microservices"
-    ]
-  },
-  {
     "date": "2026-09-05",
     "title": "TM Forum催化奖推动Agentic网络运维标准产业共识",
     "keywords": [
@@ -405,6 +294,63 @@
     ],
     "evidence_titles": [
       "JITterFlip: Uncovering Fault Attack Surfaces in JIT-Compiled LLM Serving"
+    ]
+  },
+  {
+    "date": "2026-09-12",
+    "title": "AgenticOps产业协同加速电信自治网络治理架构标准化",
+    "keywords": [
+      "自治网络",
+      "网络运维编排",
+      "LLM Agent",
+      "分层路由策略缓存"
+    ],
+    "evidence_titles": [
+      "The Power of Co-Innovation for AgenticOps and Autonomous Networks",
+      "TRIAGE: Three-level Routing and Intelligent Agent Guidance for Efficient Execution"
+    ]
+  },
+  {
+    "date": "2026-09-12",
+    "title": "可达性能力图谱为网络LLM智能体注入形式化安全约束",
+    "keywords": [
+      "RIC网络智能体",
+      "网络运维Agent",
+      "LLM Agent",
+      "可达性静态分析",
+      "对抗性提示注入"
+    ],
+    "evidence_titles": [
+      "Reachability-Based Capability Confinement for LLM Agents under Indirect Prompt Injection",
+      "ECLIPSE: Self-Evolving Stealthy Prompt Injection Attack against Long-Horizon Agentic Systems"
+    ]
+  },
+  {
+    "date": "2026-09-12",
+    "title": "NPU近数据处理动态专家调度突破MoE推理集群互联瓶颈",
+    "keywords": [
+      "RoCE集群互联网络",
+      "NPU间数据通路",
+      "MoE稀疏推理",
+      "近数据处理调度"
+    ],
+    "evidence_titles": [
+      "DynaNDE: Dynamic Near-Data Expert Scheduling for Batched MoE Inference"
+    ]
+  },
+  {
+    "date": "2026-09-12",
+    "title": "递归状态编码提升神经组合优化求解网络路由规划效率",
+    "keywords": [
+      "网络路由",
+      "路径规划",
+      "流量调度",
+      "神经组合优化(NCO)",
+      "递归状态编码",
+      "序列构造"
+    ],
+    "evidence_titles": [
+      "Recurrent State Encoders for Efficient Neural Combinatorial Optimization"
     ]
   }
 ]
