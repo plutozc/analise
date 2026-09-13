@@ -1,48 +1,5 @@
 [
   {
-    "date": "2026-09-05",
-    "title": "TM Forum催化奖推动Agentic网络运维标准产业共识",
-    "keywords": [
-      "自治网络运维",
-      "光网络",
-      "跨厂商网络编排",
-      "Agentic AI",
-      "多Agent协作"
-    ],
-    "evidence_titles": [
-      "The Power of Co-Innovation for AgenticOps and Autonomous Networks",
-      "Bringing agentic operations to optical networks - Nokia"
-    ]
-  },
-  {
-    "date": "2026-09-05",
-    "title": "隐私保护端云LLM推理嵌入传输揭示网络效率与隐私张力",
-    "keywords": [
-      "端云网络通信",
-      "边缘-云数据传输链路",
-      "LLM",
-      "RAG",
-      "嵌入向量隐私保护"
-    ],
-    "evidence_titles": [
-      "Privacy-Preserving LLM Embedding Transmission for End-Cloud Collaboration"
-    ]
-  },
-  {
-    "date": "2026-09-05",
-    "title": "跨组织多Agent可审计治理框架对电信多域自治网络启示",
-    "keywords": [
-      "多域自治网络",
-      "跨运营商Agent互操作",
-      "多Agent系统",
-      "Agent行为审计"
-    ],
-    "evidence_titles": [
-      "JustAct: A Framework for Auditable Multi-Agent Systems Regulated by Inter-Organisational Policies",
-      "CatchBench: When Can an Agent Failure Be Caught?"
-    ]
-  },
-  {
     "date": "2026-09-06",
     "title": "电信巨头Agentic运维从标准共识迈向实网双线验证",
     "keywords": [
@@ -351,6 +308,68 @@
     ],
     "evidence_titles": [
       "Recurrent State Encoders for Efficient Neural Combinatorial Optimization"
+    ]
+  },
+  {
+    "date": "2026-09-13",
+    "title": "长程网络智能体记忆投毒与能力边界约束攻防三维体系",
+    "keywords": [
+      "电信Agent运维系统",
+      "网络状态长期记忆",
+      "LLM Agent",
+      "提示注入攻击",
+      "可达性分析",
+      "记忆投毒量化"
+    ],
+    "evidence_titles": [
+      "ECLIPSE: Self-Evolving Stealthy Prompt Injection Attack against Long-Horizon Agentic Systems",
+      "Reachability-Based Capability Confinement for LLM Agents under Indirect Prompt Injection",
+      "Understanding Stage-Wise Utility-Risk Trade-offs in LLM Agent Memory"
+    ]
+  },
+  {
+    "date": "2026-09-13",
+    "title": "分层路由缓存机制加速电信自治网络智能体执行效率",
+    "keywords": [
+      "电信自治网络",
+      "AgenticOps治理架构",
+      "LLM Agent",
+      "ReAct范式",
+      "分层路由缓存"
+    ],
+    "evidence_titles": [
+      "TRIAGE: Three-level Routing and Intelligent Agent Guidance for Efficient Execution",
+      "The Power of Co-Innovation for AgenticOps and Autonomous Networks"
+    ]
+  },
+  {
+    "date": "2026-09-13",
+    "title": "无梯度进化策略训练脉冲神经网络打通网络检测端侧部署全链路",
+    "keywords": [
+      "网络入侵检测系统",
+      "边缘流量分析设备",
+      "脉冲神经网络",
+      "低秩进化策略",
+      "无梯度训练"
+    ],
+    "evidence_titles": [
+      "Gradient-Free Training of Spiking Neural Networks via Low-Rank Evolution Strategies",
+      "The Value of Spike Timing: A Leakage-Resistant Benchmark of SNN Design Choices for Network Intrusion Detection"
+    ]
+  },
+  {
+    "date": "2026-09-13",
+    "title": "MoE循环Transformer缩放定律指导推理集群架构与调度联合优化",
+    "keywords": [
+      "AI推理集群互联网络",
+      "RoCE fabric",
+      "MoE",
+      "Looped Transformer",
+      "缩放定律"
+    ],
+    "evidence_titles": [
+      "SMELT: Scaling Laws for Compute-Matched MoE Looped Transformers",
+      "DynaNDE: Dynamic Near-Data Expert Scheduling for Batched MoE Inference"
     ]
   }
 ]
