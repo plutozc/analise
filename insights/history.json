@@ -1,58 +1,5 @@
 [
   {
-    "date": "2026-09-06",
-    "title": "电信巨头Agentic运维从标准共识迈向实网双线验证",
-    "keywords": [
-      "自治网络",
-      "光传输网络",
-      "AI Agent",
-      "Agentic AI"
-    ],
-    "evidence_titles": [
-      "The Power of Co-Innovation for AgenticOps and Autonomous Networks",
-      "Bringing agentic operations to optical networks - Nokia"
-    ]
-  },
-  {
-    "date": "2026-09-06",
-    "title": "LLM推理服务同时面临功率弹性与JIT安全双重架构挑战",
-    "keywords": [
-      "AI推理集群",
-      "DPU",
-      "LLM推理优化"
-    ],
-    "evidence_titles": [
-      "PowerSlider: Exploiting Phase Asymmetry for LLM Serving under Demand Response",
-      "JITterFlip: Uncovering Fault Attack Surfaces in JIT-Compiled LLM Serving"
-    ]
-  },
-  {
-    "date": "2026-09-06",
-    "title": "长程AI Agent安全从提示注入到能力约束的纵深防护体系",
-    "keywords": [
-      "自治网络AI Agent",
-      "LLM Agent"
-    ],
-    "evidence_titles": [
-      "ECLIPSE: Self-Evolving Stealthy Prompt Injection Attack against Long-Horizon Agentic Systems",
-      "Reachability-Based Capability Confinement for LLM Agents under Indirect Prompt Injection",
-      "JITterFlip: Uncovering Fault Attack Surfaces in JIT-Compiled LLM Serving"
-    ]
-  },
-  {
-    "date": "2026-09-06",
-    "title": "跨组织多Agent可审计治理v4强化EU合规形式化闭环",
-    "keywords": [
-      "电信多域自治网络",
-      "多Agent系统",
-      "形式化验证"
-    ],
-    "evidence_titles": [
-      "JustAct: A Framework for Auditable Multi-Agent Systems Regulated by Inter-Organisational Policies (v4)",
-      "CatchBench: When Can an Agent Failure Be Caught?"
-    ]
-  },
-  {
     "date": "2026-09-07",
     "title": "神经组合优化求解器突破大规模5G PCI分配计算瓶颈",
     "keywords": [
@@ -370,6 +317,70 @@
     "evidence_titles": [
       "SMELT: Scaling Laws for Compute-Matched MoE Looped Transformers",
       "DynaNDE: Dynamic Near-Data Expert Scheduling for Batched MoE Inference"
+    ]
+  },
+  {
+    "date": "2026-09-14",
+    "title": "自进化提示注入与记忆阶段风险量化威胁自治网络智能体安全",
+    "keywords": [
+      "自治网络智能体",
+      "电信运维Agent",
+      "RAN智能控制",
+      "LLM Agent",
+      "长程任务规划",
+      "记忆机制",
+      "提示注入攻防"
+    ],
+    "evidence_titles": [
+      "ECLIPSE: Self-Evolving Stealthy Prompt Injection Attack against Long-Horizon Agentic Systems",
+      "Understanding Stage-Wise Utility-Risk Trade-offs in LLM Agent Memory",
+      "The Power of Co-Innovation for AgenticOps and Autonomous Networks"
+    ]
+  },
+  {
+    "date": "2026-09-14",
+    "title": "近数据动态专家调度联合MoE缩放定律协同优化推理集群",
+    "keywords": [
+      "AI推理集群互联网络",
+      "NPU-host数据通路",
+      "RoCE网络",
+      "MoE稀疏推理",
+      "循环Transformer",
+      "缩放定律"
+    ],
+    "evidence_titles": [
+      "DynaNDE: Dynamic Near-Data Expert Scheduling for Batched MoE Inference",
+      "SMELT: Scaling Laws for Compute-Matched MoE Looped Transformers"
+    ]
+  },
+  {
+    "date": "2026-09-14",
+    "title": "防泄漏基准评测与无梯度进化训练双轨推进SNN网络入侵检测",
+    "keywords": [
+      "网络入侵检测系统(NIDS)",
+      "网络流量分析",
+      "脉冲神经网络(SNN)",
+      "进化策略",
+      "神经形态计算"
+    ],
+    "evidence_titles": [
+      "The Value of Spike Timing: A Leakage-Resistant Benchmark of SNN Design Choices for Network Intrusion Detection",
+      "Gradient-Free Training of Spiking Neural Networks via Low-Rank Evolution Strategies"
+    ]
+  },
+  {
+    "date": "2026-09-14",
+    "title": "强化学习求解器梯度引导MPC在线自适应启发网络控制闭环",
+    "keywords": [
+      "网络控制闭环",
+      "流量工程",
+      "RAN参数优化",
+      "强化学习",
+      "模型预测控制(MPC)",
+      "可微分优化"
+    ],
+    "evidence_titles": [
+      "Accelerating Reinforcement Learning via MPC Solver-Gradient Guidance for Weights-varying MPC"
     ]
   }
 ]
