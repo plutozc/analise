@@ -1,103 +1,5 @@
 [
   {
-    "date": "2026-09-07",
-    "title": "神经组合优化求解器突破大规模5G PCI分配计算瓶颈",
-    "keywords": [
-      "5G RAN物理小区标识(PCI)分配",
-      "神经组合优化求解器",
-      "分解式神经块求解"
-    ],
-    "evidence_titles": [
-      "Congruence Decomposition with Neural Block Solvers for Large-Scale PCI Assignment"
-    ]
-  },
-  {
-    "date": "2026-09-07",
-    "title": "GPU扩展域同步开销揭示AI集群互联规模核心张力",
-    "keywords": [
-      "AI集群GPU互联网络",
-      "集合通信",
-      "分布式训练基础设施优化"
-    ],
-    "evidence_titles": [
-      "Understanding the Synchronization Tax in GPU Scale-Up Domains"
-    ]
-  },
-  {
-    "date": "2026-09-07",
-    "title": "网内计算系统形式化验证保障可编程数据面设计正确性",
-    "keywords": [
-      "可编程交换机",
-      "网内计算(INC)数据面",
-      "无"
-    ],
-    "evidence_titles": [
-      "VeriNC: Finding Design Risks of In-Network Computing Systems"
-    ]
-  },
-  {
-    "date": "2026-09-07",
-    "title": "Agent记忆阶段风险分析深化长程智能体纵深安全体系",
-    "keywords": [
-      "网络管理Agent",
-      "自治网络智能体",
-      "LLM Agent长期记忆",
-      "提示注入防御",
-      "能力图可达性分析"
-    ],
-    "evidence_titles": [
-      "Understanding Stage-Wise Utility-Risk Trade-offs in LLM Agent Memory",
-      "ECLIPSE: Self-Evolving Stealthy Prompt Injection Attack against Long-Horizon Agentic Systems",
-      "Reachability-Based Capability Confinement for LLM Agents under Indirect Prompt Injection"
-    ]
-  },
-  {
-    "date": "2026-09-08",
-    "title": "欧洲厂商竞推光网络智能体运维加速光域自治架构落地",
-    "keywords": [
-      "光传输网络/DWDM/OTN",
-      "AI Agent/Agentic运维/自治闭环"
-    ],
-    "evidence_titles": [
-      "Bringing agentic operations to optical networks - Nokia",
-      "The Power of Co-Innovation for AgenticOps and Autonomous Networks - Cisco"
-    ]
-  },
-  {
-    "date": "2026-09-08",
-    "title": "图增强多智能体强化学习突破云原生网络调度多目标瓶颈",
-    "keywords": [
-      "云原生容器网络/Kubernetes集群/CNF编排",
-      "多智能体强化学习（MARL）/图神经网络（GNN）"
-    ],
-    "evidence_titles": [
-      "Agentic-Kube: A Graph-Enhanced Multi-Agent Reinforcement Learning Framework for Multi-Objective Kubernetes Scheduling"
-    ]
-  },
-  {
-    "date": "2026-09-08",
-    "title": "自演化隐蔽注入与可达性能力约束推动网络Agent安全代际跃迁",
-    "keywords": [
-      "自治网络Agent/网络运维智能体",
-      "LLM Agent/提示注入攻防/可达性分析"
-    ],
-    "evidence_titles": [
-      "ECLIPSE: Self-Evolving Stealthy Prompt Injection Attack against Long-Horizon Agentic Systems",
-      "Reachability-Based Capability Confinement for LLM Agents under Indirect Prompt Injection"
-    ]
-  },
-  {
-    "date": "2026-09-08",
-    "title": "边缘AI推理服务运行时原位伸缩与模型动态选择联合决策",
-    "keywords": [
-      "边缘计算网络/MEC/边缘AI服务",
-      "预测式控制/模型选择优化"
-    ],
-    "evidence_titles": [
-      "PRISM: Predictive Runtime In-place Scaling and Model Selection for Edge Microservices"
-    ]
-  },
-  {
     "date": "2026-09-09",
     "title": "eBPF程序形式化验证自动迁移Rust推动网络数据面安全演进",
     "keywords": [
@@ -381,6 +283,60 @@
     ],
     "evidence_titles": [
       "Accelerating Reinforcement Learning via MPC Solver-Gradient Guidance for Weights-varying MPC"
+    ]
+  },
+  {
+    "date": "2026-09-16",
+    "title": "eBPF记忆化与L7策略执行双轨驱动网络数据面革新",
+    "keywords": [
+      "eBPF/XDP可编程数据面",
+      "L7网络策略执行",
+      "无"
+    ],
+    "evidence_titles": [
+      "记忆化技术发威！eBPF CPU 成本直降约 90%",
+      "Beeline: Enforcing application-layer policies in eBPF"
+    ]
+  },
+  {
+    "date": "2026-09-16",
+    "title": "云原生网络统一运营模型启示网络OS与控制面演进",
+    "keywords": [
+      "EVPN-VXLAN Fabric",
+      "私有云网络",
+      "AI基础设施网络",
+      "无"
+    ],
+    "evidence_titles": [
+      "From fabric to cloud native: Cisco Nexus One for the modern private cloud"
+    ]
+  },
+  {
+    "date": "2026-09-16",
+    "title": "深度联合源信道编码后门攻击净化推进PHY层AI安全",
+    "keywords": [
+      "深度联合源信道编码(JSCC)",
+      "PHY层AI通信链路",
+      "DNN端到端编解码",
+      "后门攻击检测与净化",
+      "掩码区域优化"
+    ],
+    "evidence_titles": [
+      "MROP: Mask-Region Optimized Purification Against Backdoor Attack in Deep JSCC"
+    ]
+  },
+  {
+    "date": "2026-09-16",
+    "title": "稀疏自索引注意力统一检索加速长上下文大模型推理",
+    "keywords": [
+      "大模型推理服务",
+      "长上下文网络日志/告警分析",
+      "稀疏注意力",
+      "自索引token检索",
+      "KV缓存压缩"
+    ],
+    "evidence_titles": [
+      "Self-Indexing Attention for Compression-Compatible Sparse Long-Context LLM Inference"
     ]
   }
 ]
