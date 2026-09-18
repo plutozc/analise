@@ -1,59 +1,5 @@
 [
   {
-    "date": "2026-09-10",
-    "title": "智能体运维驱动电信自治网络从架构愿景走向产业闭环",
-    "keywords": [
-      "自治网络",
-      "网络编排",
-      "跨域运维闭环",
-      "AI Agent",
-      "多智能体协同决策"
-    ],
-    "evidence_titles": [
-      "The Power of Co-Innovation for AgenticOps and Autonomous Networks"
-    ]
-  },
-  {
-    "date": "2026-09-10",
-    "title": "零知识跨协议网关闭合网络多Agent源完整性信任缺口",
-    "keywords": [
-      "QUIC协议",
-      "RAN",
-      "跨域网络网关",
-      "AI Agent",
-      "零知识证明"
-    ],
-    "evidence_titles": [
-      "Zero-Knowledge Predicate Proofs Between AI Agents: A Measured, Cross-Protocol Gateway and the Source-Integrity Gap"
-    ]
-  },
-  {
-    "date": "2026-09-10",
-    "title": "端云协同推理中LLM嵌入向量网络传输隐私保护机制",
-    "keywords": [
-      "端云网络传输链路",
-      "边缘推理节点",
-      "LLM",
-      "RAG检索增强生成",
-      "差分隐私"
-    ],
-    "evidence_titles": [
-      "Privacy-Preserving LLM Embedding Transmission for End-Cloud Collaboration"
-    ]
-  },
-  {
-    "date": "2026-09-10",
-    "title": "JIT编译推理服务故障注入攻击揭示AI部署硬件层安全盲区",
-    "keywords": [
-      "推理服务基础设施",
-      "GPU集群",
-      "LLM推理优化"
-    ],
-    "evidence_titles": [
-      "JITterFlip: Uncovering Fault Attack Surfaces in JIT-Compiled LLM Serving"
-    ]
-  },
-  {
     "date": "2026-09-12",
     "title": "AgenticOps产业协同加速电信自治网络治理架构标准化",
     "keywords": [
@@ -339,6 +285,56 @@
     ],
     "evidence_titles": [
       "Gradient-Free Training of Spiking Neural Networks via Low-Rank Evolution Strategies"
+    ]
+  },
+  {
+    "date": "2026-09-18",
+    "title": "华为万卡昇腾3D超节点架构启示AI集群网络拓扑设计",
+    "keywords": [
+      "AI集群互联网络",
+      "数据中心网络拓扑",
+      "无"
+    ],
+    "evidence_titles": [
+      "Huawei launches world's first 3D data center with 100000 Ascend supernode"
+    ]
+  },
+  {
+    "date": "2026-09-18",
+    "title": "H100前缀复用基准评测揭示推理服务首令牌延迟优化路径",
+    "keywords": [
+      "推理集群服务架构",
+      "LLM推理优化",
+      "前缀缓存"
+    ],
+    "evidence_titles": [
+      "PrefixBench-H100: Characterizing Prefix Reuse and Time-to-First-Token in H100 LLM Serving"
+    ]
+  },
+  {
+    "date": "2026-09-18",
+    "title": "张量核量化推理静默数据损坏检测编码保障AI计算正确性",
+    "keywords": [
+      "AI推理集群计算可靠性",
+      "量化神经网络推理",
+      "算法级容错"
+    ],
+    "evidence_titles": [
+      "Syndrome Decoding for Silent Data Corruption in Quantized Integer GPU Arithmetic"
+    ]
+  },
+  {
+    "date": "2026-09-18",
+    "title": "多智能体记忆路由与环境反馈脚手架联合驱动Agent自进化",
+    "keywords": [
+      "自治网络Agent系统",
+      "多智能体协作",
+      "强化学习",
+      "路由式记忆"
+    ],
+    "evidence_titles": [
+      "AMA: Adaptive Memory via Multi-Agent Collaboration",
+      "Environments as Scaffold: Self-Evolving Agents in Long-Horizon Tasks"
     ]
   }
 ]
