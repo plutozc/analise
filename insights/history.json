@@ -336,5 +336,47 @@
       "AMA: Adaptive Memory via Multi-Agent Collaboration",
       "Environments as Scaffold: Self-Evolving Agents in Long-Horizon Tasks"
     ]
+  },
+  {
+    "date": "2026-09-19",
+    "title": "华为智能体数据中心方案启示网络Agent自适应编排",
+    "keywords": [
+      "AI数据中心网络",
+      "自治网络控制面",
+      "LLM Agent自适应配置",
+      "多Agent编排"
+    ],
+    "evidence_titles": [
+      "Huawei Unveils a Series of Innovative AI DC Solutions and Milestones, Shaping the Agentic World",
+      "Learning to Configure Agentic AI Systems"
+    ]
+  },
+  {
+    "date": "2026-09-19",
+    "title": "异构平台LLM推理服务多维基准评测揭示部署优化路径",
+    "keywords": [
+      "推理集群网络",
+      "AI数据中心互联",
+      "LLM推理优化",
+      "KV缓存前缀复用"
+    ],
+    "evidence_titles": [
+      "PrefixBench-H100: Characterizing Prefix Reuse and Time-to-First-Token in H100 LLM Serving",
+      "SiliconBench: Speed, Memory, and Fidelity for LLM Serving on Unified-Memory Desktops"
+    ]
+  },
+  {
+    "date": "2026-09-19",
+    "title": "LLM驱动失败自适应算子生成与量化推理容错双轨优化",
+    "keywords": [
+      "AI计算集群",
+      "推理加速卡互联",
+      "LLM Agent自适应搜索",
+      "故障检测编码"
+    ],
+    "evidence_titles": [
+      "AdaExplore: Failure-Driven Adaptation and Diversity-Preserving Search for Efficient Kernel Generation",
+      "Syndrome Decoding for Silent Data Corruption in Quantized Integer GPU Arithmetic"
+    ]
   }
 ]
