@@ -1,62 +1,5 @@
 [
   {
-    "date": "2026-09-12",
-    "title": "AgenticOps产业协同加速电信自治网络治理架构标准化",
-    "keywords": [
-      "自治网络",
-      "网络运维编排",
-      "LLM Agent",
-      "分层路由策略缓存"
-    ],
-    "evidence_titles": [
-      "The Power of Co-Innovation for AgenticOps and Autonomous Networks",
-      "TRIAGE: Three-level Routing and Intelligent Agent Guidance for Efficient Execution"
-    ]
-  },
-  {
-    "date": "2026-09-12",
-    "title": "可达性能力图谱为网络LLM智能体注入形式化安全约束",
-    "keywords": [
-      "RIC网络智能体",
-      "网络运维Agent",
-      "LLM Agent",
-      "可达性静态分析",
-      "对抗性提示注入"
-    ],
-    "evidence_titles": [
-      "Reachability-Based Capability Confinement for LLM Agents under Indirect Prompt Injection",
-      "ECLIPSE: Self-Evolving Stealthy Prompt Injection Attack against Long-Horizon Agentic Systems"
-    ]
-  },
-  {
-    "date": "2026-09-12",
-    "title": "NPU近数据处理动态专家调度突破MoE推理集群互联瓶颈",
-    "keywords": [
-      "RoCE集群互联网络",
-      "NPU间数据通路",
-      "MoE稀疏推理",
-      "近数据处理调度"
-    ],
-    "evidence_titles": [
-      "DynaNDE: Dynamic Near-Data Expert Scheduling for Batched MoE Inference"
-    ]
-  },
-  {
-    "date": "2026-09-12",
-    "title": "递归状态编码提升神经组合优化求解网络路由规划效率",
-    "keywords": [
-      "网络路由",
-      "路径规划",
-      "流量调度",
-      "神经组合优化(NCO)",
-      "递归状态编码",
-      "序列构造"
-    ],
-    "evidence_titles": [
-      "Recurrent State Encoders for Efficient Neural Combinatorial Optimization"
-    ]
-  },
-  {
     "date": "2026-09-13",
     "title": "长程网络智能体记忆投毒与能力边界约束攻防三维体系",
     "keywords": [
@@ -377,6 +320,52 @@
     "evidence_titles": [
       "AdaExplore: Failure-Driven Adaptation and Diversity-Preserving Search for Efficient Kernel Generation",
       "Syndrome Decoding for Silent Data Corruption in Quantized Integer GPU Arithmetic"
+    ]
+  },
+  {
+    "date": "2026-09-20",
+    "title": "统一内存端侧LLM推理引擎速度-内存-保真三维基准评测体系",
+    "keywords": [
+      "边缘推理节点",
+      "CPE设备",
+      "网络边缘AI部署",
+      "LLM推理服务",
+      "前缀复用",
+      "流水线/张量并行"
+    ],
+    "evidence_titles": [
+      "SiliconBench: Speed, Memory, and Fidelity for LLM Serving on Unified-Memory Desktops",
+      "PrefixBench-H100: Characterizing Prefix Reuse and Time-to-First-Token in H100 LLM Serving"
+    ]
+  },
+  {
+    "date": "2026-09-20",
+    "title": "无CSI层级化多智能体强化学习驱动RIS毫米波波束自主优化迭代",
+    "keywords": [
+      "RIS可重构智能面",
+      "毫米波网络",
+      "CSI信道估计",
+      "层级化多智能体强化学习(Hierarchical MARL)",
+      "去中心化决策"
+    ],
+    "evidence_titles": [
+      "Learning to Focus: CSI-Free Hierarchical MARL for Reconfigurable Reflectors"
+    ]
+  },
+  {
+    "date": "2026-09-20",
+    "title": "华为智能体数据中心方案与Agent自适应配置联合驱动网络自治",
+    "keywords": [
+      "数据中心网络",
+      "SDN控制面",
+      "自治网络",
+      "LLM Agent自适应配置",
+      "元学习",
+      "工作流动态选择"
+    ],
+    "evidence_titles": [
+      "Huawei Unveils a Series of Innovative AI DC Solutions and Milestones, Shaping the Agentic World",
+      "Learning to Configure Agentic AI Systems"
     ]
   }
 ]
