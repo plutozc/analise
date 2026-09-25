@@ -1,56 +1,5 @@
 [
   {
-    "date": "2026-09-17",
-    "title": "无CSI多智能体强化学习实现RIS毫米波波束自主聚焦",
-    "keywords": [
-      "RIS可重构智能表面",
-      "毫米波网络",
-      "CSI信道估计",
-      "层次化多智能体强化学习(Hierarchical MARL)"
-    ],
-    "evidence_titles": [
-      "Learning to Focus: CSI-Free Hierarchical MARL for Reconfigurable Reflectors"
-    ]
-  },
-  {
-    "date": "2026-09-17",
-    "title": "智能体系统自适应配置优化启示自治网络Agent编排",
-    "keywords": [
-      "自治网络智能体编排",
-      "Intent驱动网络管理",
-      "LLM Agent配置空间优化",
-      "条件资源分配"
-    ],
-    "evidence_titles": [
-      "Learning to Configure Agentic AI Systems"
-    ]
-  },
-  {
-    "date": "2026-09-17",
-    "title": "eBPF记忆化实测九成降本验证网络数据面加速路径",
-    "keywords": [
-      "SDN数据面",
-      "eBPF可编程网络",
-      "无"
-    ],
-    "evidence_titles": [
-      "记忆化技术发威！eBPF CPU 成本直降约 90%"
-    ]
-  },
-  {
-    "date": "2026-09-17",
-    "title": "低秩进化策略突破SNN无梯度训练赋能端侧网络检测",
-    "keywords": [
-      "网络入侵检测",
-      "端侧网络安全推理",
-      "脉冲神经网络(SNN)",
-      "低秩进化策略(Low-Rank ES)"
-    ],
-    "evidence_titles": [
-      "Gradient-Free Training of Spiking Neural Networks via Low-Rank Evolution Strategies"
-    ]
-  },
-  {
     "date": "2026-09-18",
     "title": "华为万卡昇腾3D超节点架构启示AI集群网络拓扑设计",
     "keywords": [
@@ -335,6 +284,60 @@
     ],
     "evidence_titles": [
       "记忆化技术发威！eBPF CPU 成本直降约 90%"
+    ]
+  },
+  {
+    "date": "2026-09-25",
+    "title": "执行溯源与策略约束双轨强化网络智能体可信治理闭环",
+    "keywords": [
+      "网络自治智能体",
+      "自动驾驶网络编排系统",
+      "LLM Agent",
+      "策略约束推理",
+      "执行溯源"
+    ],
+    "evidence_titles": [
+      "ActGov: Governing LLM Agent Actions via Policy-Constrained Validation",
+      "Connecting the Dots in Agentic AI Security: A Cross-Dimensional Threat Taxonomy",
+      "From Agent Traces to Trust: A Survey of Evidence Tracing and Execution Provenance in LLM Agents"
+    ]
+  },
+  {
+    "date": "2026-09-25",
+    "title": "LLM驱动网络访问控制策略代码自动生成与形式化验证",
+    "keywords": [
+      "网络访问控制策略",
+      "SDN策略",
+      "意图驱动网络策略",
+      "LLM（自然语言到策略代码生成）"
+    ],
+    "evidence_titles": [
+      "Structured Decomposition for Reliable LLM-Generated Access Control Policies"
+    ]
+  },
+  {
+    "date": "2026-09-25",
+    "title": "信息论反馈编码揭示LLM智能体隐蔽信道安全新攻击面",
+    "keywords": [
+      "网络流量监控",
+      "API通信安全",
+      "Agent间通信信道",
+      "LLM推理时隐写术",
+      "Shannon反馈编码"
+    ],
+    "evidence_titles": [
+      "Feedback Coding Enables Inference-Time Covert Agentic Communication"
+    ]
+  },
+  {
+    "date": "2026-09-25",
+    "title": "边缘AI加速器混淆代理攻击暴露网络推理部署安全盲区",
+    "keywords": [
+      "网络边缘设备（基站/网关/CPE）中的AI加速器",
+      "边缘AI推理"
+    ],
+    "evidence_titles": [
+      "Speed Kills: Exploring Confused Deputy Attacks Through Edge AI Accelerators"
     ]
   }
 ]
