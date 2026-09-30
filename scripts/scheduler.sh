@@ -6,8 +6,6 @@ mkdir -p "$LOG_DIR"
 if [ -f .env ]; then set -a; source .env; set +a; fi
 TSX="${TSX:-npx tsx}"
 PAPERS_AT="${SYNC_PAPERS_AT:-03:00}"
-WEEKLY_REPORT_AT="${SYNC_WEEKLY_REPORT_AT:-06:00}"
-WEEKLY_REPORT_DAY="${SYNC_WEEKLY_REPORT_DAY:-1}"  # 1=Monday
 
 log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"; }
 run_task() {
@@ -47,49 +45,17 @@ run_daily_at() {
     sleep 1
   done
 }
-run_weekly_report() {
-  local hhmm=$1 dow=$2 delay
-  while true; do
-    local current_dow; current_dow=$(date '+%u')
-    local now_secs=$((10#$(date '+%H') * 3600 + 10#$(date '+%M') * 60 + 10#$(date '+%S')))
-    local target_secs=$((10#${hhmm%:*} * 3600 + 10#${hhmm#*:} * 60))
-    if [ "$current_dow" -eq "$dow" ] && [ "$now_secs" -lt "$target_secs" ]; then
-      delay=$((target_secs - now_secs))
-    else
-      local days_until=$(( (dow - current_dow + 7) % 7 ))
-      if [ "$days_until" -eq 0 ]; then days_until=7; fi
-      delay=$(( days_until * 86400 - now_secs + target_secs ))
-    fi
-    log "Sleep ${delay}s until next weekly-report (day=$dow at $hhmm)..."
-    sleep "$delay"
-    local logfile="$LOG_DIR/weekly-report.log"
-    log "START: weekly-report"
-    if $TSX weekly-report/src/index.ts >> "$logfile" 2>&1; then
-      log "OK: weekly-report"
-      git add weekly-report/reports/ && git commit -m "docs: weekly report $(date '+%Y-%m-%d')" && git push && log "OK: weekly-report pushed" || log "WARN: weekly-report git push failed"
-    else
-      log "FAIL: weekly-report (exit $?)"
-    fi
-    sleep 1
-  done
-}
-
 BULLETIN_AGG_AT="${SYNC_BULLETIN_AGG_AT:-08:00}"
 CLEANUP_AT="${SYNC_CLEANUP_AT:-03:30}"
 CLEANUP_DAY="${SYNC_CLEANUP_DAY:-7}"  # 7=Sunday
 
-TASKS="papers feeds rfcs signals conf-summaries vendor-intel"
+TASKS="papers feeds rfcs"
 
 interval_of() {
   case "$1" in
-    feeds)           echo 3600;;     # hourly
+    feeds)           echo 10800;;    # every 3h
     rfcs)            echo 43200;;
     papers)          echo 86400;;  # daily
-    signals)         echo 43200;;
-    conf-summaries)  echo 2592000;;  # monthly
-    vendor-intel)       echo 2592000;;  # monthly
-    bulletin-urgent) echo 3600;;     # hourly check
-    classify-medium) echo 86400;;    # deprecated, not scheduled
     *)               echo "";;
   esac
 }
@@ -157,9 +123,7 @@ for task in $TASKS; do
     run_loop "$task" "$(interval_of "$task")" &
   fi
 done
-run_weekly_report "$WEEKLY_REPORT_AT" "$WEEKLY_REPORT_DAY" &
 run_bulletin_aggregate "$BULLETIN_AGG_AT" &
-run_loop "bulletin-urgent" "$(interval_of "bulletin-urgent")" &
 run_weekly_cleanup "$CLEANUP_AT" "$CLEANUP_DAY" &
-log "All workers launched. papers_at=$PAPERS_AT weekly_report=day${WEEKLY_REPORT_DAY}@${WEEKLY_REPORT_AT} bulletin_agg=daily@${BULLETIN_AGG_AT} bulletin_urgent=hourly cleanup=day${CLEANUP_DAY}@${CLEANUP_AT}"
+log "All workers launched. papers_at=$PAPERS_AT bulletin_agg=daily@${BULLETIN_AGG_AT} cleanup=day${CLEANUP_DAY}@${CLEANUP_AT}"
 wait

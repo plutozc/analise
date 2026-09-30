@@ -56,22 +56,8 @@ async function main() {
         const confResult = await crawlConferences(year);
         console.log(`[sync-worker] Conference crawl: ${confResult.created} created, ${confResult.sessions} sessions`);
 
-        // Discover insight directions from recent papers/news
-        const insightResult = await discoverInsightDirections();
-        console.log(`[sync-worker] Insight discovery: ${insightResult.directions} directions found`);
-
-        // Auto-push insights to github
-        if (insightResult.directions > 0) {
-          const { execSync } = await import("child_process");
-          try {
-            execSync('git add insights/ && git commit -m "docs: insight directions $(date +%Y-%m-%d)" && git push', {
-              encoding: "utf-8", timeout: 30_000, stdio: "pipe",
-            });
-            console.log("[sync-worker] Insights pushed to github");
-          } catch (e) {
-            console.warn("[sync-worker] Insights git push failed:", e instanceof Error ? e.message : e);
-          }
-        }
+        // Insight discovery disabled to reduce AI token cost
+        // Run manually via: npx tsx src/index.ts insights
         break;
       }
       case "classify-medium": {
