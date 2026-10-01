@@ -288,10 +288,13 @@ export async function syncAllFeeds(): Promise<{ stats: FeedStat[]; inserted: Ins
     console.log(`[feeds] Finance pre-filter: ${before} → ${finFiltered.length} story clusters`);
   }
 
-  // Classify, then boost score by coverage, insert only representative items
+  // AI classify disabled to reduce CLI token cost — insert all with heuristic score
   if (finFiltered.length > 0) {
-    console.log(`[feeds] Classifying ${finFiltered.length} story clusters...`);
-    const scores = await classifyItems(finFiltered.map(c => ({ title: c.item.title, snippet: c.item.snippet })));
+    console.log(`[feeds] AI classify disabled, using heuristic scoring for ${finFiltered.length} clusters`);
+    const scores = new Map<number, { relevance_score: number }>();
+    for (let i = 0; i < finFiltered.length; i++) {
+      scores.set(i + 1, { relevance_score: finFiltered[i].coverageCount >= 3 ? 7 : 5 });
+    }
     let insertedCount = 0;
 
     for (let i = 0; i < finFiltered.length; i++) {
@@ -311,14 +314,14 @@ export async function syncAllFeeds(): Promise<{ stats: FeedStat[]; inserted: Ins
         continue;
       }
 
-      const merged = [...new Set([...item.companies, ...(s?.companies ?? [])])];
+      const merged = [...new Set(item.companies)];
       const { data: row } = await supabase.from("news_items").insert({
         title: item.title, link: item.link,
         source: item.source, category: "news",
         pub_date: item.pubDate, snippet: item.snippet,
         companies: merged,
-        ai_classified: true,
-        ai_topics: s?.topics ?? [],
+        ai_classified: false,
+        ai_topics: [],
         relevance_score: score,
         coverage_count: coverageCount,
       }).select("id");

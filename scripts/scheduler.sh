@@ -123,7 +123,7 @@ for task in $TASKS; do
     run_loop "$task" "$(interval_of "$task")" &
   fi
 done
-run_bulletin_aggregate "$BULLETIN_AGG_AT" &
+# bulletin disabled to reduce CLI token cost — run manually: npx tsx src/index.ts bulletin
 run_weekly_cleanup "$CLEANUP_AT" "$CLEANUP_DAY" &
-log "All workers launched. papers_at=$PAPERS_AT bulletin_agg=daily@${BULLETIN_AGG_AT} cleanup=day${CLEANUP_DAY}@${CLEANUP_AT}"
+log "All workers launched. papers_at=$PAPERS_AT cleanup=day${CLEANUP_DAY}@${CLEANUP_AT} (bulletin disabled)"
 wait

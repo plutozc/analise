@@ -36,19 +36,9 @@ async function main() {
         const { stats, inserted } = await syncAllPapers(year);
         console.log(`[sync-worker] Papers sync complete:`, JSON.stringify(stats));
 
-        if (inserted.length > 0) {
-          const maxBatch = intEnv("MAX_PAPERS_PER_RUN", 500);
-          const batch = maxBatch > 0 ? inserted.slice(0, maxBatch) : [];
-          if (batch.length < inserted.length) {
-            console.log(`[sync-worker] ${inserted.length - batch.length} papers deferred by MAX_PAPERS_PER_RUN=${maxBatch}`);
-          }
-          const cr = batch.length > 0 ? await classifyPapers(30, batch) : { updated: 0, processed: 0 };
-          console.log(`[sync-worker] AI classify: ${cr.updated}/${cr.processed}`);
-        }
-
-        // AI enrichment for high-score papers
-        const enrichResult = await enrichHighScorePapers(10, 7, 30);
-        console.log(`[sync-worker] AI enrich: ${enrichResult.enriched} enriched, ${enrichResult.skipped} skipped`);
+        // AI classify & enrich disabled to reduce CLI token cost
+        // Run manually: npx tsx src/index.ts classify-medium / enrich
+        console.log(`[sync-worker] AI classify/enrich: skipped (disabled)`);
 
         // Backfill arXiv paper venues via arXiv API, then rebuild conferences
         const bfResult = await backfillVenues(100);
