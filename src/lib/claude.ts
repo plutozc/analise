@@ -45,6 +45,11 @@ export function resetTokenUsage(): void {
 }
 
 export function callClaude(prompt: string, opts?: { timeout?: number }): string {
+  // AI calls disabled — all AI-dependent features suspended
+  console.warn("[claude] AI calls disabled — returning empty");
+  _usage.calls++;
+  return "";
+
   const maxCalls = intEnv("MAX_CLAUDE_CALLS_PER_RUN", 80);
   const maxCost = floatEnv("MAX_CLAUDE_COST_PER_RUN", 3);
   if (maxCalls > 0 && _usage.calls >= maxCalls) {

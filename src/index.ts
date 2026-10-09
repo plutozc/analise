@@ -85,14 +85,11 @@ async function main() {
         break;
       }
       case "conf-summaries": {
-        const count = await generateAllConfSummaries();
-        console.log(`[sync-worker] Generated ${count} conference summaries`);
+        console.log("[sync-worker] conf-summaries: skipped (AI disabled)");
         break;
       }
       case "conf-summary": {
-        const id = process.argv[3];
-        if (!id) { console.error("[sync-worker] Usage: conf-summary <conferenceId>"); process.exit(1); }
-        await generateConfSummary(id);
+        console.log("[sync-worker] conf-summary: skipped (AI disabled)");
         break;
       }
       case "conferences": {
@@ -108,19 +105,7 @@ async function main() {
         break;
       }
       case "insights": {
-        const ir = await discoverInsightDirections();
-        console.log(`[sync-worker] Insight discovery: ${ir.directions} directions, output: ${ir.outputPath}`);
-        if (ir.directions > 0) {
-          const { execSync } = await import("child_process");
-          try {
-            execSync('git add insights/ && git commit -m "docs: insight directions $(date +%Y-%m-%d)" && git push', {
-              encoding: "utf-8", timeout: 30_000, stdio: "pipe",
-            });
-            console.log("[sync-worker] Insights pushed to github");
-          } catch (e) {
-            console.warn("[sync-worker] Insights git push failed:", e instanceof Error ? e.message : e);
-          }
-        }
+        console.log("[sync-worker] insights: skipped (AI disabled)");
         break;
       }
       case "signals": {
@@ -129,18 +114,15 @@ async function main() {
         break;
       }
       case "vendor-intel": {
-        const count = await syncVendorIntelligence();
-        console.log(`[sync-worker] Updated ${count} vendor profiles`);
+        console.log("[sync-worker] vendor-intel: skipped (AI disabled)");
         break;
       }
       case "bulletin": {
-        const aggResult = await generateAggregateBulletin();
-        console.log(`[sync-worker] Bulletins: ${aggResult.count} generated`);
+        console.log("[sync-worker] bulletin: skipped (AI disabled)");
         break;
       }
       case "bulletin-urgent": {
-        const result = await checkUrgentBulletin();
-        console.log(`[sync-worker] Urgent bulletin: ${result.generated ? result.title : "no urgent events"}`);
+        console.log("[sync-worker] bulletin-urgent: skipped (AI disabled)");
         break;
       }
       case "cleanup": {
@@ -179,15 +161,9 @@ async function main() {
           console.error(`[sync-worker] rfcs sync failed:`, rfcsResult.reason);
         }
 
-        // Phase 2: classify new papers + rebuild conferences (depends on papers)
+        // Phase 2: AI classify disabled
         if (paperInserted && paperInserted.length > 0) {
-          const maxBatch = intEnv("MAX_PAPERS_PER_RUN", 500);
-          const batch = maxBatch > 0 ? paperInserted.slice(0, maxBatch) : [];
-          if (batch.length < paperInserted.length) {
-            console.log(`[sync-worker] ${paperInserted.length - batch.length} papers deferred by MAX_PAPERS_PER_RUN=${maxBatch}`);
-          }
-          const cr = batch.length > 0 ? await classifyPapers(30, batch) : { updated: 0, processed: 0 };
-          console.log(`[sync-worker] AI classify: ${cr.updated}/${cr.processed}`);
+          console.log(`[sync-worker] AI classify: skipped (disabled) — ${paperInserted.length} papers unclassified`);
         }
 
         try {
