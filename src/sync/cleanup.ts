@@ -1,5 +1,6 @@
 import { supabase } from "../lib/supabase.js";
 import { execSync } from "child_process";
+import { existsSync, readdirSync, unlinkSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
@@ -11,6 +12,7 @@ const SIGNALS_RETAIN_DAYS = 90;
 const LOG_RETAIN_DAYS = 7;
 const BULLETIN_LOCAL_RETAIN_DAYS = 7;
 const BULLETIN_DB_RETAIN_DAYS = 7;
+const INSIGHTS_RETAIN_DAYS = 7;
 
 export async function runCleanup(): Promise<{ newsDeleted: number; signalsDeleted: number; logsCleared: boolean }> {
   const result = { newsDeleted: 0, signalsDeleted: 0, logsCleared: false };
@@ -67,6 +69,25 @@ export async function runCleanup(): Promise<{ newsDeleted: number; signalsDelete
     console.log(`[cleanup] bulletins: cleared files older than ${BULLETIN_LOCAL_RETAIN_DAYS}d (local + remote)`);
   } catch (e) {
     console.warn("[cleanup] bulletin cleanup failed:", e instanceof Error ? e.message : e);
+  }
+
+  try {
+    const insightsDir = join(ROOT, "insights");
+    // Use date in filename; mtime is reset by git checkout
+    const cutoff = new Date(Date.now() - INSIGHTS_RETAIN_DAYS * 86400_000).toISOString().slice(0, 10);
+    const stale = existsSync(insightsDir)
+      ? readdirSync(insightsDir).filter(f => {
+          const m = f.match(/^directions-(\d{4}-\d{2}-\d{2})\.md$/);
+          return m !== null && m[1] < cutoff;
+        })
+      : [];
+    for (const f of stale) unlinkSync(join(insightsDir, f));
+    if (stale.length > 0) {
+      execSync(`cd "${ROOT}" && git add -A insights && (git diff --cached --quiet -- insights || git commit -m "cleanup: remove insights older than ${INSIGHTS_RETAIN_DAYS}d" -- insights) && git push`, { encoding: "utf-8" });
+    }
+    console.log(`[cleanup] insights: deleted ${stale.length} files older than ${INSIGHTS_RETAIN_DAYS}d`);
+  } catch (e) {
+    console.warn("[cleanup] insights cleanup failed:", e instanceof Error ? e.message : e);
   }
 
   return result;
